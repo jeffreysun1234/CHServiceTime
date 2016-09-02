@@ -1,0 +1,41 @@
+*** (1d) Git branch
+
+(2d) code walkthrough --> code review ---> code static analysis
+
+(3d) UX material design ---> animation
+
+*** (5d) CI
+
+*** (1d) Gradle --> multiple build
+
+*** (1d) Multiple language support
+
+(2d) Multiple screen support
+
+(2d) android accessibility
+
+(5d) Performance
+
+*** (5d) Test
+
+*** (5d) UML ---> Agile
+
+(2d) ProGuard
+
+质量保证
+1. fabric (https://get.fabric.io/)
+3. splunk (http://www.splunk.com)
+DebugDrawer
+
+Useful tools and documents:
+LogUtils: https://github.com/pengwei1024/LogUtils
+https://github.com/ZhaoKaiQiang/KLog
+jsonschema2pojo
+http://www.jianshu.com/p/d74ad16bd881
+
+cloud test
+http://www.testin.cn
+http://www.scirocco-cloud.com/en/
+
+
+

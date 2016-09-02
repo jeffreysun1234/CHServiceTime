@@ -1,0 +1,17 @@
+Repository and DAO, in conclusion, they have similar intentions only that the Repository is a higher level concept dealing directly with business/domain objects, while DAO is more lower level, closer to the database/storage dealing only with data. A (micro)ORM is a DAO that is used by a Repository. For data-centric apps, a repository and DAO are interchangeable because the ‘business’ objects are simple data.
+
+When Esprosse tests is running, the screen must note be sleeping.
+
+1. Rewrite the content provider, and added a test case for the content provider, while uses ProviderTestCase2 (AndroidTest)
+2. AddEditTimeSlot UI: AddEditTimeSlotPresenterTest (Mockito, Test) and AddEditTimeSlotScreenTest (AndroidMockTest)
+3. Multiple Flovors (mock and prod): multiple AndroidManifest.xml, multiple Injection.java, FakeTimeSlotDataSource, MockCursorProvider
+4. TimeSlots UI: TimeSlotsPresenterTest (Mockito, Test)
+5. TimeSlots UI: TimeSlotsScreenTest (AndroidTest) , Because we use Content Provider to loader TimeSlots, we need to test the case in a real Sqlite envirement. 
+   TODO: multiple flavor for defination of content provider in AndroidManifest.
+6. Rewrite TimeSlotRule, fix a bug that begin time can not be bigger than end time.
+   Rewrite TimeSlotRuleTest, parameterized, mock static methods
+7. Add the getRequiredTimeSlots(boolean activationFlag) method in TimeSlotRepository and test it with a fake data source.
+8. Assemble UI
+9. Function test: WorkflowTest
+10. Fix bug: changing a time slot does not trigger the scheduling service.
+

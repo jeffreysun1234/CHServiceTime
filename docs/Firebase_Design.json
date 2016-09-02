@@ -1,0 +1,25 @@
+{
+  "users": {
+    "test@gmail.com": {
+      "email": "test@gmail.com",
+      "name": "test"
+    }
+  },
+  "timeSlotLists": {
+    "test@gmail.com": {
+      "timeSlotLists_random_id": {
+        "listName": "my phone list",
+        "timeSlotItems": {
+          "timeSlotItem_random_id": {
+            "name": "test 1",
+            "begin-time": "08:08",
+            "end-time": "10:10"
+          }
+        }
+      }
+    }
+  },
+  "uidMappings": {
+    "uid string(2382c60d-786c-4e22-a146-e55539c57918)": "test@gmail.com"
+  }
+}

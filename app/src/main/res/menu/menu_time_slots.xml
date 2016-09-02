@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      tools:context="com.mycompany.servicetime.presentation.timeslots.TimeSlotsActivity">
+    <item
+        android:id="@+id/add_time_slot"
+        android:icon="@android:drawable/ic_input_add"
+        android:orderInCategory="100"
+        android:title="Add"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/backup_time_slot_list"
+        android:orderInCategory="200"
+        android:title="Backup"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/restore_time_slot_list"
+        android:orderInCategory="200"
+        android:title="Restore"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_settings"/>
+</menu>
