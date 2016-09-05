@@ -25,4 +25,12 @@
     <string name="next_operation_invalid">Time slots is no available now.</string>
 
     <string name="alert_message">Change ringer mode</string>
+
+    <!-- Menu Strings -->
+    <string name="action_logout">Logout</string>
+    <string name="action_login">Login</string>
+
+    <string name="sign_out_failed">Sign out failed</string>
+    <string name="sign_out_successful">Sign out successful</string>
+    <string name="sign_in_successful">Sign in successful</string>
 </resources>

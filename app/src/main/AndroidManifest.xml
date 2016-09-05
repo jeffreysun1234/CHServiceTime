@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.mycompany.chservicetime">
+
+    <!-- resolve the different version between the main Manifest and FirebaseUIAuth lib's Manifest -->
+    <uses-sdk tools:overrideLibrary="com.firebase.ui.auth, com.facebook, android.support.customtabs"/>
 
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -25,8 +29,8 @@
 
         <activity
             android:name=".presentation.timeslots.TimeSlotsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

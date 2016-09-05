@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.base.BaseActivity;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
 import com.mycompany.chservicetime.util.ActivityUtils;
@@ -22,7 +23,7 @@ import com.mycompany.chservicetime.util.EspressoIdlingResource;
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 
-public class TimeSlotsActivity extends AppCompatActivity {
+public class TimeSlotsActivity extends BaseActivity {
 
     private static final String TAG = makeLogTag("TimeSlotsActivity");
 

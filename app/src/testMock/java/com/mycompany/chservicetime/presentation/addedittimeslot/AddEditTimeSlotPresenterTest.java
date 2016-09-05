@@ -3,6 +3,8 @@ package com.mycompany.chservicetime.presentation.addedittimeslot;
 import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
 import com.mycompany.chservicetime.data.source.TimeSlotRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotContract;
+import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotPresenter;
 
 import org.junit.Before;
 import org.junit.Test;
