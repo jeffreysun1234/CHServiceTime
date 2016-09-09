@@ -85,11 +85,17 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.4.0'
     compile 'com.firebaseui:firebase-ui-auth:0.5.1'
 
+    // Retrofit & Gson
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
     testCompile 'org.powermock:powermock-api-mockito:1.6.5'
     testCompile 'org.powermock:powermock-module-junit4:1.6.5'
-
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

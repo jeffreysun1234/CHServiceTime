@@ -5,11 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.Snackbar;
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.Injection;
@@ -31,10 +33,14 @@ public class TimeSlotsActivity extends BaseActivity {
 
     private TimeSlotContentObserver mTimeSlotContentObserver;
 
+    View mRootView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_slots);
+
+        mRootView = findViewById(android.R.id.content);
 
         // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

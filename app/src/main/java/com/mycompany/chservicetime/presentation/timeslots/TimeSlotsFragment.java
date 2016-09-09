@@ -1,10 +1,12 @@
 package com.mycompany.chservicetime.presentation.timeslots;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.base.BaseActivity;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
@@ -42,6 +46,8 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
     private static final String TAG = makeLogTag("TimeSlotsFragment");
 
     private TimeSlotsContract.Presenter mPresenter;
+
+    ProgressDialog mProgressDialog;
 
     TimeSlotCursorRecyclerAdapter mAdapter;
 
@@ -126,10 +132,10 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
                 mPresenter.addNewTimeSlot();
                 return true;
             }
-//            case R.id.backup_time_slot_list: {
-//                backupTimeSlotList();
-//                return true;
-//            }
+            case R.id.backup_time_slot_list: {
+                mPresenter.backupTimeSlotList();
+                return true;
+            }
 //            case R.id.restore_time_slot_list: {
 //                restoreTimeSlotList();
 //                return true;
@@ -139,35 +145,6 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
         }
     }
 
-//    private void backupTimeSlotList() {
-//        if (((BaseActivity) getActivity()).isLogin) {
-//            new AccessFirebaseAsyn(getContext(), new AccessFirebaseAsyn.BackgroundAction() {
-//
-//                @Override
-//                public void doActionInBackground() {
-//                    try {
-//                        String encodedUserEmail = PreferenceSupport.getEncodedEmail(getContext());
-//                        String authToken = PreferenceSupport.getAuthToken(getContext());
-//
-//                        FirebaseRestDAO.create().backupTimeSlotItemList(
-//                                encodedUserEmail,
-//                                authToken,
-//                                CHServiceTimeDAO.create(getContext()).backupAllTimeSlots());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void doOnPostExecute() {
-//                    Toast.makeText(getContext(), "Backup done.", Toast.LENGTH_SHORT).show();
-//                }
-//            }).execute();
-//        } else {
-//            ((BaseActivity) getActivity()).showLoginHint();
-//        }
-//    }
-//
 //    private void restoreTimeSlotList() {
 //        if (((BaseActivity) getActivity()).isLogin) {
 //            new AccessFirebaseAsyn(getContext(), new AccessFirebaseAsyn.BackgroundAction() {
@@ -240,13 +217,28 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
 
     ////// Implements of Contract interface //////
 
+    /**
+     * Show or hide a progress dialog.
+     *
+     * @param activeFlag
+     */
     @Override
-    public void setLoadingIndicator(boolean active) {
+    public void setLoadingIndicator(boolean activeFlag, int stringResId) {
         if (getView() == null) {
             return;
         }
 
-        // TODO: show indicator.
+        if (activeFlag) {
+            if (mProgressDialog == null) {
+                mProgressDialog = new ProgressDialog(getContext());
+            }
+            mProgressDialog.setTitle(getContext().getString(R.string.progress_dialog_loading));
+            mProgressDialog.setMessage(getContext().getString(stringResId));
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
+        } else {
+            mProgressDialog.dismiss();
+        }
 
     }
 
@@ -278,17 +270,17 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
 
     @Override
     public void showTimeSlotMarkedActive() {
-        showMessage(getString(R.string.timeslot_marked_active));
+        showSnackbarMessage(getString(R.string.timeslot_marked_active));
     }
 
     @Override
     public void showTimeSlotDeleted() {
-        showMessage(getString(R.string.timeslot_deleted));
+        showSnackbarMessage(getString(R.string.timeslot_deleted));
     }
 
     @Override
     public void showLoadingTimeSlotsError() {
-        showMessage(getString(R.string.loading_timeslots_error));
+        showSnackbarMessage(getString(R.string.loading_timeslots_error));
     }
 
     @Override
@@ -299,7 +291,7 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
 
     @Override
     public void showSuccessfullySavedMessage() {
-        showMessage(getString(R.string.successfully_saved_timeslot));
+        showSnackbarMessage(getString(R.string.successfully_saved_timeslot));
     }
 
     @Override
@@ -308,11 +300,21 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
     }
 
     @Override
-    public void setPresenter(TimeSlotsContract.Presenter presenter) {
-        mPresenter = presenter;
+    public void showSnackbarMessage(@StringRes int stringResId) {
+        showSnackbarMessage(getString(stringResId));
     }
 
-    private void showMessage(String message) {
+    @Override
+    public void showLoginHint() {
+        FirebaseAuthAdapter.showLoginHintInSnackbar(getView());
+    }
+
+    private void showSnackbarMessage(String message) {
         Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setPresenter(TimeSlotsContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -21,9 +20,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.mycompany.chservicetime.BuildConfig;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
@@ -44,10 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private GoogleApiClient mGoogleApiClient;
 
-    protected String mUsername;
-    protected FirebaseAuth mFirebaseAuth;
-    protected FirebaseUser mFirebaseUser;
-
     protected String mEncodedEmail;
 
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -60,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         mRootView = findViewById(android.R.id.content);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuthAdapter.FIREBASE_AUTH = FirebaseAuth.getInstance();
 
         /**
          * Getting mEncodedEmail from SharedPreferences
@@ -70,10 +65,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                mFirebaseUser = firebaseAuth.getCurrentUser();
-                if (mFirebaseUser != null) {
+                FirebaseAuthAdapter.FIREBASE_USER = firebaseAuth.getCurrentUser();
+                if (FirebaseAuthAdapter.FIREBASE_USER != null) {
                     // User is signed in
-                    LOGD(TAG, "onAuthStateChanged:signed_in:" + mFirebaseUser.getUid());
+                    LOGD(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.FIREBASE_USER.getUid());
 
                     showSnackbar(R.string.sign_in_successful);
                 } else {
@@ -93,20 +88,20 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onStart() {
         super.onStart();
-        mFirebaseAuth.addAuthStateListener(mAuthListener);
+        FirebaseAuthAdapter.FIREBASE_AUTH.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthListener);
+            FirebaseAuthAdapter.FIREBASE_AUTH.removeAuthStateListener(mAuthListener);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mFirebaseUser != null)
+        if (FirebaseAuthAdapter.isSignIn())
             menu.add(Menu.NONE, R.id.menu_action_logout, 1000,
                     getResources().getString(R.string.action_logout));
         else
@@ -169,18 +164,13 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 RC_SIGN_IN);
     }
 
-    public void showLoginHint() {
-        if (mFirebaseUser == null)
-            Toast.makeText(BaseActivity.this, "Please Login at first.", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         LOGD(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     @MainThread
-    private void showSnackbar(@StringRes int errorMessageRes) {
+    public void showSnackbar(@StringRes int errorMessageRes) {
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 }

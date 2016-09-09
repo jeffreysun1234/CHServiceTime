@@ -17,14 +17,21 @@
 package com.mycompany.chservicetime.presentation.timeslots;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 
 import com.mycompany.chservicetime.CHApplication;
+import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.data.firebase.FirebaseRestDAO;
+import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.data.source.TimeSlotRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
+
+import java.io.IOException;
 
 /**
  * Listens to user actions from the UI ({@link TimeSlotsFragment}), retrieves the data and updates the
@@ -99,5 +106,48 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
     public void deleteTimeSlot(@NonNull String timeSlotId) {
         mTimeSlotRepository.deleteTimeSlot(timeSlotId);
         mTimeSlotsView.showTimeSlotDeleted();
+    }
+
+    @Override
+    public void backupTimeSlotList() {
+        if (FirebaseAuthAdapter.isSignIn()) {
+            new AsyncTask() {
+
+                @Override
+                protected void onPreExecute() {
+                    mTimeSlotsView.setLoadingIndicator(true, R.string.progress_dialog_access_firebase);
+                }
+
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    try {
+                        String encodedUserEmail = PreferenceSupport.getEncodedEmail(CHApplication.getContext());
+                        String authToken = FirebaseAuthAdapter.getAuthToken();
+
+                        FirebaseRestDAO.create().backupTimeSlotItemList(
+                                encodedUserEmail,
+                                authToken,
+                                mTimeSlotRepository.backupAllTimeSlots());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    mTimeSlotsView.setLoadingIndicator(false, -1);
+                    mTimeSlotsView.showSnackbarMessage(R.string.backup_done);
+                }
+            }.execute();
+        } else {
+            mTimeSlotsView.showLoginHint();
+        }
+    }
+
+    @Override
+    public void restoreTimeSlotList() {
+
     }
 }

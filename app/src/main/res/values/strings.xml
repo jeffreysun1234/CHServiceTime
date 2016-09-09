@@ -33,4 +33,9 @@
     <string name="sign_out_failed">Sign out failed</string>
     <string name="sign_out_successful">Sign out successful</string>
     <string name="sign_in_successful">Sign in successful</string>
+    <string name="sign_in_hint">"Please Login at first."</string>
+
+    <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_access_firebase">Accessing Firebase</string>
+    <string name="backup_done">Backup the TimeSlot list done.</string>
 </resources>
