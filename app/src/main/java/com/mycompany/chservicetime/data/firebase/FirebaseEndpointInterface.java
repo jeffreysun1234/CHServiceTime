@@ -3,6 +3,7 @@ package com.mycompany.chservicetime.data.firebase;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -32,23 +33,22 @@ public interface FirebaseEndpointInterface {
      */
     @PUT
     Call<TimeSlotList> addTimeSlotList(@Url String url,
-                                       @Body HashMap<String, Object> timeSlotListJson,
+                                       @Body TimeSlotList timeSlotList,
                                        @Query("auth") String auth);
 
     /**
      * FirebaseConstants.timeSlotItemListRestURL();
      */
     @DELETE
-    Call<HashMap<String, String>> deleteTimeSlotItems(@Url String url,
-                                                      @Query("auth") String auth);
+    Call<Object> deleteTimeSlotItems(@Url String url,
+                                     @Query("auth") String auth);
 
     /**
      * FirebaseConstants.timeSlotItemListRestURL();
      */
     @POST
     Call<HashMap<String, String>> addTimeSlotItemList(@Url String url,
-                                                      @Body HashMap<String, Object>
-                                                              timeSlotItemListJson,
+                                                      @Body TimeSlotItem timeSlotItem,
                                                       @Query("auth") String auth);
 
     /**

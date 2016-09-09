@@ -10,17 +10,23 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
+import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -32,23 +38,27 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class FirebaseRestDAOTest {
 
     final static String MOCK_SERVER_BASE_URL_PATH = "/";
-    final static String MOCK_SERVER_URL = "http://firebasemock.mockserver.test";
 
     public static MockWebServer mockServer;
-    public static Retrofit retrofit;
     public static FirebaseEndpointInterface mService;
 
     static FirebaseRestDAO mFirebaseRestDAO;
 
-    static String userEmailPath = FirebaseUtils.encodeEmail("a@a.com");
+    static String encodedUserEmail = FirebaseUtils.encodeEmail("a@a.com");
+    static String authToken = null;
 
     @BeforeClass
     public static void setup() throws IOException {
         mockServer = new MockWebServer();
-        mockServer.setDispatcher(new MockServerDispatcher());
+        mockServer.setDispatcher(new MockServerDispatcher(encodedUserEmail));
         mockServer.start();
 
-        mFirebaseRestDAO = FirebaseRestDAO.create(MOCK_SERVER_URL);
+        // Ask the server for its URL. You'll need this to make HTTP requests.
+        HttpUrl baseUrl = mockServer.url(MOCK_SERVER_BASE_URL_PATH);
+
+        mFirebaseRestDAO = FirebaseRestDAO.create(baseUrl.toString());
+
+        mService = mFirebaseRestDAO.mService;
     }
 
     @AfterClass
@@ -60,15 +70,17 @@ public class FirebaseRestDAOTest {
      * Mock URL+Method and response
      */
     static class MockServerDispatcher extends Dispatcher {
+        String userEmailPath;
+
+        public MockServerDispatcher(String userEmailPath) {
+            this.userEmailPath = userEmailPath;
+        }
 
         @Override
         public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-            String userEmailPath = FirebaseUtils.encodeEmail("a@a.com");
 
-            String timeSlotItemListRestURL = FirebaseConstants
-                    .timeSlotItemListRestURL(userEmailPath);
-            String timeSlotListRestURL = FirebaseConstants.timeSlotListRestURL(
-                    userEmailPath);
+            String timeSlotItemListRestURL = FirebaseConstants.timeSlotItemListRestURL(userEmailPath);
+            String timeSlotListRestURL = FirebaseConstants.timeSlotListRestURL(userEmailPath);
 
             String getTimeSlotItemListURLResponse = "{\"-KE8oUN5U5BGgBMey02U\":{\"beginTimeHour" +
                     "\":17,\"beginTimeMinute\":5,\"days\":\"0100000\",\"endTimeHour\":17," +
@@ -119,71 +131,59 @@ public class FirebaseRestDAOTest {
         assertThat(response.body(), is(equalTo("Hi")));
     }
 
-    //@Test
+    @Test
     public void testAddTimeSlotList() throws Exception {
-        String encodedUserEmail = FirebaseUtils.encodeEmail("test@my.com");
-        String authToken = null;
-
-        TimeSlotList response = FirebaseRestDAO.create()
-                .addTimeSlotList(encodedUserEmail, authToken);
+        TimeSlotList response = mFirebaseRestDAO.addTimeSlotList(encodedUserEmail, authToken);
 
         assertThat(response, is(notNullValue()));
     }
 
-    //@Test
+    @Test
     public void testRestoreTimeSlotItemList() throws Exception {
-        String encodedUserEmail = FirebaseUtils.encodeEmail("a@a.com");
-        String authToken = null;
-
-        Collection<TimeSlotItem> response = FirebaseRestDAO.create()
-                .restoreTimeSlotItemList(encodedUserEmail, authToken);
+        Collection<TimeSlotItem> response = mFirebaseRestDAO.restoreTimeSlotItemList(encodedUserEmail, authToken);
 
         assertThat(response, is(notNullValue()));
-        assertThat(response.size(), is(2));
+        assertThat(response.size(), is(3));
     }
 
-    //@Test
+    @Test
     public void testBackupTimeSlotItemList() throws Exception {
-        String encodedUserEmail = FirebaseUtils.encodeEmail("test@my.com");
-        String authToken = null;
         ArrayList<TimeSlotItem> tsItems = new ArrayList<TimeSlotItem>();
-//        tsItems.add(
-//                new TimeSlotItem(9, 10, "0011001", 10, 10, "Test Item", false, false, "129303432"));
-        tsItems.add(new TimeSlotItem());
+        tsItems.add(
+                new TimeSlotItem("time_slot_id_1234", "Test", "Test Item", 9, 10, 10, 10, "0011001", false, false));
 
-        boolean response = FirebaseRestDAO.create()
-                .backupTimeSlotItemList(encodedUserEmail, authToken, tsItems);
+        int count = mFirebaseRestDAO.backupTimeSlotItemList(encodedUserEmail, authToken, tsItems);
 
-        assertThat(response, is(true));
+        assertThat(count, is(1));
     }
 
-//    @Test
-//    public void testDeleteTimeSlotItems() throws IOException, InterruptedException {
-//        Call<HashMap<String, String>> message = mService
-//                .deleteTimeSlotItems(FirebaseConstants.timeSlotItemListRestURL(userEmailPath),
-//                        null);
-//
-//        final AtomicReference<Response<HashMap<String, String>>> responseRef = new
-//                AtomicReference<>();
-//        final CountDownLatch latch = new CountDownLatch(1);
-//        message.enqueue(new Callback<HashMap<String, String>>() {
-//            @Override
-//            public void onResponse(Call<HashMap<String, String>> call,
-//                                   Response<HashMap<String, String>> response) {
-//                responseRef.set(response);
-//                latch.countDown();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<HashMap<String, String>> call, Throwable t) {
-//
-//            }
-//        });
-//        //assertThat(latch.await(2, SECONDS), is(true));
-//        latch.await(2, SECONDS);
-//
-//        Response<HashMap<String, String>> response = responseRef.get();
-//        assertThat(response, is(nullValue()));
-//    }
+    @Test
+    public void testDeleteTimeSlotItems() throws IOException, InterruptedException {
+        Call<Object> message = mService
+                .deleteTimeSlotItems(FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), authToken);
+
+        final AtomicReference<Response<Object>> responseRef = new AtomicReference<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        message.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call,
+                                   Response<Object> response) {
+                responseRef.set(response);
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+
+            }
+        });
+        //assertThat(latch.await(2, SECONDS), is(true));
+        latch.await(2, TimeUnit.SECONDS);
+
+        Response<Object> response = responseRef.get();
+
+        assertThat(response.isSuccessful(), is(true));
+        //assertThat(response.body(), is(nullValue()));
+    }
 
 }

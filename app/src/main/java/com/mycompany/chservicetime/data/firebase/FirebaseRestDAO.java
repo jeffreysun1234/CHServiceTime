@@ -28,7 +28,7 @@ import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 public class FirebaseRestDAO {
     public static final String TAG = makeLogTag("FirebaseRestDAO");
 
-    private static FirebaseEndpointInterface mService;
+    public FirebaseEndpointInterface mService;
 
     private static Context mContext;
 
@@ -61,6 +61,7 @@ public class FirebaseRestDAO {
 
     /**
      * create a default FirebaseRestDAO with the firebase url of the app.
+     *
      * @return
      */
     public static FirebaseRestDAO create() {
@@ -79,13 +80,10 @@ public class FirebaseRestDAO {
         /* build a TimeSlot list */
         TimeSlotList newTimeSlotList = new TimeSlotList("My List", encodedUserEmail,
                 FirebaseUtils.getTimestampNowObject());
-        HashMap<String, Object> timeSlotListMap = null;
-//                (HashMap<String, Object>)
-//                new ObjectMapper().convertValue(newTimeSlotList, Map.class);
 
         /* access firebase database */
         Response<TimeSlotList> response = mService.addTimeSlotList(
-                FirebaseConstants.timeSlotListRestURL(encodedUserEmail), timeSlotListMap,
+                FirebaseConstants.timeSlotListRestURL(encodedUserEmail), newTimeSlotList,
                 authToken).execute();
         if (response.isSuccessful()) {
             return (TimeSlotList) response.body();
@@ -116,42 +114,36 @@ public class FirebaseRestDAO {
 
     /**
      * Backup TimeSlot list
+     *
+     * @return the count saved successfully.
      */
-    public boolean backupTimeSlotItemList(String encodedUserEmail, String authToken,
-                                          ArrayList<TimeSlotItem> timeSlotItems) throws
-            IOException {
+    public int backupTimeSlotItemList(String encodedUserEmail, String authToken,
+                                      ArrayList<TimeSlotItem> timeSlotItems) throws IOException {
+
+        int ii = 0; // count successful save.
 
         // add a TimeSlotList to Firebase
         addTimeSlotList(encodedUserEmail, authToken);
 
         if (timeSlotItems != null && timeSlotItems.size() > 0) {
             // clear TimeSlotItems on Firebase
-            Response<HashMap<String, String>> response = mService.deleteTimeSlotItems(
+            Response<Object> response = mService.deleteTimeSlotItems(
                     FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), authToken)
                     .execute();
             if (response.isSuccessful()) {
                 LOGD(TAG, "successful clear TimeSlotItems on Firebase.");
 
-                int ii = 0; // count successful save.
-                HashMap<String, Object> timeSlotItemMap;
                 for (TimeSlotItem tsItem : timeSlotItems) {
-                    // convert TimeSlotItem model to HashMap object
-                    timeSlotItemMap = null;
-//                            (HashMap<String, Object>)
-//                            new ObjectMapper().convertValue(tsItem, Map.class);
-
                     // save to Firebase
                     Response<HashMap<String, String>> message = mService.addTimeSlotItemList(
-                            FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail),
-                            timeSlotItemMap, authToken).execute();
+                            FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), tsItem, authToken)
+                            .execute();
                     if (message.isSuccessful())
                         ii++;
                 }
 
                 if (ii == timeSlotItems.size()) {
                     LOGD(TAG, "successful backup all TimeSlotItem on Firebase.");
-
-                    return true;
                 } else {
                     LOGD(TAG, "fail backup all TimeSlotItem on Firebase.");
                 }
@@ -162,6 +154,6 @@ public class FirebaseRestDAO {
 
         }
 
-        return false;
+        return ii;
     }
 }

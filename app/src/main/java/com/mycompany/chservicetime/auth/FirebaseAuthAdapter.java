@@ -31,6 +31,10 @@ public class FirebaseAuthAdapter {
                     .setAction("Action", null).show();
     }
 
+    /**
+     * This is a asynchronous operation.
+     * @return
+     */
     public static String getAuthToken() {
         final String[] authToken = new String[1];
 
