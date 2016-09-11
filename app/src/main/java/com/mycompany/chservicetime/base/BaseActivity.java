@@ -68,16 +68,13 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 FirebaseAuthAdapter.FIREBASE_USER = firebaseAuth.getCurrentUser();
                 if (FirebaseAuthAdapter.FIREBASE_USER != null) {
                     // User is signed in
-                    LOGD(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.FIREBASE_USER.getUid());
+                    LOGD(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.getUserId());
 
                     showSnackbar(R.string.sign_in_successful);
                 } else {
                     // User is signed out
                     LOGD(TAG, "onAuthStateChanged:signed_out");
                 }
-                // [START_EXCLUDE]
-                //updateUI(user);
-                // [END_EXCLUDE]
 
                 // update Menu
                 invalidateOptionsMenu();

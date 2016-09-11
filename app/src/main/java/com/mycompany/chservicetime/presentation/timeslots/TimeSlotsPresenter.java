@@ -25,19 +25,24 @@ import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.FirebaseRestDAO;
-import com.mycompany.chservicetime.data.preference.PreferenceSupport;
+import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.source.TimeSlotRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
 
 import java.io.IOException;
+import java.util.Collection;
+
+import static com.mycompany.chservicetime.util.LogUtils.LOGD;
+import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 
 /**
  * Listens to user actions from the UI ({@link TimeSlotsFragment}), retrieves the data and updates the
  * UI as required.
  */
 public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
+    private static final String TAG = makeLogTag("TimeSlotsPresenter");
 
     private final static int TIME_SLOTS_QUERY_LOADER = 1;
 
@@ -121,11 +126,13 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     try {
-                        String encodedUserEmail = PreferenceSupport.getEncodedEmail(CHApplication.getContext());
+                        String userId = FirebaseAuthAdapter.getUserId();
                         String authToken = FirebaseAuthAdapter.getAuthToken();
 
+                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+
                         FirebaseRestDAO.create().backupTimeSlotItemList(
-                                encodedUserEmail,
+                                userId,
                                 authToken,
                                 mTimeSlotRepository.backupAllTimeSlots());
                     } catch (IOException e) {
@@ -148,6 +155,42 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
 
     @Override
     public void restoreTimeSlotList() {
+        if (FirebaseAuthAdapter.isSignIn()) {
+            new AsyncTask() {
 
+                @Override
+                protected void onPreExecute() {
+                    mTimeSlotsView.setLoadingIndicator(true, R.string.progress_dialog_access_firebase);
+                }
+
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    try {
+                        String userId = FirebaseAuthAdapter.getUserId();
+                        String authToken = FirebaseAuthAdapter.getAuthToken();
+
+                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+
+                        Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
+                                .restoreTimeSlotItemList(userId, authToken);
+
+                        mTimeSlotRepository.restoreAllTimeSlots(timeSlotItemList);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    mTimeSlotsView.setLoadingIndicator(false, -1);
+                    mTimeSlotsView.showSnackbarMessage(R.string.restore_done);
+                }
+            }.execute();
+        } else {
+            mTimeSlotsView.showLoginHint();
+        }
     }
 }

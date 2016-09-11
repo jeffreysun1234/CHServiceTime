@@ -38,4 +38,5 @@
     <string name="progress_dialog_loading">Loading…</string>
     <string name="progress_dialog_access_firebase">Accessing Firebase</string>
     <string name="backup_done">Backup the TimeSlot list done.</string>
+    <string name="restore_done">Restore the TimeSlot list done.</string>
 </resources>

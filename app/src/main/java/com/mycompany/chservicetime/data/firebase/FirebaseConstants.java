@@ -53,18 +53,18 @@ public class FirebaseConstants {
     /**
      * Methods for Firebase REST URL
      */
-    // example: timeSlotLists/a@a.com/phoneIMEI/timeSlotItems.json
-    public static String timeSlotItemListRestURL(String userEmailPath) {
+    // example: timeSlotLists/<uid>/phoneIMEI/timeSlotItems.json
+    public static String timeSlotItemListRestURL(String userId) {
         return FIREBASE_LOCATION_TIMESLOT_LISTS +
-                "/" + userEmailPath + "/" +
+                "/" + userId + "/" +
                 FIREBASE_LOCATION_DEVICE_ID + "/" +
                 FIREBASE_LOCATION_TIMESLOT_ITEMS + ".json";
     }
 
-    // example: timeSlotLists/a@a.com/phoneIMEI.json
-    public static String timeSlotListRestURL(String userEmailPath) {
+    // example: timeSlotLists/<uid>/phoneIMEI.json
+    public static String timeSlotListRestURL(String userId) {
         return FIREBASE_LOCATION_TIMESLOT_LISTS +
-                "/" + userEmailPath + "/" +
+                "/" + userId + "/" +
                 FIREBASE_LOCATION_DEVICE_ID + ".json";
     }
 }

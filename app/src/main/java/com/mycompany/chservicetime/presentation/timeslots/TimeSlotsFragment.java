@@ -136,41 +136,14 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
                 mPresenter.backupTimeSlotList();
                 return true;
             }
-//            case R.id.restore_time_slot_list: {
-//                restoreTimeSlotList();
-//                return true;
-//            }
+            case R.id.restore_time_slot_list: {
+                mPresenter.restoreTimeSlotList();
+                return true;
+            }
             default:
                 return false;
         }
     }
-
-//    private void restoreTimeSlotList() {
-//        if (((BaseActivity) getActivity()).isLogin) {
-//            new AccessFirebaseAsyn(getContext(), new AccessFirebaseAsyn.BackgroundAction() {
-//
-//                @Override
-//                public void doActionInBackground() {
-//                    try {
-//                        String encodedUserEmail = PreferenceSupport.getEncodedEmail(getContext());
-//                        String authToken = PreferenceSupport.getAuthToken(getContext());
-//                        CHServiceTimeDAO.create(getContext()).restoreAllTimeSlots(
-//                                FirebaseRestDAO.create().restoreTimeSlotItemList(
-//                                        encodedUserEmail, authToken));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void doOnPostExecute() {
-//                    Toast.makeText(getContext(), "Restore done.", Toast.LENGTH_SHORT).show();
-//                }
-//            }).execute();
-//        } else {
-//            ((BaseActivity) getActivity()).showLoginHint();
-//        }
-//    }
 
     /******
      * Preference Listener's method

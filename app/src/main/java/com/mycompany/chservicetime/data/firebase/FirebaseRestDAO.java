@@ -3,6 +3,7 @@ package com.mycompany.chservicetime.data.firebase;
 import android.content.Context;
 import android.util.Config;
 
+import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.util.LogUtils;
@@ -75,15 +76,15 @@ public class FirebaseRestDAO {
     /**
      * Add new TimeSlot list
      */
-    public TimeSlotList addTimeSlotList(String encodedUserEmail, String authToken) throws
+    public TimeSlotList addTimeSlotList(String userId, String authToken) throws
             IOException {
         /* build a TimeSlot list */
-        TimeSlotList newTimeSlotList = new TimeSlotList("My List", encodedUserEmail,
+        TimeSlotList newTimeSlotList = new TimeSlotList("My List", FirebaseAuthAdapter.getEmail(),
                 FirebaseUtils.getTimestampNowObject());
 
         /* access firebase database */
         Response<TimeSlotList> response = mService.addTimeSlotList(
-                FirebaseConstants.timeSlotListRestURL(encodedUserEmail), newTimeSlotList,
+                FirebaseConstants.timeSlotListRestURL(userId), newTimeSlotList,
                 authToken).execute();
         if (response.isSuccessful()) {
             return (TimeSlotList) response.body();
@@ -95,11 +96,11 @@ public class FirebaseRestDAO {
     /**
      * restore TimeSlot list
      */
-    public Collection<TimeSlotItem> restoreTimeSlotItemList(String encodedUserEmail,
+    public Collection<TimeSlotItem> restoreTimeSlotItemList(String userId,
                                                             String authToken) throws
             IOException {
         Response<HashMap<String, TimeSlotItem>> response = mService
-                .getTimeSlotItemList(FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail),
+                .getTimeSlotItemList(FirebaseConstants.timeSlotItemListRestURL(userId),
                         authToken).execute();
 
         if (response.isSuccessful()) {
@@ -117,18 +118,18 @@ public class FirebaseRestDAO {
      *
      * @return the count saved successfully.
      */
-    public int backupTimeSlotItemList(String encodedUserEmail, String authToken,
+    public int backupTimeSlotItemList(String userId, String authToken,
                                       ArrayList<TimeSlotItem> timeSlotItems) throws IOException {
 
         int ii = 0; // count successful save.
 
         // add a TimeSlotList to Firebase
-        addTimeSlotList(encodedUserEmail, authToken);
+        addTimeSlotList(userId, authToken);
 
         if (timeSlotItems != null && timeSlotItems.size() > 0) {
             // clear TimeSlotItems on Firebase
             Response<Object> response = mService.deleteTimeSlotItems(
-                    FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), authToken)
+                    FirebaseConstants.timeSlotItemListRestURL(userId), authToken)
                     .execute();
             if (response.isSuccessful()) {
                 LOGD(TAG, "successful clear TimeSlotItems on Firebase.");
@@ -136,7 +137,7 @@ public class FirebaseRestDAO {
                 for (TimeSlotItem tsItem : timeSlotItems) {
                     // save to Firebase
                     Response<HashMap<String, String>> message = mService.addTimeSlotItemList(
-                            FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), tsItem, authToken)
+                            FirebaseConstants.timeSlotItemListRestURL(userId), tsItem, authToken)
                             .execute();
                     if (message.isSuccessful())
                         ii++;
