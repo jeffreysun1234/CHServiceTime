@@ -2,6 +2,7 @@ package com.mycompany.chservicetime.presentation;
 
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.media.AudioManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.Espresso;
@@ -9,20 +10,25 @@ import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
+import android.support.test.filters.SdkSuppress;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.UiDevice;
 import android.view.WindowManager;
 
 import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
 import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
+import com.mycompany.chservicetime.util.DateUtils;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.text.ParseException;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
@@ -33,16 +39,21 @@ import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.mycompany.chservicetime.presentation.CustomItemMatcher.matchToolbarTitle;
+import static com.mycompany.chservicetime.util.LogUtils.LOGD;
+import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by szhx on 8/31/2016.
  */
 @RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion = 18)
 @LargeTest
 public class WorkflowTest {
 
@@ -52,11 +63,13 @@ public class WorkflowTest {
 
     private int rvLayoutId;
 
+    private UiDevice mDevice;
+
     /**
      * {@link IntentsTestRule} is an {@link ActivityTestRule} which inits and releases Espresso
      * Intents before and after each test run.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * Rules are interceptors which are executed for each test method and are important building
      * blocks of Junit tests.
      */
@@ -113,6 +126,10 @@ public class WorkflowTest {
         Espresso.registerIdlingResources(mActivityRule.getActivity().getCountingIdlingResource());
 
         closeSoftKeyboard();
+
+        // Initialize UiDevice instance
+        mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
     }
 
     /**
@@ -163,7 +180,7 @@ public class WorkflowTest {
         onView(withId(R.id.nameTextView)).check(matches(withText(name)));
     }
 
-    private void changeItemName(String oldName, String newName){
+    private void changeItemName(String oldName, String newName) {
         // change the name of the item
         onView(withId(R.id.timeSlotNameEditText)).perform(clearText(), replaceText(newName));
         onView(withId(R.id.time_slot_save)).perform(click());
@@ -186,13 +203,28 @@ public class WorkflowTest {
 
         // add TimeSlot dat
         String timeSlotName = "Work";
-        createTimeSlot(timeSlotName, 9, 0, 17, 0, "0111110");
+        int currentHHmm = 900;
+        try {
+            currentHHmm = DateUtils.getHHmm(System.currentTimeMillis());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int vBeginHour = (int) Math.floor(currentHHmm / 100.0d);
+        int vBeginMinute = currentHHmm % 100;
+        createTimeSlot(timeSlotName, vBeginHour, vBeginMinute, vBeginHour + 1, vBeginMinute, "1111111");
 
         // locate to the position 0.
         onView(withId(R.id.timeSlotListRecyclerView)).perform(RecyclerViewActions.scrollToPosition(0));
 
-        // TODO: verify Edit icon is not display
-        //onView(withId(R.id.edit_item_button)).check(matches(not(isCompletelyDisplayed())));
+        // click activation checkbox
+        onView(withId(R.id.activeSwitch)).perform(click());
+
+        // verify the vibrate status
+        int currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
+        assertEquals(AudioManager.RINGER_MODE_VIBRATE, currentRingMode);
+
+        // TODO: verify Edit icon is hidden
+        //onView(withId(R.id.edit_item_button)).check(matches((isCompletelyDisplayed())));
 
         // swipe
         onView(withId(R.id.nameTextView)).perform(swipeLeft());
@@ -212,6 +244,16 @@ public class WorkflowTest {
 
         // verify the item to be deleted.
         onView(withId(R.id.empty_tv)).check(matches(withText(R.string.no_time_slot)));
+
+        // verify the vibrate status
+        currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
+        assertEquals(AudioManager.RINGER_MODE_NORMAL, currentRingMode);
+    }
+
+    private int getCurrentRingMode(Context context) {
+        AudioManager audioManager =
+                (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        return audioManager.getRingerMode();
     }
 }
 

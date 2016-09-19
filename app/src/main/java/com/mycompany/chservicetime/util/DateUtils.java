@@ -101,6 +101,7 @@ public class DateUtils {
         String date_format = "HHmm";
         return Integer.parseInt(new SimpleDateFormat(date_format).format(timestamp));
     }
+
 }
 
 

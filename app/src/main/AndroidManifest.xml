@@ -4,7 +4,8 @@
           package="com.mycompany.chservicetime">
 
     <!-- resolve the different version between the main Manifest and FirebaseUIAuth lib's Manifest -->
-    <uses-sdk tools:overrideLibrary="com.firebase.ui.auth, com.facebook, android.support.customtabs"/>
+    <uses-sdk
+        tools:overrideLibrary="com.firebase.ui.auth, com.facebook, android.support.customtabs"/>
 
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
