@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'spoon'
 
 android {
     compileSdkVersion 23
@@ -36,7 +37,7 @@ android {
 
     // Remove mockRelease as it's not needed.
     android.variantFilter { variant ->
-        if(variant.buildType.name.equals('release')
+        if (variant.buildType.name.equals('release')
                 && variant.getFlavors().get(0).name.equals('mock')) {
             variant.setIgnore(true);
         }
@@ -44,7 +45,7 @@ android {
 
     // Always show the result of every unit test, even if it passes.
     testOptions {
-        unitTests{
+        unitTests {
             all {
                 testLogging {
                     events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
@@ -71,6 +72,17 @@ android {
         androidTestCompile.exclude group: 'com.android.support', module: 'recyclerview-v7'
         androidTestCompile.exclude group: 'com.android.support', module: 'design'
     }
+}
+
+spoon {
+    // Enable debug output
+    debug = true
+
+    className = "com.mycompany.chservicetime.presentation.WorkflowTest"
+
+    adbTimeout = 30
+
+    grantAllPermissions = true
 }
 
 dependencies {
