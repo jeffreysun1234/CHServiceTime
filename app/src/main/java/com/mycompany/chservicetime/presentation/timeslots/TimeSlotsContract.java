@@ -38,7 +38,7 @@ public interface TimeSlotsContract {
 
         void showEditTimeSlotUi(String timeSlotId);
 
-        void showTimeSlotMarkedActive();
+        void showTimeSlotMarkedActive(String name, Boolean activationFlag);
 
         void showTimeSlotDeleted();
 

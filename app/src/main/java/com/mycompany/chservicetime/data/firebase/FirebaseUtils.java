@@ -6,6 +6,7 @@ import com.google.firebase.database.ServerValue;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -17,7 +18,7 @@ public class FirebaseUtils {
      * Format the timestamp with SimpleDateFormat
      */
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(
-            "yyyy-MM-dd HH:mm");
+            "yyyy-MM-dd HH:mm", Locale.US);
 
     private Context mContext = null;
 

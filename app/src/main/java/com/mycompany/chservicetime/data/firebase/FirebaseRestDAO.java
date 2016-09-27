@@ -31,8 +31,6 @@ public class FirebaseRestDAO {
 
     public FirebaseEndpointInterface mService;
 
-    private static Context mContext;
-
     private FirebaseRestDAO(String baseUrl) {
         if (mService == null) {
             /* build a retrofit instance */

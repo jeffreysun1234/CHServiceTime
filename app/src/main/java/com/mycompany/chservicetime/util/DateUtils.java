@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateUtils {
     private static final String date_format = "yyyyMMdd:HHmm";
@@ -13,7 +14,7 @@ public class DateUtils {
     public static DateFormat getDateFormat() {
         DateFormat df = threadLocal.get();
         if (df == null) {
-            df = new SimpleDateFormat(date_format);
+            df = new SimpleDateFormat(date_format, Locale.US);
             threadLocal.set(df);
         }
         return df;
@@ -99,7 +100,7 @@ public class DateUtils {
      */
     public static int getHHmm(long timestamp) throws ParseException {
         String date_format = "HHmm";
-        return Integer.parseInt(new SimpleDateFormat(date_format).format(timestamp));
+        return Integer.parseInt(new SimpleDateFormat(date_format, Locale.US).format(timestamp));
     }
 
 }

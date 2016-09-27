@@ -104,7 +104,7 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
     @Override
     public void activateTimeSlot(@NonNull TimeSlot activeTimeSlot) {
         mTimeSlotRepository.updateActivationFlag(activeTimeSlot.timeSlotId, activeTimeSlot.activationFlag);
-        mTimeSlotsView.showTimeSlotMarkedActive();
+        mTimeSlotsView.showTimeSlotMarkedActive(activeTimeSlot.name, activeTimeSlot.activationFlag);
     }
 
     @Override

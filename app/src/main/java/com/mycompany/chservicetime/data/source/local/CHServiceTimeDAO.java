@@ -20,17 +20,14 @@ import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 /**
  * Created by szhx on 11/10/2015.
  */
-public class CHServiceTimeDAO implements TimeSlotDataSource{
+public class CHServiceTimeDAO implements TimeSlotDataSource {
     private static final String TAG = makeLogTag("CHServiceTimeDAO");
-
-    private Context mContext;
 
     private ContentResolver mContentResolver;
 
     private static CHServiceTimeDAO INSTANCE;
 
     private CHServiceTimeDAO(Context context) {
-        mContext = context;
         mContentResolver = context.getApplicationContext().getContentResolver();
     }
 
@@ -98,7 +95,7 @@ public class CHServiceTimeDAO implements TimeSlotDataSource{
         }
         cursor.moveToFirst();
 
-        return  ModelConverter.cursorToTimeSlotModel(cursor, new ColumnIndexCache());
+        return ModelConverter.cursorToTimeSlotModel(cursor, new ColumnIndexCache());
     }
 
     @Override
@@ -118,8 +115,7 @@ public class CHServiceTimeDAO implements TimeSlotDataSource{
         values.put(TimeSlots.ACTIVATION_FLAG, activationFlag);
 
         if (!TextUtils.isEmpty(timeSlotId)) {
-            mContext.getContentResolver()
-                    .update(TimeSlots.buildTimeSlotUri(timeSlotId), values, null, null);
+            mContentResolver.update(TimeSlots.buildTimeSlotUri(timeSlotId), values, null, null);
         }
     }
 }

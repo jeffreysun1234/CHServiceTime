@@ -1,6 +1,6 @@
 *** (1d) Git branch
 
-(2d) code walkthrough --> code review ---> code static analysis
+*** (2d) code walkthrough --> code review ---> code static analysis
 
 (3d) UX material design ---> animation
 

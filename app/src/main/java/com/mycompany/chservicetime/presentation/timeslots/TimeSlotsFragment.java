@@ -20,18 +20,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
-import com.mycompany.chservicetime.base.BaseActivity;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotFragment;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
-
-import java.io.IOException;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
@@ -242,8 +238,11 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
     }
 
     @Override
-    public void showTimeSlotMarkedActive() {
-        showSnackbarMessage(getString(R.string.timeslot_marked_active));
+    public void showTimeSlotMarkedActive(String name, Boolean activationFlag) {
+        if (activationFlag)
+            showSnackbarMessage(String.format(getString(R.string.timeslot_marked_active), name));
+        else
+            showSnackbarMessage(String.format(getString(R.string.timeslot_marked_inactive), name));
     }
 
     @Override

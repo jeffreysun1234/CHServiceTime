@@ -1,12 +1,21 @@
 package com.mycompany.chservicetime.presentation.timeslots;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.test.espresso.IdlingResource;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -34,6 +43,16 @@ public class TimeSlotsActivity extends BaseActivity {
     private TimeSlotContentObserver mTimeSlotContentObserver;
 
     View mRootView;
+
+    /**
+     * Id to identify a WRITE_SETTINGS permission request.
+     */
+    private static final int REQUEST_WRITE_SETTINGS = 0;
+
+    /**
+     * Id to identify a READ_PHONE_STATE permission request.
+     */
+    private static final int REQUEST_READ_PHONE_STATE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +99,15 @@ public class TimeSlotsActivity extends BaseActivity {
         // Unregister TimeSlot data observer
         getContentResolver().unregisterContentObserver(mTimeSlotContentObserver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // Request permissions
+        requestReadPhoneStatePermission(this);
+        requestWriteSettingsPermission(this);
     }
 
     @Override
@@ -134,6 +162,105 @@ public class TimeSlotsActivity extends BaseActivity {
             SchedulingIntentService.startActionSetAlarm(CHApplication.getContext());
         }
 
+    }
+
+    void requestWriteSettingsPermission(Activity context) {
+        boolean permission;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permission = Settings.System.canWrite(context);
+        } else {
+            permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_SETTINGS)
+                    == PackageManager.PERMISSION_GRANTED;
+        }
+        if (permission) {
+            LOGD(TAG, "WRITE_SETTINGS permission has already been granted.");
+        } else {
+            LOGD(TAG, "WRITE_SETTINGS permission has NOT been granted. Requesting permission.");
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + context.getPackageName()));
+                context.startActivityForResult(intent, REQUEST_WRITE_SETTINGS);
+            } else {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_SETTINGS},
+                        REQUEST_WRITE_SETTINGS);
+            }
+        }
+    }
+
+    /**
+     * Requests the READ_PHONE_STATE permission.
+     * If the permission has been denied previously, a SnackBar will prompt the user to grant the
+     * permission, otherwise it is requested directly.
+     */
+    void requestReadPhoneStatePermission(Activity context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
+                == PackageManager.PERMISSION_GRANTED) {
+            LOGD(TAG, "READ_PHONE_STATE permission has already been granted.");
+        } else {
+            LOGD(TAG, "READ_PHONE_STATE permission has NOT been granted. Requesting permission.");
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                // Provide an additional rationale to the user if the permission was not granted
+                // and the user would benefit from additional context for the use of the permission.
+                // For example if the user has previously denied the permission.
+                LOGD(TAG, "Displaying READ_PHONE_STATE permission rationale to provide additional context.");
+                Snackbar.make(mRootView, R.string.permission_READ_PHONE_STATE_rationale,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.ok, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ActivityCompat.requestPermissions(TimeSlotsActivity.this,
+                                        new String[]{Manifest.permission.READ_PHONE_STATE},
+                                        REQUEST_READ_PHONE_STATE);
+                            }
+                        })
+                        .show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
+                        REQUEST_READ_PHONE_STATE);
+            }
+        }
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_WRITE_SETTINGS) {
+            // Received permission result for WRITE_SETTINGS permission.
+            LOGD(TAG, "Received response for WRITE_SETTINGS permission request.");
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // WRITE_SETTINGS permission has been granted
+                LOGD(TAG, "WRITE_SETTINGS permission has now been granted.");
+            } else {
+                LOGD(TAG, "WRITE_SETTINGS permission was NOT granted.");
+            }
+        } else if (requestCode == REQUEST_READ_PHONE_STATE) {
+            LOGD(TAG, "Received response for READ_PHONE_STATE permissions request.");
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                LOGD(TAG, "READ_PHONE_STATE permission has now been granted.");
+                Snackbar.make(mRootView, R.string.permision_available_READ_PHONE_STATE, Snackbar.LENGTH_SHORT).show();
+            } else {
+                LOGD(TAG, "READ_PHONE_STATE permission was NOT granted.");
+                Snackbar.make(mRootView, R.string.permissions_not_granted, Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_WRITE_SETTINGS && Settings.System.canWrite(this)) {
+            LOGD(TAG, "WRITE_SETTINGS permission has now been granted.");
+            //do your code
+        }
     }
 
     @VisibleForTesting
