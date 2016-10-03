@@ -7,6 +7,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
+import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract;
 
 /**
@@ -30,7 +31,7 @@ public class TimeSlotsQueryLoaderCallbacks implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (mShowLoadingIndicator) {
-            mTimeSlotsView.setLoadingIndicator(true);
+            mTimeSlotsView.setLoadingIndicator(true, R.string.progress_dialog_access_firebase);
         }
 
         return new CursorLoader(mContext, CHServiceTimeContract.TimeSlots.buildTimeSlotsUri(),
@@ -45,7 +46,7 @@ public class TimeSlotsQueryLoaderCallbacks implements LoaderManager.LoaderCallba
         }
 
         if (mShowLoadingIndicator) {
-            mTimeSlotsView.setLoadingIndicator(false);
+            mTimeSlotsView.setLoadingIndicator(false, -1);
         }
 
         //check if show empty view

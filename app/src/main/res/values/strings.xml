@@ -2,6 +2,8 @@
     <string name="app_name">CHServiceTime</string>
     <string name="action_settings">Settings</string>
 
+    <string name="ok">OK</string>
+
     <string name="time_slot_name">Name :</string>
 
     <string name="add_timeSlot">New TimeSlot</string>
@@ -19,10 +21,38 @@
     <string name="next_operation">Next alarm :</string>
 
     <string name="timeslot_marked_active">TimeSlot is active</string>
+    <string name="timeslot_marked_inactive">TimeSlot is not active</string>
     <string name="loading_timeslots_error">Error while loading TimeSlots</string>
     <string name="successfully_saved_timeslot">TimeSlot is saved</string>
     <string name="timeslot_deleted">TimeSlot is deleted.</string>
     <string name="next_operation_invalid">Time slots is no available now.</string>
 
     <string name="alert_message">Change ringer mode</string>
+
+    <!-- Menu Strings -->
+    <string name="action_logout">Logout</string>
+    <string name="action_login">Login</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_add">Add</string>
+    <string name="menu_backup">Backup</string>
+    <string name="menu_restore">Restore</string>
+
+    <string name="sign_out_failed">Sign out failed</string>
+    <string name="sign_out_successful">Sign out successful</string>
+    <string name="sign_in_successful">Sign in successful</string>
+    <string name="sign_in_hint">"Please Login at first."</string>
+
+    <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_access_firebase">Accessing Firebase</string>
+    <string name="backup_done">Backup the TimeSlot list done.</string>
+    <string name="restore_done">Restore the TimeSlot list done.</string>
+
+    <!-- Content Description -->
+    <string name="img_edit">Edit</string>
+    <string name="img_delete">Delete</string>
+
+    <string name="permision_available_READ_PHONE_STATE">READ_PHONE_STATE Permission has been granted.</string>
+    <string name="permissions_not_granted">Permissions were not granted.</string>
+    <string name="permission_READ_PHONE_STATE_rationale">READ_PHONE_STATE permission is needed to control
+        the sound of the phone.</string>
 </resources>

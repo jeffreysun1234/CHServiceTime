@@ -3,6 +3,7 @@ package com.mycompany.chservicetime.data.source;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeDAO;
@@ -12,12 +13,13 @@ import com.mycompany.chservicetime.model.TimeSlot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
 /**
  * Created by szhx on 5/1/2016.
- * <p/>
+ * <p>
  * Concrete implementation to load TimeSlots from the data sources.
  */
 public class TimeSlotRepository {
@@ -54,7 +56,7 @@ public class TimeSlotRepository {
 
     /**
      * Gets TimeSlots from local data source (SQLite).
-     * <p/>
+     * <p>
      * Note: {@link TimeSlotDataSource.LoadTimeSlotsCallback#onDataNotAvailable()} is fired if the data sources fail to
      * get the data.
      */
@@ -73,7 +75,7 @@ public class TimeSlotRepository {
 
     /**
      * Gets TimeSlot from local data source (sqlite).
-     * <p/>
+     * <p>
      * Note: {@link TimeSlotDataSource.GetTimeSlotCallback#onDataNotAvailable()} is fired if data sources fail to
      * get the data.
      */
@@ -181,4 +183,40 @@ public class TimeSlotRepository {
 
         return timeSectors;
     }
+
+    public ArrayList<TimeSlotItem> backupAllTimeSlots() {
+        // Get all TimeSlot from DB
+        Cursor cursor = mTimeSlotDataSource.getAllTimeSlot();
+        if (cursor == null)
+            return null;
+
+        ArrayList<TimeSlotItem> timeSlotItems = new ArrayList<TimeSlotItem>();
+
+        ColumnIndexCache columnIndexCache = new ColumnIndexCache();
+        TimeSlotItem tsItem;
+
+        cursor.moveToPosition(-1);
+        while (cursor.moveToNext()) {
+            // convert cursor to TimeSlotItem model
+            tsItem = ModelConverter.cursorToTimeSlotItem(cursor, columnIndexCache);
+
+            timeSlotItems.add(tsItem);
+        }
+
+        cursor.close();
+
+        return timeSlotItems;
+    }
+
+    public void restoreAllTimeSlots(Collection<TimeSlotItem> timeSlotItems) {
+        String currentTimeSlotId;
+
+        // clear DB
+        deleteAllTimeSlot();
+        for (TimeSlotItem tsItem : timeSlotItems) {
+            // add a timeslot, timeSlotId will be a new value.
+            currentTimeSlotId = createOrUpdateTimeSlot(ModelConverter.firebaseTimeSlotItemToTimeSlot(tsItem));
+        }
+    }
+
 }

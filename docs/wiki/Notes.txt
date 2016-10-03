@@ -14,4 +14,8 @@ When Esprosse tests is running, the screen must note be sleeping.
 8. Assemble UI
 9. Function test: WorkflowTest
 10. Fix bug: changing a time slot does not trigger the scheduling service.
+11. Code static review
+12. Permission code ( for android 6.0)
+    TODO: later use https://github.com/kaknazaveshtakipishi/PermissionEverywhere for easy coding.
+
 

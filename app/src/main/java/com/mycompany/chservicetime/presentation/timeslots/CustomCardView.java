@@ -69,13 +69,13 @@ public class CustomCardView extends CardView {
      * these method will be called before the slide animations.
      */
     public interface OnSwipeListener {
-        public void onStartOpen();
+        void onStartOpen();
 
-        public void onOpen();
+        void onOpen();
 
-        public void onStartClose();
+        void onStartClose();
 
-        public void onClose();
+        void onClose();
     }
 
     /**

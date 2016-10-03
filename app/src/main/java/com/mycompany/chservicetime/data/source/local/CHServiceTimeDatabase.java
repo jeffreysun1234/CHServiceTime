@@ -45,8 +45,6 @@ public class CHServiceTimeDatabase extends SQLiteOpenHelper {
 
     private static CHServiceTimeDatabase sInstance;
 
-    private final Context mContext;
-
     interface Tables {
         String TIME_SLOTS = "time_slots";
     }
@@ -63,7 +61,6 @@ public class CHServiceTimeDatabase extends SQLiteOpenHelper {
 
     private CHServiceTimeDatabase(Context context) {
         super(context, DATABASE_NAME, null, CUR_DATABASE_VERSION);
-        mContext = context;
     }
 
     @Override

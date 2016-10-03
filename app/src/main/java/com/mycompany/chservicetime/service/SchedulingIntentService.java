@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
@@ -131,7 +132,8 @@ public class SchedulingIntentService extends IntentService {
             if (serviceTime.currentOperation == ServiceTime.Normal
                     || serviceTime.currentOperation == ServiceTime.Vibrate) {
                 sb.append(" at ")
-                        .append(new SimpleDateFormat("MMM dd, HH:mm 'on' EEE").format(serviceTime.nextAlarmTime));
+                        .append(new SimpleDateFormat("MMM dd, HH:mm 'on' EEE", Locale.US)
+                                .format(serviceTime.nextAlarmTime));
                 alarmText = sb.toString();
             }
             if (serviceTime.currentOperation == ServiceTime.NO_OPERATION) {

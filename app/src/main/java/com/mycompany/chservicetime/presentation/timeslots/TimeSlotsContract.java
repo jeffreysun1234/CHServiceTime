@@ -30,7 +30,7 @@ public interface TimeSlotsContract {
 
     interface View extends BaseView<Presenter> {
 
-        void setLoadingIndicator(boolean active);
+        void setLoadingIndicator(boolean activeFlag, int stringResId);
 
         void showTimeSlots(Cursor cursor);
 
@@ -38,7 +38,7 @@ public interface TimeSlotsContract {
 
         void showEditTimeSlotUi(String timeSlotId);
 
-        void showTimeSlotMarkedActive();
+        void showTimeSlotMarkedActive(String name, Boolean activationFlag);
 
         void showTimeSlotDeleted();
 
@@ -49,6 +49,11 @@ public interface TimeSlotsContract {
         void showSuccessfullySavedMessage();
 
         boolean isActive();
+
+        void showSnackbarMessage(int stringResId);
+
+        void showLoginHint();
+
     }
 
     interface Presenter extends BasePresenter {
@@ -64,5 +69,9 @@ public interface TimeSlotsContract {
         void activateTimeSlot(@NonNull TimeSlot activeTimeSlot);
 
         void deleteTimeSlot(@NonNull String timeSlotId);
+
+        void backupTimeSlotList();
+
+        void restoreTimeSlotList();
     }
 }

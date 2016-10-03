@@ -1,5 +1,7 @@
 package com.mycompany.chservicetime.util;
 
+import java.util.Locale;
+
 /**
  * Created by szhx on 4/13/2016.
  */
@@ -23,8 +25,12 @@ public class DisplayUtils {
 
     public static String buildTimePeriodString(int beginTimeHour, int beginTimeMinute, int endTimeHour, int
             endTimeMinute) {
-        return String.format("%02d", beginTimeHour) + ":" + String.format("%02d", beginTimeMinute)
+        return String.format(Locale.US, "%02d", beginTimeHour)
+                + ":"
+                + String.format(Locale.US, "%02d", beginTimeMinute)
                 + " --- "
-                + String.format("%02d", endTimeHour) + ":" + String.format("%02d", endTimeMinute);
+                + String.format(Locale.US, "%02d", endTimeHour)
+                + ":"
+                + String.format(Locale.US, "%02d", endTimeMinute);
     }
 }
