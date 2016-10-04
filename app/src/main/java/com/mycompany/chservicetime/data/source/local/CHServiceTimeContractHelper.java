@@ -17,7 +17,6 @@
 package com.mycompany.chservicetime.data.source.local;
 
 import android.net.Uri;
-import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.Locale;

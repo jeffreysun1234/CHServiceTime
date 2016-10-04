@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract;
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
 import com.mycompany.chservicetime.data.source.local.helper.TimeSlotContentValues;
 
@@ -28,8 +27,8 @@ public class ModelConverter {
                 cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_HOUR)),
                 cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_MINUTE)),
                 cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DAYS)),
-                cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1 ? true : false,
-                cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1 ? true : false,
+                cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1,
+                cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1,
                 cursor.getLong(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.UPDATED_TIMESTAMP))
         );
 
@@ -48,9 +47,9 @@ public class ModelConverter {
         timeSlotItem.setEndTimeMinute(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_MINUTE)));
         timeSlotItem.setDays(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DAYS)));
         timeSlotItem.setRepeatFlag(cursor.getInt(mColumnIndexCache
-                .getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1 ? true : false);
+                .getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1);
         timeSlotItem.setActivationFlag(cursor.getInt(mColumnIndexCache
-                .getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1 ? true : false);
+                .getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1);
 
         return timeSlotItem;
     }

@@ -1,8 +1,5 @@
 package com.mycompany.chservicetime.data.firebase;
 
-import android.content.Context;
-import android.util.Config;
-
 import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
@@ -12,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -85,7 +81,7 @@ public class FirebaseRestDAO {
                 FirebaseConstants.timeSlotListRestURL(userId), newTimeSlotList,
                 authToken).execute();
         if (response.isSuccessful()) {
-            return (TimeSlotList) response.body();
+            return response.body();
         } else {
             return null;
         }

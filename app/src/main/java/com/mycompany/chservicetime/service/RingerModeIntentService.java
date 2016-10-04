@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
-import com.mycompany.chservicetime.receiver.AlarmReceiver;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;

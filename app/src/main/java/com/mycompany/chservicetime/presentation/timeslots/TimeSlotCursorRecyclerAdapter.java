@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mycompany.chservicetime.R;
@@ -51,7 +50,7 @@ public class TimeSlotCursorRecyclerAdapter extends RecyclerView.Adapter<TimeSlot
 
     public class TimeSlotViewHolder extends RecyclerView.ViewHolder {
         CustomCardView swipeLayout;
-        LinearLayout upperChildView;
+        RelativeLayout upperChildView;
         CheckBox activeSwitch;
         TextView nameTextView;
         TextView timeTextView;
@@ -66,7 +65,7 @@ public class TimeSlotCursorRecyclerAdapter extends RecyclerView.Adapter<TimeSlot
             super(itemView);
 
             swipeLayout = (CustomCardView) itemView.findViewById(R.id.card_view);
-            upperChildView = (LinearLayout) itemView.findViewById(R.id.upper_child_view);
+            upperChildView = (RelativeLayout) itemView.findViewById(R.id.upper_child_view);
             nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
             activeSwitch = (CheckBox) itemView.findViewById(R.id.activeSwitch);
             timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);

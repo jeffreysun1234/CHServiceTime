@@ -1,14 +1,10 @@
 package com.mycompany.chservicetime.data.source.local;
 
-import android.app.SearchManager;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
 
 import com.mycompany.chservicetime.util.ParserUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 /**

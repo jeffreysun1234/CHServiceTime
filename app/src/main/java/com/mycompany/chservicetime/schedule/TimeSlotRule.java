@@ -5,7 +5,6 @@ import com.mycompany.chservicetime.util.DateUtils;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;

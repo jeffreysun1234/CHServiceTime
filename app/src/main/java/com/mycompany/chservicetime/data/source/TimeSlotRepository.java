@@ -4,15 +4,11 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeDAO;
 import com.mycompany.chservicetime.model.ColumnIndexCache;
 import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;

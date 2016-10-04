@@ -16,15 +16,13 @@
 
 package com.mycompany.chservicetime.data.source.local;
 
-import android.accounts.Account;
-import android.app.SearchManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import static com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.*;
+import static com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.SyncColumns;
+import static com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlotsColumns;
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 

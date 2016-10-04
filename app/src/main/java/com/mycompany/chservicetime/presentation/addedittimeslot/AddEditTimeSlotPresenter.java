@@ -3,11 +3,9 @@ package com.mycompany.chservicetime.presentation.addedittimeslot;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
 import com.mycompany.chservicetime.data.source.TimeSlotRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
-import com.mycompany.chservicetime.service.SchedulingIntentService;
 
 /**
  * Created by szhx on 5/1/2016.

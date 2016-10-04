@@ -1,7 +1,5 @@
 package com.mycompany.chservicetime.model;
 
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
-
 /**
  * Created by szhx on 12/13/2015.
  */

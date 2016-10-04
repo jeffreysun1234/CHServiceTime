@@ -1,8 +1,5 @@
 package com.mycompany.chservicetime.data.source.local.helper;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
 
 /**
