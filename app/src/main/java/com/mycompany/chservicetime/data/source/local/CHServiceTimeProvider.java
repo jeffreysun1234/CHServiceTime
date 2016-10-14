@@ -229,6 +229,7 @@ public class CHServiceTimeProvider extends ContentProvider {
     private void notifyChange(Uri uri) {
         if (!CHServiceTimeContractHelper.isUriCalledFromSyncAdapter(uri)) {
             Context context = getContext();
+            //noinspection ConstantConditions
             context.getContentResolver().notifyChange(uri, null);
         }
     }
