@@ -86,11 +86,15 @@ public class TimeSlotRule {
      * @param serviceTime  this data includes currentTime as a parameter. HHmm in 24 hour.
      * @return If the current time is not in TimeSlots, return -1;
      */
+    //@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static int getTimePoint(ArrayList<int[]> timeSlotList, ServiceTime serviceTime) {
+        int vTimePoint = -1;
+
+//        Trace.beginSection("GetTimePoint");
+//        try{
+
         System.out.println(Arrays.deepToString(timeSlotList.toArray()));
         LOGD(TAG, "TimeSlotList: " + Arrays.deepToString(timeSlotList.toArray()));
-
-        int vTimePoint = -1;
 
         for (int[] timeSlotTemp : timeSlotList) {
             // array structure is [beginTime, endTime].
@@ -114,6 +118,10 @@ public class TimeSlotRule {
         }
 
         serviceTime.nextAlarmTimeInt = vTimePoint;
+
+//        } finally {
+//            Trace.endSection(); // ends "Get Time Point"
+//        }
 
         return vTimePoint;
     }
