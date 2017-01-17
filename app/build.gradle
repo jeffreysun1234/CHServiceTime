@@ -4,13 +4,13 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'spoon'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.mycompany.chservicetime"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
@@ -139,6 +139,10 @@ dependencies {
     compile "com.google.dagger:dagger:$rootProject.daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
 
+    // adds the @Generated annotation lacking on Android
+    // provided 'javax.annotation:jsr250-api:1.0'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+
     // Retrofit & Gson
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
@@ -156,8 +160,6 @@ dependencies {
     // AutoValue
     provided "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
     annotationProcessor "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
-    // adds the @Generated annotation lacking on Android
-    provided 'javax.annotation:jsr250-api:1.0'
 
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"

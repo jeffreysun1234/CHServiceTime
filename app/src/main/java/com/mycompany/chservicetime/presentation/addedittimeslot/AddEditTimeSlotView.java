@@ -12,7 +12,7 @@ import net.grandcentrix.thirtyinch.callonmainthread.CallOnMainThread;
 public interface AddEditTimeSlotView extends TiView {
 
     @CallOnMainThread
-    void showError(int error);
+    void showMessage(int messageType);
 
     @CallOnMainThread
     void showTimeSlotList();

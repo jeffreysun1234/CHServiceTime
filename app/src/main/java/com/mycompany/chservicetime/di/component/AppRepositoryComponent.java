@@ -19,7 +19,7 @@ import dagger.Component;
  * CHApplication}.
  */
 @Singleton
-@Component(dependencies = ApplicationModule.class, modules = AppRepositoryModule.class)
+@Component(modules = {AppRepositoryModule.class, ApplicationModule.class})
 public interface AppRepositoryComponent {
 
     // downstream components need these exposed with the return type

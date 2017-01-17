@@ -108,7 +108,7 @@ public class TimeSlotsScreenTest {
 
     private void createStubbedTimeSlots(){
 //        TimeSlot timeSlot = new TimeSlot("1-1", "Work", "Work Time", 9, 0, 17, 0, "1000001", false);
-//        mTimeSlotRepository.createOrUpdateTimeSlot(timeSlot);
+//        mTimeSlotRepository.saveTimeSlot(timeSlot);
     }
 
     @Test

@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -50,6 +52,9 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     private ToggleButton day4ToggleButton;
     private ToggleButton day5ToggleButton;
     private ToggleButton day6ToggleButton;
+    private RadioButton muteRB;
+    private RadioButton vibrateRB;
+    private RadioGroup serviceOptionRG;
 
     public AddEditTimeSlotFragment() {
         // Required empty public constructor
@@ -90,7 +95,7 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Because providePresenter() uses this argument, the sentence must be before super.onCreate()
-        mId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
+        setTimeSlotIdIfAny();
 
         super.onCreate(savedInstanceState);
     }
@@ -107,13 +112,6 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
         setRetainInstance(true);
 
         return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        setTimeSlotIdIfAny();
     }
 
     @Override
@@ -136,22 +134,22 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     ////// Contract implements //////
 
     @Override
-    public void showError(int error) {
+    public void showMessage(int messageType) {
         int stringResId = R.string.time_slot_unknown_error;
-        switch (error) {
-            case AddEditTimeSlotPresenter.INPUT_NAME_ERROR:
+        switch (messageType) {
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_NAME_ERROR:
                 stringResId = R.string.input_name_error;
                 break;
-            case AddEditTimeSlotPresenter.INPUT_TIME_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_TIME_ERROR:
                 stringResId = R.string.input_time_error;
                 break;
-            case AddEditTimeSlotPresenter.INPUT_DAY_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_DAY_ERROR:
                 stringResId = R.string.input_day_error;
                 break;
-            case AddEditTimeSlotPresenter.FAIL_GET_TIME_SLOT_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_FAIL_GET_TIME_SLOT_ERROR:
                 stringResId = R.string.fail_get_time_slot_error;
                 break;
-            case AddEditTimeSlotPresenter.FAIL_SAVE_TIME_SLOT_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_FAIL_SAVE_TIME_SLOT_ERROR:
                 stringResId = R.string.fail_save_time_slot_error;
                 break;
         }
@@ -164,10 +162,13 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     @Override
     public void setTimeSlotFields(TimeSlot timeSlot) {
         if (timeSlot == null) {
+            nameEditText.setText("");
             // fix android bug in 4.1
             int currentHourIn24 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             beginTimeTP.setCurrentHour(currentHourIn24);
             endTimeTP.setCurrentHour(currentHourIn24);
+            // default is vibrate
+            mapServiceOption(TimeSlot.ServiceOption.VIBRATION);
         } else {
             nameEditText.setText(timeSlot.name());
             beginTimeTP.setCurrentHour(timeSlot.begin_time_hour());
@@ -183,7 +184,25 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
             day5ToggleButton.setChecked(days[5] == '1');
             day6ToggleButton.setChecked(days[6] == '1');
             repeatFlagCheckBox.setChecked(timeSlot.repeat_flag());
+            mapServiceOption(timeSlot.service_option());
         }
+    }
+
+    private void mapServiceOption(TimeSlot.ServiceOption serviceOption) {
+        if (serviceOption.equals(TimeSlot.ServiceOption.MUTE)) {
+            muteRB.setChecked(true);
+            vibrateRB.setChecked(false);
+        } else if (serviceOption.equals(TimeSlot.ServiceOption.VIBRATION)) {
+            muteRB.setChecked(false);
+            vibrateRB.setChecked(true);
+        }
+    }
+
+    private TimeSlot.ServiceOption mapServiceOption(int selectedId) {
+        if (selectedId == R.id.radio_mute)
+            return TimeSlot.ServiceOption.MUTE;
+        else
+            return TimeSlot.ServiceOption.VIBRATION;
     }
 
     @Override
@@ -212,6 +231,9 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
         day5ToggleButton = (ToggleButton) rootView.findViewById(R.id.day5InWeekToggleButton);
         day6ToggleButton = (ToggleButton) rootView.findViewById(R.id.day6InWeekToggleButton);
         repeatFlagCheckBox = (CheckBox) rootView.findViewById(R.id.repeatWeeklyCheckBox);
+        serviceOptionRG = (RadioGroup) rootView.findViewById(R.id.serviceOptionRadioGroup);
+        muteRB = (RadioButton) rootView.findViewById(R.id.radio_mute);
+        vibrateRB = (RadioButton) rootView.findViewById(R.id.radio_vibrate);
 
         day0ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(0));
         day1ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(1));
@@ -223,11 +245,12 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     }
 
     private void saveTimeSlot() {
-        getPresenter().createOrUpdateTimeSlot(nameEditText.getText().toString(),
+        getPresenter().saveTimeSlot(nameEditText.getText().toString(),
                 "", // TODO: description field.
                 beginTimeTP.getCurrentHour(), beginTimeTP.getCurrentMinute(),
                 endTimeTP.getCurrentHour(), endTimeTP.getCurrentMinute(), String.copyValueOf(days),
-                repeatFlagCheckBox.isChecked(), TimeSlot.ServiceOption.MUTE);
+                repeatFlagCheckBox.isChecked(),
+                mapServiceOption(serviceOptionRG.getCheckedRadioButtonId()));
     }
 
     /**

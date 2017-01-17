@@ -19,4 +19,5 @@ public interface AddEditTimeSlotComponent {
     void inject(AddEditTimeSlotFragment addEditTimeSlotFragment);
 
     AddEditTimeSlotPresenter getAddEditTimeSlotPresenter();
+
 }

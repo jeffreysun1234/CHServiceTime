@@ -37,7 +37,7 @@ public class BackupAndRestore {
 //        deleteAllTimeSlot();
 //        for (TimeSlotItem tsItem : timeSlotItems) {
 //            // add a timeslot, timeSlotId will be a new value.
-//            currentTimeSlotId = createOrUpdateTimeSlot(ModelConverter.firebaseTimeSlotItemToTimeSlot(tsItem));
+//            currentTimeSlotId = saveTimeSlot(ModelConverter.firebaseTimeSlotItemToTimeSlot(tsItem));
 //        }
 //    }
 }

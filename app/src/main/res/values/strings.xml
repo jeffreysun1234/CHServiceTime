@@ -61,4 +61,7 @@
     <string name="permissions_not_granted">Permissions were not granted.</string>
     <string name="permission_READ_PHONE_STATE_rationale">READ_PHONE_STATE permission is needed to control
         the sound of the phone.</string>
+
+    <string name="vibrate">Vibrate</string>
+    <string name="mute">Mute</string>
 </resources>
