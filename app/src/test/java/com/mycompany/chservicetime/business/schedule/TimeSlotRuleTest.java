@@ -1,6 +1,5 @@
-package com.mycompany.chservicetime.schedule;
+package com.mycompany.chservicetime.business.schedule;
 
-import com.mycompany.chservicetime.util.DateUtils;
 import com.mycompany.chservicetime.util.LogUtils;
 
 import org.junit.After;

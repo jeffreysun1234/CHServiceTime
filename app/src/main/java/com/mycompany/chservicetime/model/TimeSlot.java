@@ -1,86 +1,138 @@
 package com.mycompany.chservicetime.model;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
+import com.mycompany.chservicetime.data.source.local.DateAdapter;
+import com.squareup.sqldelight.EnumColumnAdapter;
+
+import java.util.Calendar;
+import java.util.UUID;
+
 /**
  * Created by szhx on 12/13/2015.
  */
-public class TimeSlot {
+@AutoValue
+public abstract class TimeSlot implements TimeSlotModel {
+
+    public enum ServiceOption {
+        NORMAL, VIBRATION, MUTE
+    }
+
+    private static final DateAdapter DATE_ADAPTER = new DateAdapter();
+    private static final EnumColumnAdapter<ServiceOption> SERVICE_OPTION_ADAPTER = EnumColumnAdapter.create(ServiceOption.class);
 
     public static int INVALID_ID = -1;
 
-    public int id;
-    public String timeSlotId;
-    public String name;
-    public String description;
-    public Integer beginTimeHour;
-    public Integer beginTimeMinute;
-    public Integer endTimeHour;
-    public Integer endTimeMinute;
-    public String days;
-    public Boolean repeatFlag;
-    public Boolean activationFlag;
-    public long updatedTimestamp;
+    public static final Factory<TimeSlot> FACTORY = new Factory<>(
+            (id, name, description,
+             beginTimeHour, beginTimeMinute, endTimeHour, endTimeMinute, days,
+             repeatFlag, activationFlag, serviceOption, updateStamp)
+                    -> TimeSlot.builder()
+                    ._id(id)
+                    .name(name)
+                    .description(description)
+                    .begin_time_hour(beginTimeHour)
+                    .begin_time_minute(beginTimeMinute)
+                    .end_time_hour(endTimeHour)
+                    .end_time_minute(endTimeMinute)
+                    .days(days)
+                    .repeat_flag(repeatFlag)
+                    .activation_flag(activationFlag)
+                    .service_option(serviceOption)
+                    .build(), SERVICE_OPTION_ADAPTER, DATE_ADAPTER);
 
-    public TimeSlot() {
+    public static final Mapper<TimeSlot> MAPPER = new Mapper<>(FACTORY);
+
+    public static Marshal getMarshal(TimeSlot timeSlot) {
+        return FACTORY.marshal(timeSlot);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_TimeSlot.Builder()
+                ._id(UUID.randomUUID().toString())
+                .activation_flag(false)
+                .update_timestamp(Calendar.getInstance());
     }
 
     /**
-     * Use this constructor to create a new TimeSlot
+     * creating slightly altered instances9
      */
-    public TimeSlot(int id, String timeSlotId, String name, String description,
-                    Integer beginTimeHour, Integer beginTimeMinute, Integer endTimeHour, Integer endTimeMinute,
-                    String days, Boolean repeatFlag, Boolean activationFlag, long updatedTimestamp) {
-        this.id = id;
-        this.timeSlotId = timeSlotId;
-        this.beginTimeHour = beginTimeHour;
-        this.beginTimeMinute = beginTimeMinute;
-        this.days = days;
-        this.endTimeHour = endTimeHour;
-        this.endTimeMinute = endTimeMinute;
-        this.name = name;
-        this.description = description;
-        this.repeatFlag = repeatFlag;
-        this.activationFlag = activationFlag;
-        this.updatedTimestamp = updatedTimestamp;
+    public TimeSlot withName(String name) {
+        return toBuilder().name(name).build();
+    }
+
+    public TimeSlot with_Id(String id) {
+        return toBuilder()._id(id).build();
     }
 
     /**
-     * Use this constructor to create a TimeSlot with all basic data.
+     * Initialize a builder to the same property values as an existing value instance
      */
-    public TimeSlot(String timeSlotId, String name, String description,
-                    Integer beginTimeHour, Integer beginTimeMinute, Integer endTimeHour, Integer endTimeMinute,
-                    String days, Boolean repeatFlag) {
-        this(INVALID_ID, timeSlotId, name, description,
-                beginTimeHour, beginTimeMinute, endTimeHour, endTimeMinute,
-                days, repeatFlag, null, 0L);
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder _id(String value);
+
+        public abstract Builder name(String value);
+
+        public abstract Builder description(String value);
+
+        public abstract Builder begin_time_hour(int value);
+
+        public abstract Builder begin_time_minute(int value);
+
+        public abstract Builder end_time_hour(int value);
+
+        public abstract Builder end_time_minute(int value);
+
+        public abstract Builder days(String value);
+
+        public abstract Builder repeat_flag(Boolean value);
+
+        public abstract Builder activation_flag(Boolean value);
+
+        public abstract Builder service_option(ServiceOption value);
+
+        public abstract Builder update_timestamp(Calendar value);
+
+        public abstract TimeSlot build();
     }
 
-    public boolean compare(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    /*** Custom methods ***/
 
-        TimeSlot timeSlot = (TimeSlot) o;
-
-        /**
-         * id is generated by DB and it will change, so we do not compare it.
-         */
-        //if (id != timeSlot.id) return false;
-        /**
-         * updatedTimestamp changes every time, so we do not compare it.
-         */
-        //if (updatedTimestamp != timeSlot.updatedTimestamp) return false;
-        if (beginTimeHour != timeSlot.beginTimeHour) return false;
-        if (beginTimeMinute != timeSlot.beginTimeMinute) return false;
-        if (endTimeHour != timeSlot.endTimeHour) return false;
-        if (endTimeMinute != timeSlot.endTimeMinute) return false;
-        if (repeatFlag != timeSlot.repeatFlag) return false;
-        if (timeSlotId != null ? !timeSlotId.equals(timeSlot.timeSlotId) : timeSlot.timeSlotId != null)
-            return false;
-        if (name != null ? !name.equals(timeSlot.name) : timeSlot.name != null) return false;
-        if (description != null ? !description.equals(timeSlot.description) : timeSlot.description != null)
-            return false;
-        return days != null ? days.equals(timeSlot.days) : timeSlot.days == null;
-
+    /**
+     * Use this constructor to create a new TimeSlot with default values.
+     */
+    public static TimeSlot createTimeSlot(String name, String description,
+                                          Integer beginTimeHour, Integer beginTimeMinute,
+                                          Integer endTimeHour, Integer endTimeMinute,
+                                          String days, Boolean repeatFlag,
+                                          ServiceOption serviceOption) {
+        return createTimeSlot(UUID.randomUUID().toString(), name, description,
+                beginTimeHour, beginTimeMinute, endTimeHour, endTimeMinute, days,
+                repeatFlag, false, serviceOption);
     }
 
+    /**
+     * Use this constructor to specify a TimeSlot with all properties.
+     * update_timestamp is not included in the parameter list because it is assigned by App.
+     */
+    public static TimeSlot createTimeSlot(String id, String name, String description,
+                                          Integer beginTimeHour, Integer beginTimeMinute,
+                                          Integer endTimeHour, Integer endTimeMinute,
+                                          String days, Boolean repeatFlag, Boolean activationFlag,
+                                          ServiceOption serviceOption) {
+        return TimeSlot.FACTORY.creator.create(id, name, description,
+                beginTimeHour, beginTimeMinute, endTimeHour, endTimeMinute, days,
+                repeatFlag, activationFlag, serviceOption, null);
+    }
 
+    /***
+     * Custom methods
+     ***/
+
+    public boolean isEmpty() {
+        return Strings.isNullOrEmpty(name());
+    }
 }

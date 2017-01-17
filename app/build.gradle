@@ -1,27 +1,48 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.squareup.sqldelight'
+apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'spoon'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.3'
 
     defaultConfig {
         applicationId "com.mycompany.chservicetime"
-        minSdkVersion 9
-        targetSdkVersion 23
+        minSdkVersion 16
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        maxProcessCount 2 // this is the default value
+        javaMaxHeapSize "2g"
+        preDexLibraries true
+    }
+
     buildTypes {
         debug {
             debuggable true
+            minifyEnabled false
+            // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
     }
 
@@ -60,6 +81,8 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
+        exclude 'cglib-license.txt'
+        exclude 'META-INF/INDEX.LIST'
     }
 
     configurations {
@@ -71,6 +94,8 @@ android {
         androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
         androidTestCompile.exclude group: 'com.android.support', module: 'recyclerview-v7'
         androidTestCompile.exclude group: 'com.android.support', module: 'design'
+
+        testCompile.exclude group: 'com.android.support'
     }
 }
 
@@ -87,33 +112,80 @@ spoon {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.android.support:recyclerview-v7:23.4.0'
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+
+    compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
+
+    compile "com.google.guava:guava:$rootProject.guavaVersion"
+
+    // RxJava
+    compile "io.reactivex:rxjava:$rootProject.rxjavaVersion"
+    compile "io.reactivex:rxandroid:$rootProject.rxandroidVersion"
+
     // Firebase
     compile 'com.google.firebase:firebase-core:9.4.0'
     compile 'com.google.firebase:firebase-database:9.4.0'
     compile 'com.google.firebase:firebase-auth:9.4.0'
     compile 'com.firebaseui:firebase-ui-auth:0.5.1'
+
+    // Rx access Database
+    compile "com.squareup.sqlbrite:sqlbrite:$rootProject.sqlbriteVersion"
+
+    // Dagger dependencies
+    compile "com.google.dagger:dagger:$rootProject.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+
     // Retrofit & Gson
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.10.19'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.5'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.5'
-    testCompile 'com.squareup.okhttp3:mockwebserver:3.4.1'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
-    compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+
+    // MVP Library
+    compile "net.grandcentrix.thirtyinch:thirtyinch:$thirtyinchVersion"
+    compile "net.grandcentrix.thirtyinch:thirtyinch-rx:$thirtyinchVersion"
+    testCompile "net.grandcentrix.thirtyinch:thirtyinch-test:$thirtyinchVersion"
+
+    // This is only needed if you want to use encrypted databases
+    compile "net.zetetic:android-database-sqlcipher:$sqlcipherVersion"
+
+    // AutoValue
+    provided "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
+    annotationProcessor "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
+    // adds the @Generated annotation lacking on Android
+    provided 'javax.annotation:jsr250-api:1.0'
+
+    // Dependencies for local unit tests
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
+    testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
+    testCompile "org.hamcrest:hamcrest-library:$rootProject.ext.hamcrestVersion"
+    testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockitoVersion"
+    testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockitoVersion"
+    testCompile "com.squareup.okhttp3:mockwebserver:$rootProject.ext.mockwebserverVersion"
+
+    // Android Testing Support Library's runner and rules
+    androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
+    androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
+
+    // Espresso UI Testing
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+
+    // UIAutomator
+    androidTestCompile "com.android.support.test.uiautomator:uiautomator-v18:$rootProject.uiAutomatorVersion"
+
+    // Dependencies for Android unit tests
+    androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
+    androidTestCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
+    androidTestCompile "com.google.dexmaker:dexmaker:$rootProject.ext.dexmakerVersion"
+    androidTestCompile "com.google.dexmaker:dexmaker-mockito:$rootProject.ext.dexmakerVersion"
+    androidTestCompile "org.hamcrest:hamcrest-library:$rootProject.ext.hamcrestVersion"
+
 }
 
 // Firebase

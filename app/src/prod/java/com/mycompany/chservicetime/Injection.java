@@ -19,17 +19,17 @@ package com.mycompany.chservicetime;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeDAO;
+import com.mycompany.chservicetime.data.source.AppDataSource;
+import com.mycompany.chservicetime.data.source.AppRepository;
 
 /**
  * Enables injection of production implementations for
- * {@link TimeSlotDataSource} at compile time.
+ * {@link AppDataSource} at compile time.
  */
 public class Injection {
 
-    public static TimeSlotRepository provideTimeSlotsRepository(@NonNull Context context) {
-        return TimeSlotRepository.getInstance(CHServiceTimeDAO.getInstance(context));
+    public static AppRepository provideTimeSlotsRepository(@NonNull Context context) {
+        //return AppRepository.getInstance(CHServiceTimeDAO.getInstance(context));
+        return null;
     }
 }

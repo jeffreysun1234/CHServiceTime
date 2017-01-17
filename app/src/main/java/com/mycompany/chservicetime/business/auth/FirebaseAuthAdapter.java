@@ -1,4 +1,4 @@
-package com.mycompany.chservicetime.auth;
+package com.mycompany.chservicetime.business.auth;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;

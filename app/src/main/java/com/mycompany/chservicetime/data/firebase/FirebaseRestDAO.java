@@ -1,6 +1,6 @@
 package com.mycompany.chservicetime.data.firebase;
 
-import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.util.LogUtils;

@@ -22,7 +22,6 @@ import android.support.annotation.NonNull;
 import com.mycompany.chservicetime.data.source.FakeTimeSlotDataSource;
 import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
 import com.mycompany.chservicetime.data.source.TimeSlotRepository;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeDAO;
 
 /**
  * Enables injection of mock implementations for

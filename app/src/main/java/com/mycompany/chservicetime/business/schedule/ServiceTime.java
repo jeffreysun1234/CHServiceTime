@@ -1,4 +1,4 @@
-package com.mycompany.chservicetime.schedule;
+package com.mycompany.chservicetime.business.schedule;
 
 /**
  * Created by szhx on 8/29/2016.

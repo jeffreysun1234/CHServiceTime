@@ -25,9 +25,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
-import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.data.source.AppDataSource;
+import com.mycompany.chservicetime.data.source.AppRepository;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -46,7 +45,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @LargeTest
 public class TimeSlotsScreenTest {
 
-    private TimeSlotRepository mTimeSlotRepository;
+    private AppRepository mTimeSlotRepository;
 
     /**
      * {@link ActivityTestRule} is a JUnit {@link Rule @Rule} to launch your activity under test.
@@ -66,7 +65,7 @@ public class TimeSlotsScreenTest {
                     TimeSlotsActivity.class, true /* Initial touch mode  */, true) {
                 /**
                  * To avoid a long list of time slots and the need to scroll through the list to find a
-                 * time slot, we call {@link TimeSlotDataSource#deleteAllTimeSlot()} before each test.
+                 * time slot, we call {@link AppDataSource#deleteAllTimeSlot()} before each test.
                  */
                 @Override
                 protected void beforeActivityLaunched() {
@@ -98,7 +97,7 @@ public class TimeSlotsScreenTest {
 //     */
 //    private void startActivityWithWithStubbedTimeSlot(TimeSlot timeSlot) {
 //        // Add a timeSlot stub to the fake service api layer.
-//        TimeSlotRepository.destroyInstance();
+//        AppRepository.destroyInstance();
 //        FakeTimeSlotDataSource.getInstance().addTimeSlots(timeSlot);
 //
 //        // Lazily start the Activity from the ActivityTestRule this time to inject the start Intent
@@ -108,8 +107,8 @@ public class TimeSlotsScreenTest {
 //    }
 
     private void createStubbedTimeSlots(){
-        TimeSlot timeSlot = new TimeSlot("1-1", "Work", "Work Time", 9, 0, 17, 0, "1000001", false);
-        mTimeSlotRepository.createOrUpdateTimeSlot(timeSlot);
+//        TimeSlot timeSlot = new TimeSlot("1-1", "Work", "Work Time", 9, 0, 17, 0, "1000001", false);
+//        mTimeSlotRepository.createOrUpdateTimeSlot(timeSlot);
     }
 
     @Test

@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.util.ActivityUtils;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
@@ -15,6 +14,9 @@ import com.mycompany.chservicetime.util.EspressoIdlingResource;
 public class AddEditTimeSlotActivity extends AppCompatActivity {
 
     public static final int REQUEST_ADD_TIME_SLOT = 1;
+
+    AddEditTimeSlotFragment mAddEditTimeSlotFragment;
+    String mId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,32 +30,21 @@ public class AddEditTimeSlotActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        AddEditTimeSlotFragment addEditTimeSlotFragment =
+        mAddEditTimeSlotFragment =
                 (AddEditTimeSlotFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+        mId = getIntent().getStringExtra(AddEditTimeSlotFragment.ARGUMENT_EDIT_TIME_SLOT_ID);
 
-        String timeSlotId = null;
-        if (addEditTimeSlotFragment == null) {
+        if (mAddEditTimeSlotFragment == null) {
+            mAddEditTimeSlotFragment = AddEditTimeSlotFragment.newInstance(mId);
+
             if (getIntent().hasExtra(AddEditTimeSlotFragment.ARGUMENT_EDIT_TIME_SLOT_ID)) {
-                timeSlotId = getIntent().getStringExtra(AddEditTimeSlotFragment.ARGUMENT_EDIT_TIME_SLOT_ID);
                 actionBar.setTitle(R.string.edit_timeSlot);
             } else {
                 actionBar.setTitle(R.string.add_timeSlot);
             }
 
-            addEditTimeSlotFragment = AddEditTimeSlotFragment.newInstance(timeSlotId);
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    addEditTimeSlotFragment, R.id.contentFrame);
-        }
-
-        // Create the presenter
-        new AddEditTimeSlotPresenter(
-                timeSlotId,
-                Injection.provideTimeSlotsRepository(this),
-                addEditTimeSlotFragment);
-
-        // for test
-        if (!EspressoIdlingResource.getIdlingResource().isIdleNow()) {
-            EspressoIdlingResource.decrement(); // Set app as idle.
+                    mAddEditTimeSlotFragment, R.id.contentFrame);
         }
     }
 
@@ -62,7 +53,6 @@ public class AddEditTimeSlotActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
 
     @VisibleForTesting
     public IdlingResource getCountingIdlingResource() {

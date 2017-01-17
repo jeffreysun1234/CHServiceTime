@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,21 +16,26 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.di.component.AddEditTimeSlotComponent;
+import com.mycompany.chservicetime.di.component.DaggerAddEditTimeSlotComponent;
+import com.mycompany.chservicetime.di.module.AddEditTimeSlotPresenterModule;
 import com.mycompany.chservicetime.model.TimeSlot;
+
+import net.grandcentrix.thirtyinch.TiFragment;
 
 import java.util.Calendar;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlotContract.View {
+public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter, AddEditTimeSlotView>
+        implements AddEditTimeSlotView {
 
     public static final String ARGUMENT_EDIT_TIME_SLOT_ID = "EDIT_TIME_SLOT_ID";
 
-    private AddEditTimeSlotContract.Presenter mPresenter;
-
-    private String mEditedTimeSlotId;
+    private String mId;
 
     private char[] days = "0000000".toCharArray();
 
@@ -68,8 +72,33 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         return fragment;
     }
 
+    @NonNull
+    @Override
+    public AddEditTimeSlotPresenter providePresenter() {
+        /*
+        * Inject the AddEditTimeSlotFragment instance to Dagger Graph,
+        * then the injected fields can be instanced, in this case, create the presenter.
+        */
+        AddEditTimeSlotComponent addEditTimeSlotComponent = DaggerAddEditTimeSlotComponent.builder()
+                .appRepositoryComponent(CHApplication.INSTANCE.getAppRepositoryComponent())
+                .addEditTimeSlotPresenterModule(new AddEditTimeSlotPresenterModule(mId))
+                .build();
+
+        return addEditTimeSlotComponent.getAddEditTimeSlotPresenter();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // Because providePresenter() uses this argument, the sentence must be before super.onCreate()
+        mId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
+
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         View root = inflater.inflate(R.layout.fragment_add_edit_time_slot, container, false);
 
         initViews(root);
@@ -85,12 +114,6 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         super.onActivityCreated(savedInstanceState);
 
         setTimeSlotIdIfAny();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
     }
 
     @Override
@@ -111,11 +134,6 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     }
 
     ////// Contract implements //////
-
-    @Override
-    public void setPresenter(@NonNull AddEditTimeSlotContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
 
     @Override
     public void showError(int error) {
@@ -140,12 +158,6 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         Snackbar.make(nameEditText, getString(stringResId), Snackbar.LENGTH_LONG).show();
     }
 
-    @Override
-    public void finishView() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
-    }
-
     /**
      * @param timeSlot If timeSlot is NULL, then show a new TimeSlot form.
      */
@@ -157,12 +169,12 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
             beginTimeTP.setCurrentHour(currentHourIn24);
             endTimeTP.setCurrentHour(currentHourIn24);
         } else {
-            nameEditText.setText(timeSlot.name);
-            beginTimeTP.setCurrentHour(timeSlot.beginTimeHour);
-            beginTimeTP.setCurrentMinute(timeSlot.beginTimeMinute);
-            endTimeTP.setCurrentHour(timeSlot.endTimeHour);
-            endTimeTP.setCurrentMinute(timeSlot.endTimeMinute);
-            days = timeSlot.days.toCharArray();
+            nameEditText.setText(timeSlot.name());
+            beginTimeTP.setCurrentHour(timeSlot.begin_time_hour());
+            beginTimeTP.setCurrentMinute(timeSlot.begin_time_minute());
+            endTimeTP.setCurrentHour(timeSlot.end_time_hour());
+            endTimeTP.setCurrentMinute(timeSlot.end_time_minute());
+            days = timeSlot.days().toCharArray();
             day0ToggleButton.setChecked(days[0] == '1');
             day1ToggleButton.setChecked(days[1] == '1');
             day2ToggleButton.setChecked(days[2] == '1');
@@ -170,23 +182,20 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
             day4ToggleButton.setChecked(days[4] == '1');
             day5ToggleButton.setChecked(days[5] == '1');
             day6ToggleButton.setChecked(days[6] == '1');
-            repeatFlagCheckBox.setChecked(timeSlot.repeatFlag);
+            repeatFlagCheckBox.setChecked(timeSlot.repeat_flag());
         }
     }
 
     @Override
-    public boolean isActive() {
-        return isAdded();
+    public void showTimeSlotList() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void setTimeSlotIdIfAny() {
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_EDIT_TIME_SLOT_ID)) {
-            mEditedTimeSlotId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
+            mId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
         }
-    }
-
-    private boolean isNewTimeSlot() {
-        return mEditedTimeSlotId == null;
     }
 
     private void initViews(View rootView) {
@@ -214,11 +223,11 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     }
 
     private void saveTimeSlot() {
-        mPresenter.createOrUpdateTimeSlot(mEditedTimeSlotId, nameEditText.getText().toString(),
+        getPresenter().createOrUpdateTimeSlot(nameEditText.getText().toString(),
                 "", // TODO: description field.
                 beginTimeTP.getCurrentHour(), beginTimeTP.getCurrentMinute(),
                 endTimeTP.getCurrentHour(), endTimeTP.getCurrentMinute(), String.copyValueOf(days),
-                repeatFlagCheckBox.isChecked());
+                repeatFlagCheckBox.isChecked(), TimeSlot.ServiceOption.MUTE);
     }
 
     /**

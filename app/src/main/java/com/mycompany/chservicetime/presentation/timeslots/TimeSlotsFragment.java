@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
@@ -166,9 +166,9 @@ public class TimeSlotsFragment extends Fragment implements TimeSlotsContract.Vie
         @Override
         public void onActiveFlagSwitchClicked(String timeSlotId, boolean activeFlag) {
             LOGD(TAG, "onActiveFlagSwitchClicked(): timeSlotId=" + timeSlotId + " ; activeFlag=" + activeFlag);
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.timeSlotId = timeSlotId;
-            timeSlot.activationFlag = activeFlag;
+            TimeSlot timeSlot = TimeSlot.builder().build();
+//            timeSlot.timeSlotId = timeSlotId;
+//            timeSlot.activationFlag = activeFlag;
             mPresenter.activateTimeSlot(timeSlot);
         }
 

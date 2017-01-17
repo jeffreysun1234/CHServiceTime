@@ -6,11 +6,11 @@ import android.content.Intent;
 
 import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.business.schedule.ServiceTime;
+import com.mycompany.chservicetime.business.schedule.TimeSlotRule;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
+import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.receiver.AlarmReceiver;
-import com.mycompany.chservicetime.schedule.ServiceTime;
-import com.mycompany.chservicetime.schedule.TimeSlotRule;
 import com.mycompany.chservicetime.util.DateUtils;
 
 import java.text.ParseException;
@@ -31,11 +31,11 @@ public class SchedulingIntentService extends IntentService {
 
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_SET_ALARM =
-            "com.mycompany.chservicetime.schedule.action.SET_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.SET_ALARM";
     public static final String ACTION_STOP_ALARM =
-            "com.mycompany.chservicetime.schedule.action.STOP_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.STOP_ALARM";
     public static final String ACTION_INIT_ALARM =
-            "com.mycompany.chservicetime.schedule.action.INIT_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.INIT_ALARM";
 
     public SchedulingIntentService() {
         super("SchedulingIntentService");
@@ -104,7 +104,7 @@ public class SchedulingIntentService extends IntentService {
      */
     private void handleActionSetAlarm() throws ParseException {
         // Data repository
-        TimeSlotRepository timeSlotRepository = Injection.provideTimeSlotsRepository(getApplicationContext());
+        AppRepository timeSlotRepository = Injection.provideTimeSlotsRepository(getApplicationContext());
 
         // get the number for current time, indicating the day of the week
         Calendar calendar = Calendar.getInstance();
@@ -112,7 +112,8 @@ public class SchedulingIntentService extends IntentService {
         int currentDayInWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
         // get TimeSlot list for current time.
-        ArrayList<int[]> timeSlotList = timeSlotRepository.getRequiredTimeSlots(currentDayInWeek, true);
+        ArrayList<int[]> timeSlotList = null;
+        //timeSlotRepository.getRequiredTimeSlots(currentDayInWeek, true);
 
         // get ServiceTime for current time.
         ServiceTime serviceTime = TimeSlotRule.getServiceTime(timeSlotList,

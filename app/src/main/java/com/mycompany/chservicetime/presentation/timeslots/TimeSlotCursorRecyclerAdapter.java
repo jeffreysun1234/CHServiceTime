@@ -78,14 +78,14 @@ public class TimeSlotCursorRecyclerAdapter extends RecyclerView.Adapter<TimeSlot
         }
 
         public void bindData(@NonNull TimeSlot timeSlot) {
-            this.nameTextView.setText(timeSlot.name);
-            this.activeSwitch.setChecked(timeSlot.activationFlag);
-            this.timeTextView.setText(DisplayUtils.buildTimePeriodString(timeSlot.beginTimeHour,
-                    timeSlot.beginTimeMinute, timeSlot.endTimeHour, timeSlot.endTimeMinute));
-            this.daysTextView.setText(DisplayUtils.daysToText(timeSlot.days));
-            this.repeatWeeklyTextView.setText(DisplayUtils.repeatFlagToText(timeSlot.repeatFlag));
+            this.nameTextView.setText(timeSlot.name());
+            this.activeSwitch.setChecked(timeSlot.activation_flag());
+            this.timeTextView.setText(DisplayUtils.buildTimePeriodString(timeSlot.begin_time_hour(),
+                    timeSlot.begin_time_minute(), timeSlot.end_time_hour(), timeSlot.end_time_minute()));
+            this.daysTextView.setText(DisplayUtils.daysToText(timeSlot.days()));
+            this.repeatWeeklyTextView.setText(DisplayUtils.repeatFlagToText(timeSlot.repeat_flag()));
 
-            this.currentTimeSlotId = timeSlot.timeSlotId;
+            this.currentTimeSlotId = timeSlot._id();
         }
 
         public void setListeners() {

@@ -18,7 +18,7 @@ import android.view.WindowManager;
 
 import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
+import com.mycompany.chservicetime.data.source.AppDataSource;
 import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
 import com.mycompany.chservicetime.util.DateUtils;
 
@@ -39,15 +39,11 @@ import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.mycompany.chservicetime.presentation.CustomItemMatcher.matchToolbarTitle;
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.Matchers.not;
 
 /**
  * Created by szhx on 8/31/2016.
@@ -78,7 +74,7 @@ public class WorkflowTest {
             new IntentsTestRule<TimeSlotsActivity>(TimeSlotsActivity.class, true /* Initial touch mode  */, true) {
                 /**
                  * To avoid a long list of time slots and the need to scroll through the list to find a
-                 * time slot, we call {@link TimeSlotDataSource#deleteAllTimeSlot()} before each test.
+                 * time slot, we call {@link AppDataSource#deleteAllTimeSlot()} before each test.
                  */
                 @Override
                 protected void beforeActivityLaunched() {

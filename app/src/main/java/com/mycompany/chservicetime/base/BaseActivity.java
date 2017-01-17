@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mycompany.chservicetime.BuildConfig;
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;

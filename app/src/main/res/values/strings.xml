@@ -17,17 +17,22 @@
     <string name="fail_save_time_slot_error">Fail to save data.</string>
 
     <string name="no_time_slot">No Time Schedule.</string>
+    <string name="no_timeslots_add">Add a TimeSlot item +</string>
     <string name="next_operation_no">No more alarms today.</string>
     <string name="next_operation">Next alarm :</string>
 
-    <string name="timeslot_marked_active">TimeSlot is active</string>
-    <string name="timeslot_marked_inactive">TimeSlot is not active</string>
+    <string name="timeslot_marked_active">TimeSlot (%1$s) is active</string>
+    <string name="timeslot_marked_inactive">TimeSlot (%1$s) is NOT active</string>
     <string name="loading_timeslots_error">Error while loading TimeSlots</string>
     <string name="successfully_saved_timeslot">TimeSlot is saved</string>
     <string name="timeslot_deleted">TimeSlot is deleted.</string>
+    <string name="timeslots_cleared">All timeSlot is deleted.</string>
     <string name="next_operation_invalid">Time slots is no available now.</string>
+    <string name="no_timeslots_all">You have no TimeSlots!</string>
 
     <string name="alert_message">Change ringer mode</string>
+
+    <string name="refresh">Refresh</string>
 
     <!-- Menu Strings -->
     <string name="action_logout">Logout</string>
@@ -36,6 +41,7 @@
     <string name="menu_add">Add</string>
     <string name="menu_backup">Backup</string>
     <string name="menu_restore">Restore</string>
+    <string name="menu_clear">Clear All Items</string>
 
     <string name="sign_out_failed">Sign out failed</string>
     <string name="sign_out_successful">Sign out successful</string>

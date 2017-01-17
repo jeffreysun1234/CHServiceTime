@@ -23,10 +23,10 @@ import android.support.v4.app.LoaderManager;
 
 import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.FirebaseRestDAO;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
+import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
@@ -47,7 +47,7 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
     private final static int TIME_SLOTS_QUERY_LOADER = 1;
 
     @NonNull
-    private final TimeSlotRepository mTimeSlotRepository;
+    private final AppRepository mTimeSlotRepository;
 
     private final LoaderManager mLoaderManager;
 
@@ -56,7 +56,7 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
     private boolean mFirstLoad = true;
 
     public TimeSlotsPresenter(@NonNull TimeSlotsContract.View timeSlotsView,
-                              @NonNull TimeSlotRepository timeSlotRepository,
+                              @NonNull AppRepository timeSlotRepository,
                               @NonNull LoaderManager loaderManager) {
         mTimeSlotsView = timeSlotsView;
         mTimeSlotRepository = timeSlotRepository;
@@ -103,8 +103,8 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
 
     @Override
     public void activateTimeSlot(@NonNull TimeSlot activeTimeSlot) {
-        mTimeSlotRepository.updateActivationFlag(activeTimeSlot.timeSlotId, activeTimeSlot.activationFlag);
-        mTimeSlotsView.showTimeSlotMarkedActive(activeTimeSlot.name, activeTimeSlot.activationFlag);
+        mTimeSlotRepository.updateActivationFlag(activeTimeSlot._id(), activeTimeSlot.activation_flag());
+        mTimeSlotsView.showTimeSlotMarkedActive(activeTimeSlot.name(), activeTimeSlot.activation_flag());
     }
 
     @Override
@@ -125,19 +125,19 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
 
                 @Override
                 protected Object doInBackground(Object[] params) {
-                    try {
-                        String userId = FirebaseAuthAdapter.getUserId();
-                        String authToken = FirebaseAuthAdapter.getAuthToken();
-
-                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
-
-                        FirebaseRestDAO.create().backupTimeSlotItemList(
-                                userId,
-                                authToken,
-                                mTimeSlotRepository.backupAllTimeSlots());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        String userId = FirebaseAuthAdapter.getUserId();
+//                        String authToken = FirebaseAuthAdapter.getAuthToken();
+//
+//                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+//
+//                        FirebaseRestDAO.create().backupTimeSlotItemList(
+//                                userId,
+//                                authToken,
+//                                mTimeSlotRepository.backupAllTimeSlots());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
 
                     return null;
                 }
@@ -174,7 +174,7 @@ public class TimeSlotsPresenter implements TimeSlotsContract.Presenter {
                         Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
                                 .restoreTimeSlotItemList(userId, authToken);
 
-                        mTimeSlotRepository.restoreAllTimeSlots(timeSlotItemList);
+                        //mTimeSlotRepository.restoreAllTimeSlots(timeSlotItemList);
 
                     } catch (IOException e) {
                         e.printStackTrace();
