@@ -16,8 +16,10 @@
 
 package com.mycompany.chservicetime.data.source.local;
 
+import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.mycompany.chservicetime.data.source.AppDataSource;
@@ -25,6 +27,7 @@ import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
 import com.mycompany.chservicetime.util.schedulers.ImmediateSchedulerProvider;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,11 +58,17 @@ public class AppLocalDataSourceTest {
         AppLocalDataSource.destroyInstance();
         mSchedulerProvider = new ImmediateSchedulerProvider();
 
-        mLocalDataSource = AppLocalDataSource.getInstance(
-                InstrumentationRegistry.getTargetContext(), mSchedulerProvider);
+
+        //Whenever we run Instrumented unit tests, we can't change production environment Database.
+        //Because App might have stored an important data on Production environment Database.
+        //For such a reason, we use RenamingDelegatingContext, and create SQLite test file.
+        Context context = new RenamingDelegatingContext
+                (InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
+
+        mLocalDataSource = AppLocalDataSource.getInstance(context, mSchedulerProvider);
     }
 
-    //@After
+    @After
     public void cleanUp() {
         mLocalDataSource.deleteAllTimeSlot();
     }

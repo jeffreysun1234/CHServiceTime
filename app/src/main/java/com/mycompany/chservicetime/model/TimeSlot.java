@@ -135,4 +135,58 @@ public abstract class TimeSlot implements TimeSlotModel {
     public boolean isEmpty() {
         return Strings.isNullOrEmpty(name());
     }
+
+    /**
+     * exclude the update_timestamp field
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o instanceof TimeSlot) {
+            TimeSlot that = (TimeSlot) o;
+            return (this._id().equals(that._id()))
+                    && (this.name().equals(that.name()))
+                    && ((this.description() == null) ? (that.description() == null) : this.description().equals(that.description()))
+                    && (this.begin_time_hour() == that.begin_time_hour())
+                    && (this.begin_time_minute() == that.begin_time_minute())
+                    && (this.end_time_hour() == that.end_time_hour())
+                    && (this.end_time_minute() == that.end_time_minute())
+                    && (this.days().equals(that.days()))
+                    && ((this.repeat_flag() == null) ? (that.repeat_flag() == null) : this.repeat_flag().equals(that.repeat_flag()))
+                    && ((this.activation_flag() == null) ? (that.activation_flag() == null) : this.activation_flag().equals(that.activation_flag()))
+                    && ((this.service_option() == null) ? (that.service_option() == null) : this.service_option().equals(that.service_option()));
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int h = 1;
+        h *= 1000003;
+        h ^= this._id().hashCode();
+        h *= 1000003;
+        h ^= this.name().hashCode();
+        h *= 1000003;
+        h ^= (description() == null) ? 0 : this.description().hashCode();
+        h *= 1000003;
+        h ^= this.begin_time_hour();
+        h *= 1000003;
+        h ^= this.begin_time_minute();
+        h *= 1000003;
+        h ^= this.end_time_hour();
+        h *= 1000003;
+        h ^= this.end_time_minute();
+        h *= 1000003;
+        h ^= this.days().hashCode();
+        h *= 1000003;
+        h ^= (repeat_flag() == null) ? 0 : this.repeat_flag().hashCode();
+        h *= 1000003;
+        h ^= (activation_flag() == null) ? 0 : this.activation_flag().hashCode();
+        h *= 1000003;
+        h ^= (service_option() == null) ? 0 : this.service_option().hashCode();
+        return h;
+    }
+
 }
