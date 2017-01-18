@@ -18,9 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -113,32 +110,22 @@ public class AppRepository implements AppDataSource {
             buildCachedTimeSlotsIfNotExist();
         }
 
-        // Query the local storage if available. If not, query the network.
-        Observable<List<TimeSlot>> localTimeSlots = getAndCacheLocalTimeSlots();
-        return localTimeSlots;
-    }
-
-    private Observable<List<TimeSlot>> getAndCacheLocalTimeSlots() {
-        return mAppLocalDataSource.getAllTimeSlot()
-                .flatMap(new Func1<List<TimeSlot>, Observable<List<TimeSlot>>>() {
-                    @Override
-                    public Observable<List<TimeSlot>> call(List<TimeSlot> timeSlots) {
-                        return Observable.from(timeSlots)
-                                .doOnNext(new Action1<TimeSlot>() {
-                                    @Override
-                                    public void call(TimeSlot timeSlot) {
-                                        mCachedTimeSlots.put(timeSlot._id(), timeSlot);
-                                    }
-                                })
-                                .doOnCompleted(new Action0() {
-                                    @Override
-                                    public void call() {
-                                        mCacheIsDirty = false;
-                                    }
-                                })
-                                .toList();
+        // Query the local storage if available.
+        Observable<List<TimeSlot>> localTimeSlots = mAppLocalDataSource.getAllTimeSlot()
+                .flatMap(timeSlots ->
+                        Observable.from(timeSlots)
+                                .doOnNext(timeSlot -> mCachedTimeSlots.put(timeSlot._id(), timeSlot))
+                                .toList())
+                .map(timeSlots -> {
+                    if (timeSlots == null || timeSlots.isEmpty()) {
+                        throw new NoSuchElementException("No timeSlot list found with timeSlotId ");
                     }
-                });
+                    return timeSlots;
+                })
+                .doOnCompleted(() -> mCacheIsDirty = false)
+                .first();
+
+        return localTimeSlots;
     }
 
     /**
@@ -155,31 +142,20 @@ public class AppRepository implements AppDataSource {
             return Observable.just(cachedTimeSlot);
         }
 
-        // Load from persisted if needed.
-
         // Do in memory cache update to keep the app UI up to date
         buildCachedTimeSlotsIfNotExist();
 
         Observable<TimeSlot> localTimeSlot = mAppLocalDataSource
                 .getTimeSlot(id)
-                .doOnNext(new Action1<TimeSlot>() {
-                    @Override
-                    public void call(TimeSlot task) {
-                        mCachedTimeSlots.put(id, task);
+                .map(timeSlot -> {
+                    if (timeSlot == null) {
+                        throw new NoSuchElementException("No timeSlot found with timeSlotId " + id);
                     }
+                    return timeSlot;
                 })
-                .first();
+                .doOnNext(timeSlot -> mCachedTimeSlots.put(timeSlot._id(), timeSlot));
 
-        return localTimeSlot
-                .map(new Func1<TimeSlot, TimeSlot>() {
-                    @Override
-                    public TimeSlot call(TimeSlot timeSlot) {
-                        if (timeSlot == null) {
-                            throw new NoSuchElementException("No timeSlot found with timeSlotId " + id);
-                        }
-                        return timeSlot;
-                    }
-                });
+        return localTimeSlot;
     }
 
     /**
@@ -203,8 +179,9 @@ public class AppRepository implements AppDataSource {
         buildCachedTimeSlotsIfNotExist();
 
         if (rows > 0) {
-            TimeSlot timeSlot = mAppLocalDataSource.getTimeSlot(id).toBlocking().single();
-            mCachedTimeSlots.put(id, timeSlot);
+            TimeSlot timeSlot = mCachedTimeSlots.get(id);
+            TimeSlot newTimeSlot = timeSlot.toBuilder().activation_flag(activationFlag).build();
+            mCachedTimeSlots.put(id, newTimeSlot);
         }
 
         return rows;
