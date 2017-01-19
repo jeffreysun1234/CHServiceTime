@@ -117,7 +117,7 @@ public class AppRepository implements AppDataSource {
                                 .doOnNext(timeSlot -> mCachedTimeSlots.put(timeSlot._id(), timeSlot))
                                 .toList())
                 .map(timeSlots -> {
-                    if (timeSlots == null || timeSlots.isEmpty()) {
+                    if (timeSlots == null) {
                         throw new NoSuchElementException("No timeSlot list found with timeSlotId ");
                     }
                     return timeSlots;

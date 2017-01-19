@@ -65,7 +65,7 @@ public class TimeSlotListActivity extends TiActivity<TimeSlotListPresenter, Time
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.timeslots_act);
+        setContentView(R.layout.time_slot_list_act);
 
         // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

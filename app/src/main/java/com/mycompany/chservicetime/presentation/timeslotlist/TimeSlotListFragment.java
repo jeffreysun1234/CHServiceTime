@@ -25,17 +25,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.mycompany.chservicetime.R;
@@ -52,7 +52,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 
-    private TimeSlotsAdapter mListAdapter;
+    private TimeSlotListAdapter mListAdapter;
 
     private View mNoTimeSlotsView;
 
@@ -77,7 +77,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mListAdapter = new TimeSlotsAdapter(new ArrayList<TimeSlot>(0), mItemListener);
+        mListAdapter = new TimeSlotListAdapter(new ArrayList<TimeSlot>(0), mItemListener);
     }
 
     @Override
@@ -89,19 +89,32 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.timeslots_frag, container, false);
+        View root = inflater.inflate(R.layout.time_slot_list_frag, container, false);
+        initViews(root);
+        return root;
+    }
 
-        // Set up timeSlots view
-        ListView listView = (ListView) root.findViewById(R.id.timeslot_list);
-        listView.setAdapter(mListAdapter);
-        mTimeSlotsView = (LinearLayout) root.findViewById(R.id.timeslotsLL);
-
+    private void initViews(View root) {
         // Set up  no timeSlots view
         mNoTimeSlotsView = root.findViewById(R.id.noTimeSlots);
         mNoTimeSlotIcon = (ImageView) root.findViewById(R.id.noTimeSlotsIcon);
         mNoTimeSlotMainView = (TextView) root.findViewById(R.id.noTimeSlotsMain);
         mNoTimeSlotAddView = (TextView) root.findViewById(R.id.noTimeSlotsAdd);
         mNoTimeSlotAddView.setOnClickListener(v -> showAddEditTimeSlot(null));
+
+        // Set up timeSlots view
+        RecyclerView listView = (RecyclerView) root.findViewById(R.id.timeslot_list);
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        listView.setAdapter(mListAdapter);
+
+        // add item animation
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        listView.setItemAnimator(itemAnimator);
+
+        mTimeSlotsView = (LinearLayout) root.findViewById(R.id.timeslotsLL);
 
         // Set up floating action button
         FloatingActionButton fab =
@@ -124,8 +137,6 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         swipeRefreshLayout.setOnRefreshListener(() -> getPresenter().loadTimeSlots(false));
 
         setHasOptionsMenu(true);
-
-        return root;
     }
 
     @Override
@@ -245,88 +256,6 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 
     private void showMessage(String message) {
         Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
-    }
-
-    private static class TimeSlotsAdapter extends BaseAdapter {
-
-        private List<TimeSlot> mTimeSlots;
-        private TimeSlotItemListener mItemListener;
-
-        public TimeSlotsAdapter(List<TimeSlot> timeSlots, TimeSlotItemListener itemListener) {
-            setList(timeSlots);
-            mItemListener = itemListener;
-        }
-
-        public void replaceData(List<TimeSlot> timeSlots) {
-            setList(timeSlots);
-            notifyDataSetChanged();
-        }
-
-        private void setList(List<TimeSlot> timeSlots) {
-            mTimeSlots = checkNotNull(timeSlots);
-        }
-
-        @Override
-        public int getCount() {
-            return mTimeSlots.size();
-        }
-
-        @Override
-        public TimeSlot getItem(int i) {
-            return mTimeSlots.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            View rowView = view;
-            if (rowView == null) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                rowView = inflater.inflate(R.layout.timeslot_item, viewGroup, false);
-            }
-
-            final TimeSlot timeSlot = getItem(i);
-
-            TextView titleTV = (TextView) rowView.findViewById(R.id.title);
-            titleTV.setText(timeSlot.name());
-
-            CheckBox completeCB = (CheckBox) rowView.findViewById(R.id.complete);
-
-//            // Active/completed timeSlot UI
-//            completeCB.setChecked(timeSlot.isCompleted());
-//            if (timeSlot.isCompleted()) {
-//                rowView.setBackgroundDrawable(viewGroup.getContext()
-//                        .getResources().getDrawable(R.drawable.list_completed_touch_feedback));
-//            } else {
-//                rowView.setBackgroundDrawable(viewGroup.getContext()
-//                        .getResources().getDrawable(R.drawable.touch_feedback));
-//            }
-
-            completeCB.setOnClickListener(v -> {
-                if (!timeSlot.activation_flag()) {
-                    mItemListener.onCompleteTimeSlotClick(timeSlot);
-                } else {
-                    mItemListener.onActivateTimeSlotClick(timeSlot);
-                }
-            });
-
-            rowView.setOnClickListener(__ -> mItemListener.onTimeSlotClick(timeSlot));
-
-            return rowView;
-        }
-    }
-
-    public interface TimeSlotItemListener {
-
-        void onTimeSlotClick(TimeSlot clickedTimeSlot);
-
-        void onCompleteTimeSlotClick(TimeSlot completedTimeSlot);
-
-        void onActivateTimeSlotClick(TimeSlot activatedTimeSlot);
     }
 
     public TimeSlotListPresenter getPresenter() {
