@@ -19,19 +19,19 @@ package com.mycompany.chservicetime;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.mycompany.chservicetime.data.source.FakeTimeSlotDataSource;
-import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
+import com.mycompany.chservicetime.data.source.AppDataSource;
+import com.mycompany.chservicetime.data.source.AppRepository;
+import com.mycompany.chservicetime.data.source.FakeAppDataSource;
 
 /**
  * Enables injection of mock implementations for
- * {@link TimeSlotDataSource} at compile time. This is useful for testing, since it allows us to use
+ * {@link AppDataSource} at compile time. This is useful for testing, since it allows us to use
  * a fake instance of the class to isolate the dependencies and run a test hermetically.
  */
 public class Injection {
 
-    public static TimeSlotRepository provideTimeSlotsRepository(@NonNull Context context) {
-        return TimeSlotRepository.getInstance(FakeTimeSlotDataSource.getInstance());
+    public static AppRepository provideTimeSlotsRepository(@NonNull Context context) {
+        return AppRepository.getInstance(FakeAppDataSource.getInstance());
     }
 
 }

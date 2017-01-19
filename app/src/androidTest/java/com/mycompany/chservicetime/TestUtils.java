@@ -17,6 +17,7 @@
 package com.mycompany.chservicetime;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.annotation.IdRes;
@@ -94,5 +95,9 @@ public class TestUtils {
             }
         });
         return resumedActivity[0];
+    }
+
+    public static String getText(Context context, int stringId) {
+        return context.getResources().getString(stringId);
     }
 }

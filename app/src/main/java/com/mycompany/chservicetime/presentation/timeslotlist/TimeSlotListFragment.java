@@ -18,6 +18,7 @@ package com.mycompany.chservicetime.presentation.timeslotlist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -63,8 +64,6 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 
     private LinearLayout mTimeSlotsView;
 
-    private TextView mFilteringLabelView;
-
     TimeSlotListPresenter mTimeSlotListPresenter;
 
     public TimeSlotListFragment() {
@@ -79,6 +78,11 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mListAdapter = new TimeSlotsAdapter(new ArrayList<TimeSlot>(0), mItemListener);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getPresenter().result(requestCode, resultCode);
     }
 
     @Nullable
@@ -97,24 +101,14 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         mNoTimeSlotIcon = (ImageView) root.findViewById(R.id.noTimeSlotsIcon);
         mNoTimeSlotMainView = (TextView) root.findViewById(R.id.noTimeSlotsMain);
         mNoTimeSlotAddView = (TextView) root.findViewById(R.id.noTimeSlotsAdd);
-        mNoTimeSlotAddView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddTimeSlot();
-            }
-        });
+        mNoTimeSlotAddView.setOnClickListener(v -> showAddEditTimeSlot(null));
 
         // Set up floating action button
         FloatingActionButton fab =
                 (FloatingActionButton) getActivity().findViewById(R.id.fab_add_timeslot);
 
         fab.setImageResource(R.drawable.ic_add);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getPresenter().addNewTimeSlot();
-            }
-        });
+        fab.setOnClickListener(v -> getPresenter().addEditTimeSlot(null));
 
         // Set up progress indicator
         final ScrollChildSwipeRefreshLayout swipeRefreshLayout =
@@ -127,12 +121,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         // Set the scrolling view in the custom SwipeRefreshLayout.
         swipeRefreshLayout.setScrollUpChild(listView);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getPresenter().loadTimeSlots(false);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> getPresenter().loadTimeSlots(false));
 
         setHasOptionsMenu(true);
 
@@ -180,7 +169,6 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 
     @Override
     public void setLoadingIndicator(final boolean active) {
-
         if (getView() == null) {
             return;
         }
@@ -188,12 +176,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
                 (SwipeRefreshLayout) getView().findViewById(R.id.refresh_layout);
 
         // Make sure setRefreshing() is called after the layout is done with everything else.
-        srl.post(new Runnable() {
-            @Override
-            public void run() {
-                srl.setRefreshing(active);
-            }
-        });
+        srl.post(() -> srl.setRefreshing(active));
     }
 
     @Override
@@ -241,7 +224,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
     }
 
     @Override
-    public void showAddTimeSlot() {
+    public void showAddEditTimeSlot(String id) {
         Intent intent = new Intent(getContext(), AddEditTimeSlotActivity.class);
         startActivityForResult(intent, AddEditTimeSlotActivity.REQUEST_ADD_TIME_SLOT);
     }
@@ -323,23 +306,15 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 //                        .getResources().getDrawable(R.drawable.touch_feedback));
 //            }
 
-            completeCB.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!timeSlot.activation_flag()) {
-                        mItemListener.onCompleteTimeSlotClick(timeSlot);
-                    } else {
-                        mItemListener.onActivateTimeSlotClick(timeSlot);
-                    }
+            completeCB.setOnClickListener(v -> {
+                if (!timeSlot.activation_flag()) {
+                    mItemListener.onCompleteTimeSlotClick(timeSlot);
+                } else {
+                    mItemListener.onActivateTimeSlotClick(timeSlot);
                 }
             });
 
-            rowView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mItemListener.onTimeSlotClick(timeSlot);
-                }
-            });
+            rowView.setOnClickListener(__ -> mItemListener.onTimeSlotClick(timeSlot));
 
             return rowView;
         }
@@ -358,7 +333,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         return mTimeSlotListPresenter;
     }
 
-    public void setPresenter(TimeSlotListPresenter timeSlotListPresenter) {
-        mTimeSlotListPresenter = timeSlotListPresenter;
+    public void setPresenter(@NonNull TimeSlotListPresenter timeSlotListPresenter) {
+        mTimeSlotListPresenter = checkNotNull(timeSlotListPresenter);
     }
 }

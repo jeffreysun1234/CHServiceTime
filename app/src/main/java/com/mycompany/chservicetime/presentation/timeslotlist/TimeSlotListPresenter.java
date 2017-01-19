@@ -34,9 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
-import rx.functions.Action0;
 import rx.functions.Func1;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -55,6 +53,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
     private boolean mFirstLoad = true;
 
+    // Force to read data from the local database.
     private boolean mForceUpdate = false;
 
     private RxTiPresenterSubscriptionHandler rxHelper = new RxTiPresenterSubscriptionHandler(this);
@@ -117,30 +116,17 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 .toList()
                 .subscribeOn(mSchedulerProvider.computation())
                 .observeOn(mSchedulerProvider.ui())
-                .doOnTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        if (!EspressoIdlingResource.getIdlingResource().isIdleNow()) {
-                            EspressoIdlingResource.decrement(); // Set app as idle.
-                        }
+                .doOnTerminate(() -> {
+                    if (!EspressoIdlingResource.getIdlingResource().isIdleNow()) {
+                        EspressoIdlingResource.decrement(); // Set app as idle.
                     }
+                    getView().setLoadingIndicator(false);
                 })
-                .subscribe(new Observer<List<TimeSlot>>() {
-                    @Override
-                    public void onCompleted() {
-                        getView().setLoadingIndicator(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().showLoadingTimeSlotsError();
-                    }
-
-                    @Override
-                    public void onNext(List<TimeSlot> timeSlots) {
-                        processTimeSlots(timeSlots);
-                    }
-                });
+                .subscribe(
+                        //onNext
+                        this::processTimeSlots,
+                        // OnError
+                        throwable -> getView().showLoadingTimeSlotsError());
 
         return subscription;
     }
@@ -154,14 +140,16 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
         }
     }
 
-    public void addNewTimeSlot() {
-        getView().showAddTimeSlot();
+    public void addEditTimeSlot(String id) {
+        getView().showAddEditTimeSlot(id);
     }
 
     public void activateTimeSlot(@NonNull TimeSlot timeSlot, boolean activationFlag) {
         checkNotNull(timeSlot, "activeTimeSlot cannot be null!");
-        mAppRepository.updateActivationFlag(timeSlot._id(), activationFlag);
-        getView().showTimeSlotActivationFlagMessage(activationFlag);
+        int row = mAppRepository.updateActivationFlag(timeSlot._id(), activationFlag);
+        if (row == 1) {
+            getView().showTimeSlotActivationFlagMessage(activationFlag);
+        }
         loadTimeSlots(false, false);
     }
 

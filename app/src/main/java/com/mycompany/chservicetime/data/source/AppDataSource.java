@@ -27,4 +27,6 @@ public interface AppDataSource {
     void deleteTimeSlot(@NonNull String id);
 
     void refreshTimeSlots();
+
+    void addTimeSlots(TimeSlot... timeSlots);
 }

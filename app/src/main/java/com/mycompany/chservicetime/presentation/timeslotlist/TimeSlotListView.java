@@ -16,7 +16,7 @@ public interface TimeSlotListView extends TiView {
 
     void showTimeSlots(List<TimeSlot> timeSlots);
 
-    void showAddTimeSlot();
+    void showAddEditTimeSlot(String id);
 
     void showLoadingTimeSlotsError();
 

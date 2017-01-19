@@ -16,7 +16,6 @@
 
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
@@ -42,7 +41,7 @@ public class TimeSlotListActivity extends TiActivity<TimeSlotListPresenter, Time
     @Override
     public TimeSlotListPresenter providePresenter() {
         /*
-         * Inject the AddEditTimeSlotPresenter instance to Dagger Graph, then the injected fields can be instanced.
+         * Inject the TimeSlotListPresenter instance to Dagger Graph, then the injected fields can be instanced.
          */
         TimeSlotListComponent timeSlotsComponent = DaggerTimeSlotListComponent.builder()
                 .appRepositoryComponent(CHApplication.INSTANCE.getAppRepositoryComponent())
@@ -83,11 +82,6 @@ public class TimeSlotListActivity extends TiActivity<TimeSlotListPresenter, Time
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), timeSlotsFragment, R.id.contentFrame);
         }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().result(requestCode, resultCode);
     }
 
     @VisibleForTesting

@@ -61,6 +61,7 @@ ext {
     rxandroidVersion = '1.2.1'
     sqlbriteVersion = '1.1.1'
     sqlcipherVersion = '3.5.4'
+    swipeRecyclerViewVersion = '1.0.2'
     thirtyinchVersion = '0.8.0-rc1'
     uiAutomatorVersion = '2.1.2'
 }

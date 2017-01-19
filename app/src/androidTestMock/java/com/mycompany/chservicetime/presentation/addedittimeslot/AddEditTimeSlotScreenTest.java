@@ -7,6 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.data.source.FakeAppDataSource;
 import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.Before;
@@ -19,9 +20,11 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  * Created by szhx on 5/2/2016.
@@ -35,7 +38,7 @@ public class AddEditTimeSlotScreenTest {
     /**
      * {@link TimeSlot} stub that is added to the fake service API layer.
      */
-    private TimeSlot mTimeSlot = TimeSlot.createTimeSlot("111", "Work", "work time",
+    private TimeSlot timeSlot1 = TimeSlot.createTimeSlot("111", "Work", "work time",
             9, 0, 17, 0, "0111110", true, false, TimeSlot.ServiceOption.MUTE);
 
     /**
@@ -112,13 +115,17 @@ public class AddEditTimeSlotScreenTest {
     }
 
 
-//    @Test
-//    public void timeSlotDetails_DisplayedInUi() throws Exception {
-//        startActivityWithStubbedTimeSlot(mTimeSlot);
-//
-//        // Check that the task title and description are displayed
-//        //onView(withId(R.id.timeSlotNameEditText)).check(matches(withText(mTimeSlot.name())));
-//        onView(withId(R.id.radio_mute)).check(matches((isChecked())));
-//        onView(withId(R.id.radio_vibrate)).check(matches(not(isChecked())));
-//    }
+    @Test
+    public void timeSlotDetails_DisplayedInUi() throws Exception {
+        // Given some TimeSlots
+        FakeAppDataSource source = FakeAppDataSource.getInstance();
+        source.deleteAllTimeSlot();
+        source.saveTimeSlot(timeSlot1.toBuilder().build());
+        startActivityWithStubbedTimeSlot(timeSlot1);
+
+        // Check that the TimeSlot name are displayed
+        onView(withId(R.id.timeSlotNameEditText)).check(matches(withText(timeSlot1.name())));
+        onView(withId(R.id.radio_mute)).check(matches((isChecked())));
+        onView(withId(R.id.radio_vibrate)).check(matches(not(isChecked())));
+    }
 }

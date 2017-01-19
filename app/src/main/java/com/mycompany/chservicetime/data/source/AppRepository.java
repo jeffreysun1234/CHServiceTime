@@ -207,6 +207,17 @@ public class AppRepository implements AppDataSource {
         mCacheIsDirty = true;
     }
 
+    @Override
+    public void addTimeSlots(TimeSlot... timeSlots) {
+        mAppLocalDataSource.addTimeSlots(timeSlots);
+
+        // Do in memory cache update to keep the app UI up to date
+        buildCachedTimeSlotsIfNotExist();
+        for (TimeSlot timeSlot : timeSlots) {
+            mCachedTimeSlots.put(timeSlot._id(), timeSlot);
+        }
+    }
+
     private void buildCachedTimeSlotsIfNotExist() {
         // Do in memory cache update to keep the app UI up to date
         if (mCachedTimeSlots == null) {

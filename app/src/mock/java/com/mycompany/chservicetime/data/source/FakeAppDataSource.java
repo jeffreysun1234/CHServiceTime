@@ -16,70 +16,60 @@
 
 package com.mycompany.chservicetime.data.source;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import com.mycompany.chservicetime.model.TimeSlot;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import rx.Observable;
 
 /**
  * Implementation of a data source with static access to the data for easy testing.
  */
-public class FakeTimeSlotDataSource implements TimeSlotDataSource {
+public class FakeAppDataSource implements AppDataSource {
 
-    private static FakeTimeSlotDataSource INSTANCE;
+    private static FakeAppDataSource INSTANCE;
 
     private static final Map<String, TimeSlot> TIMESLOT_DATA = new LinkedHashMap<>();
 
     // Prevent direct instantiation.
-    private FakeTimeSlotDataSource() {
+    private FakeAppDataSource() {
     }
 
-    public static FakeTimeSlotDataSource getInstance() {
+    public static FakeAppDataSource getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new FakeTimeSlotDataSource();
+            INSTANCE = new FakeAppDataSource();
         }
         return INSTANCE;
     }
 
     @Override
-    public void getAllTimeSlot(@NonNull LoadTimeSlotsCallback callback) {
-       callback.onTimeSlotsLoaded(MockCursorProvider.createAllTimeSlotsCursorFromList(
-               new ArrayList<TimeSlot>(TIMESLOT_DATA.values())));
+    public Observable<List<TimeSlot>> getAllTimeSlot() {
+        Collection<TimeSlot> values = TIMESLOT_DATA.values();
+        return Observable.from(values).toList();
     }
 
     @Override
-    public void getTimeSlot(@NonNull String timeSlotId, @NonNull GetTimeSlotCallback callback) {
+    public Observable<TimeSlot> getTimeSlot(@NonNull String timeSlotId) {
         TimeSlot timeSlot = TIMESLOT_DATA.get(timeSlotId);
-        callback.onTimeSlotLoaded(timeSlot);
+        return Observable.just(timeSlot);
     }
 
     @Override
-    public Cursor getAllTimeSlot() {
-        return MockCursorProvider.createAllTimeSlotsCursorFromList(
-                new ArrayList<TimeSlot>(TIMESLOT_DATA.values()));
+    public void saveTimeSlot(TimeSlot timeSlot) {
+        TIMESLOT_DATA.put(timeSlot._id(), timeSlot);
     }
 
     @Override
-    public TimeSlot getTimeSlot(@NonNull String timeSlotId) {
-        return TIMESLOT_DATA.get(timeSlotId);
-    }
-
-    @Override
-    public String createOrUpdateTimeSlot(TimeSlot timeSlot) {
-        TIMESLOT_DATA.put(timeSlot.timeSlotId, timeSlot);
-        return  timeSlot.timeSlotId;
-    }
-
-    @Override
-    public void updateActivationFlag(@NonNull String timeSlotId, boolean activationFlag) {
+    public int updateActivationFlag(@NonNull String timeSlotId, boolean activationFlag) {
         TimeSlot oldTimeSlot = TIMESLOT_DATA.get(timeSlotId);
-        oldTimeSlot.activationFlag = activationFlag;
-        TIMESLOT_DATA.put(timeSlotId, oldTimeSlot);
+        TimeSlot newTimeSlot = oldTimeSlot.toBuilder().activation_flag(activationFlag).build();
+        TIMESLOT_DATA.put(timeSlotId, newTimeSlot);
+        return 1;
     }
 
     @Override
@@ -92,10 +82,16 @@ public class FakeTimeSlotDataSource implements TimeSlotDataSource {
         TIMESLOT_DATA.clear();
     }
 
-    @VisibleForTesting
+    @Override
+    public void refreshTimeSlots() {
+        // Not required because the {@link TasksRepository} handles the logic of refreshing the
+        // tasks from all the available data sources.
+    }
+
+    @Override
     public void addTimeSlots(TimeSlot... timeSlots) {
         for (TimeSlot timeSlot : timeSlots) {
-            TIMESLOT_DATA.put(timeSlot.timeSlotId, timeSlot);
+            TIMESLOT_DATA.put(timeSlot._id(), timeSlot);
         }
     }
 }

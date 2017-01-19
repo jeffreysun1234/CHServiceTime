@@ -161,6 +161,9 @@ dependencies {
     provided "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
     annotationProcessor "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
 
+    // Swipe RecyclerView
+    compile "com.yanzhenjie:recyclerview-swipe:$rootProject.swipeRecyclerViewVersion"
+
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"

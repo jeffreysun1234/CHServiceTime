@@ -115,5 +115,19 @@ public class AppLocalDataSource implements AppDataSource {
         // Not required because the {@link AppRepository} handles the logic of refreshing the
         // TimeSlots from all the available data sources.
     }
+
+    @Override
+    public void addTimeSlots(TimeSlot... timeSlots) {
+        BriteDatabase.Transaction transaction = mBriteDB.newTransaction();
+        try {
+            for (TimeSlot timeSlot : timeSlots) {
+                ContentValues values = TimeSlot.getMarshal(timeSlot).asContentValues();
+                mBriteDB.insert(TimeSlot.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);
+            }
+            transaction.markSuccessful();
+        } finally {
+            transaction.end();
+        }
+    }
 }
 
