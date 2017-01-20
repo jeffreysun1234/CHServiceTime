@@ -22,7 +22,7 @@ public class TimeSlotItemListener implements ItemActionListenerInterface {
 
     @Override
     public void onItemLongClicked(String timeSlotId) {
-        editItem(timeSlotId);
+        //editItem(timeSlotId);
     }
 
     @Override

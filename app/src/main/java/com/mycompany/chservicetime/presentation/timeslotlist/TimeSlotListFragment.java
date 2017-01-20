@@ -21,7 +21,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -193,13 +192,6 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
 
         mTimeSlotsView = (LinearLayout) root.findViewById(R.id.timeslotsLL);
 
-        // Set up floating action button
-        FloatingActionButton fab =
-                (FloatingActionButton) getActivity().findViewById(R.id.fab_add_timeslot);
-
-        fab.setImageResource(R.drawable.ic_add);
-        fab.setOnClickListener(v -> getPresenter().addEditTimeSlot(null));
-
         // Set up progress indicator
         final ScrollChildSwipeRefreshLayout swipeRefreshLayout =
                 (ScrollChildSwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
@@ -217,22 +209,34 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_clear:
-                getPresenter().clearTimeSlots();
-                break;
-            case R.id.menu_refresh:
-                getPresenter().loadTimeSlots(true);
-                break;
-        }
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.timeslots_fragment_menu, menu);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.timeslots_fragment_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_time_slot: {
+                getPresenter().addEditTimeSlot(null);
+                return true;
+            }
+            case R.id.menu_clear:
+                getPresenter().clearTimeSlots();
+                return true;
+            case R.id.menu_refresh:
+                getPresenter().loadTimeSlots(true);
+                return true;
+            case R.id.backup_time_slot_list: {
+                //getPresenter().backupTimeSlotList();
+                return true;
+            }
+            case R.id.restore_time_slot_list: {
+                //getPresenter().restoreTimeSlotList();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
