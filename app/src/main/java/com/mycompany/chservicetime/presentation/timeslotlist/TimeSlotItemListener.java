@@ -1,16 +1,45 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
-import com.mycompany.chservicetime.model.TimeSlot;
+import static android.content.ContentValues.TAG;
+import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 
 /**
  * Created by szhx on 1/19/2017.
  */
 
-public interface TimeSlotItemListener {
+public class TimeSlotItemListener implements ItemActionListenerInterface {
 
-    void onTimeSlotClick(TimeSlot clickedTimeSlot);
+    TimeSlotListPresenter mPresenter;
 
-    void onCompleteTimeSlotClick(TimeSlot completedTimeSlot);
+    public TimeSlotItemListener(TimeSlotListPresenter presenter) {
+        mPresenter = presenter;
+    }
 
-    void onActivateTimeSlotClick(TimeSlot activatedTimeSlot);
+    @Override
+    public void onTimeSlotClick(String timeSlotId) {
+
+    }
+
+    @Override
+    public void onItemLongClicked(String timeSlotId) {
+        editItem(timeSlotId);
+    }
+
+    @Override
+    public void deleteItem(String timeSlotId) {
+        LOGD(TAG, "deleteItem(): timeSlotId=" + timeSlotId);
+        mPresenter.deleteTimeSlot(timeSlotId);
+    }
+
+    @Override
+    public void editItem(String timeSlotId) {
+        LOGD(TAG, "onItemLongClicked(): timeSlotId=" + timeSlotId);
+        mPresenter.addEditTimeSlot(timeSlotId);
+    }
+
+    @Override
+    public void onActiveFlagSwitchClicked(String timeSlotId, boolean activeFlag) {
+        LOGD(TAG, "onActiveFlagSwitchClicked(): timeSlotId=" + timeSlotId + " ; activeFlag=" + activeFlag);
+        mPresenter.activateTimeSlot(timeSlotId, activeFlag);
+    }
 }

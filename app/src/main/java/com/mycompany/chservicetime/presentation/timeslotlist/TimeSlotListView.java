@@ -27,4 +27,6 @@ public interface TimeSlotListView extends TiView {
     void showTimeSlotActivationFlagMessage(boolean activationFlag);
 
     void showTimeSlotsClearedMessage();
+
+    void showTimeSlotDeletedMessage();
 }

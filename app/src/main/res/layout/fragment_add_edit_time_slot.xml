@@ -163,14 +163,12 @@
                     android:id="@+id/radio_mute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
                     android:text="@string/mute" />
 
                 <RadioButton
                     android:id="@+id/radio_vibrate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
                     android:text="@string/vibrate" />
             </RadioGroup>
 

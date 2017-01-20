@@ -132,7 +132,7 @@ public class TimeSlotListPresenterTest {
         mTimeSlotListPresenter.attachView(mTimeSlotListView);
 
         // When timeSlot is marked as activated
-        mTimeSlotListPresenter.activateTimeSlot(timeSlot, true);
+        mTimeSlotListPresenter.activateTimeSlot(timeSlot._id(), true);
 
         // Then repository is called and timeSlot marked active UI is shown
         verify(mAppRepository).updateActivationFlag(eq(timeSlot._id()), eq(true));

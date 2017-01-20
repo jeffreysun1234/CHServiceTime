@@ -11,24 +11,21 @@ import android.widget.TextView;
 
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.DisplayUtils;
+import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * Created by szhx on 1/19/2017.
- */
-
-public class TimeSlotListAdapter extends RecyclerView.Adapter<TimeSlotListAdapter.ViewHolder> {
-
+public class TimeSlotListAdapter extends SwipeMenuAdapter<TimeSlotListAdapter.ViewHolder> {
     private static final String TAG = "TimeSlotListAdapter";
 
-    private static TimeSlotItemListener mItemListener = null;
+    private static ItemActionListenerInterface mItemListener = null;
 
-    private List<TimeSlot> mTimeSlots;
+    static List<TimeSlot> mTimeSlots = null;
 
-    public TimeSlotListAdapter(List<TimeSlot> timeSlots, TimeSlotItemListener itemListener) {
+    public TimeSlotListAdapter(List<TimeSlot> timeSlots, ItemActionListenerInterface itemListener) {
         setList(timeSlots);
         mItemListener = itemListener;
     }
@@ -43,12 +40,14 @@ public class TimeSlotListAdapter extends RecyclerView.Adapter<TimeSlotListAdapte
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Create a new view.
-        View v = LayoutInflater.from(parent.getContext())
+    public View onCreateContentView(ViewGroup parent, int viewType) {
+        return LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.time_slot_list_item, parent, false);
+    }
 
-        return new ViewHolder(v);
+    @Override
+    public ViewHolder onCompatCreateViewHolder(View realContentView, int viewType) {
+        return new ViewHolder(realContentView);
     }
 
     @Override
@@ -58,90 +57,66 @@ public class TimeSlotListAdapter extends RecyclerView.Adapter<TimeSlotListAdapte
 
     @Override
     public int getItemCount() {
-        return mTimeSlots.size();
+        return mTimeSlots == null ? 0 : mTimeSlots.size();
     }
 
-//    @Override
-//    public View getView(int i, View view, ViewGroup viewGroup) {
-//        View rowView = view;
-//        if (rowView == null) {
-//            LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-//            rowView = inflater.inflate(R.layout.timeslot_item, viewGroup, false);
-//        }
-//
-//        final TimeSlot timeSlot = getItem(i);
-//
-//        TextView titleTV = (TextView) rowView.findViewById(R.id.title);
-//        titleTV.setText(timeSlot.name());
-//
-//        CheckBox completeCB = (CheckBox) rowView.findViewById(R.id.complete);
-//
-////            // Active/completed timeSlot UI
-////            completeCB.setChecked(timeSlot.isCompleted());
-////            if (timeSlot.isCompleted()) {
-////                rowView.setBackgroundDrawable(viewGroup.getContext()
-////                        .getResources().getDrawable(R.drawable.list_completed_touch_feedback));
-////            } else {
-////                rowView.setBackgroundDrawable(viewGroup.getContext()
-////                        .getResources().getDrawable(R.drawable.touch_feedback));
-////            }
-//
-//        completeCB.setOnClickListener(v -> {
-//            if (!timeSlot.activation_flag()) {
-//                mItemListener.onCompleteTimeSlotClick(timeSlot);
-//            } else {
-//                mItemListener.onActivateTimeSlotClick(timeSlot);
-//            }
-//        });
-//
-//        rowView.setOnClickListener(__ -> mItemListener.onTimeSlotClick(timeSlot));
-//
-//        return rowView;
-//    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTV;
-        CheckBox completeCB;
-
-        String currentTimeSlotId;
-        TimeSlot currentTimeSlot;
+        CheckBox activeSwitch;
+        TextView nameTextView;
+        TextView timeTextView;
+        TextView daysTextView;
+        TextView repeatWeeklyTextView;
+        TextView serviceOptionView;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nameTV = (TextView) itemView.findViewById(R.id.title);
-            completeCB = (CheckBox) itemView.findViewById(R.id.complete);
+            nameTextView = (TextView) itemView.findViewById(R.id.nameTextView);
+            activeSwitch = (CheckBox) itemView.findViewById(R.id.activeSwitch);
+            timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);
+            daysTextView = (TextView) itemView.findViewById(R.id.daysTextView);
+            repeatWeeklyTextView = (TextView) itemView.findViewById(R.id.repeatWeeklyTextView);
+            serviceOptionView = (TextView) itemView.findViewById(R.id.serviceOptionIcon);
 
             setListeners();
         }
 
         public void bindData(@NonNull TimeSlot timeSlot) {
-            currentTimeSlot = timeSlot;
-
-            this.nameTV.setText(timeSlot.name());
+            this.nameTextView.setText(timeSlot.name());
+            this.activeSwitch.setChecked(timeSlot.activation_flag());
+            this.timeTextView.setText(DisplayUtils.buildTimePeriodString(timeSlot.begin_time_hour(),
+                    timeSlot.begin_time_minute(), timeSlot.end_time_hour(), timeSlot.end_time_minute()));
+            this.daysTextView.setText(DisplayUtils.daysToText(timeSlot.days()));
+            this.repeatWeeklyTextView.setText(DisplayUtils.repeatFlagToText(timeSlot.repeat_flag()));
+            this.serviceOptionView.setText(timeSlot.service_option().toString());
         }
 
         public void setListeners() {
-            // Define click listener for the ViewHolder's View.
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                    mItemListener.onTimeSlotClick(currentTimeSlot);
+            checkNotNull(mItemListener);
+
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mItemListener.onItemLongClicked(mTimeSlots.get(position)._id());
+                }
+                return true;
+            });
+
+            itemView.setOnClickListener(v -> {
+                Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mItemListener.onTimeSlotClick(mTimeSlots.get(position)._id());
                 }
             });
 
-            completeCB.setOnClickListener(v -> {
-                if (!currentTimeSlot.activation_flag()) {
-                    mItemListener.onCompleteTimeSlotClick(currentTimeSlot);
-                } else {
-                    mItemListener.onActivateTimeSlotClick(currentTimeSlot);
+            activeSwitch.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    mItemListener.onActiveFlagSwitchClicked(mTimeSlots.get(position)._id(),
+                            ((CheckBox) view).isChecked());
                 }
             });
-        }
-
-        public TextView getNameTV() {
-            return nameTV;
         }
     }
 

@@ -1,4 +1,4 @@
-package com.mycompany.chservicetime.presentation;
+package com.mycompany.chservicetime;
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +25,11 @@ import static org.hamcrest.Matchers.allOf;
  * Created by szhx on 4/3/2016.
  */
 public class CustomItemMatcher {
+
+    public static enum DATA_VIEW_TYPE {LISTVIEW, RECYCLERVIEW}
+
+    ;
+
     /**
      * Matches a Item with a specific ID
      */
@@ -43,29 +48,35 @@ public class CustomItemMatcher {
 //    }
 
     /**
-     * A custom {@link Matcher} which matches an item in a {@link ListView} by its text.
+     * A custom {@link Matcher} which matches an item in a {@link ListView} or {@link RecyclerView} by its text.
      * <p/>
      * View constraints:
      * <ul>
-     * <li>View must be a child of a {@link ListView}
+     * <li>View must be a child of a {@link ListView} or {@link RecyclerView}
      * <ul>
      *
      * @param itemText the text to match
      * @return Matcher that matches text in the given view
      */
-    public static Matcher<View> withItemText(final String itemText) {
+    public static Matcher<View> withItemText(final String itemText, DATA_VIEW_TYPE dataViewType) {
         checkArgument(!TextUtils.isEmpty(itemText), "itemText cannot be null or empty");
         return new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View item) {
-                return allOf(
-                        isDescendantOfA(isAssignableFrom(RecyclerView.class)), withText(itemText))
-                        .matches(item);
+                if (dataViewType.equals(DATA_VIEW_TYPE.RECYCLERVIEW)) {
+                    return allOf(
+                            isDescendantOfA(isAssignableFrom(RecyclerView.class)), withText(itemText))
+                            .matches(item);
+                } else if (dataViewType.equals(DATA_VIEW_TYPE.LISTVIEW)) {
+                    return allOf(isDescendantOfA(isAssignableFrom(ListView.class)),
+                            withText(itemText)).matches(item);
+                }
+                return false;
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("is isDescendantOfA LV with text " + itemText);
+                description.appendText("is isDescendantOfA Data View with text " + itemText);
             }
         };
     }

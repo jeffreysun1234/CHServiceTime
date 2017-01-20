@@ -144,9 +144,9 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
         getView().showAddEditTimeSlot(id);
     }
 
-    public void activateTimeSlot(@NonNull TimeSlot timeSlot, boolean activationFlag) {
-        checkNotNull(timeSlot, "activeTimeSlot cannot be null!");
-        int row = mAppRepository.updateActivationFlag(timeSlot._id(), activationFlag);
+    public void activateTimeSlot(@NonNull String timeSlotId, boolean activationFlag) {
+        checkNotNull(timeSlotId, "activeTimeSlot cannot be null!");
+        int row = mAppRepository.updateActivationFlag(timeSlotId, activationFlag);
         if (row == 1) {
             getView().showTimeSlotActivationFlagMessage(activationFlag);
         }
@@ -159,6 +159,12 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
         loadTimeSlots(false, false);
     }
 
+    public void deleteTimeSlot(String timeSlotId) {
+        mAppRepository.deleteTimeSlot(timeSlotId);
+        getView().showTimeSlotDeletedMessage();
+        loadTimeSlots(false, false);
+    }
+
     public boolean isForceUpdate() {
         return mForceUpdate;
     }
@@ -166,5 +172,4 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
     public void setForceUpdate(boolean mForceUpdate) {
         this.mForceUpdate = mForceUpdate;
     }
-
 }

@@ -37,7 +37,7 @@ public class AddEditTimeSlotActivity extends AppCompatActivity {
         if (mAddEditTimeSlotFragment == null) {
             mAddEditTimeSlotFragment = AddEditTimeSlotFragment.newInstance(mId);
 
-            if (getIntent().hasExtra(AddEditTimeSlotFragment.ARGUMENT_EDIT_TIME_SLOT_ID)) {
+            if (getIntent().hasExtra(AddEditTimeSlotFragment.ARGUMENT_EDIT_TIME_SLOT_ID) && mId != null) {
                 actionBar.setTitle(R.string.edit_timeSlot);
             } else {
                 actionBar.setTitle(R.string.add_timeSlot);

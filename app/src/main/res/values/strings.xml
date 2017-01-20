@@ -25,7 +25,7 @@
     <string name="timeslot_marked_inactive">TimeSlot (%1$s) is NOT active</string>
     <string name="loading_timeslots_error">Error while loading TimeSlots</string>
     <string name="successfully_saved_timeslot">TimeSlot is saved</string>
-    <string name="timeslot_deleted">TimeSlot is deleted.</string>
+    <string name="timeslot_deleted">A TimeSlot is deleted.</string>
     <string name="timeslots_cleared">All timeSlot is deleted.</string>
     <string name="next_operation_invalid">Time slots is no available now.</string>
     <string name="no_timeslots_all">You have no TimeSlots!</string>

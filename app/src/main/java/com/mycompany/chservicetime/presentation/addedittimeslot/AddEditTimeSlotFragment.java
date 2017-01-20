@@ -199,7 +199,7 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
     }
 
     private TimeSlot.ServiceOption mapServiceOption(int selectedId) {
-        if (selectedId == R.id.radio_mute)
+        if (selectedId == muteRB.getId())
             return TimeSlot.ServiceOption.MUTE;
         else
             return TimeSlot.ServiceOption.VIBRATION;
@@ -242,6 +242,20 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
         day4ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(4));
         day5ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(5));
         day6ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(6));
+
+//        serviceOptionRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                // find which radio button is selected
+//                if (checkedId == muteRB.getId()) {
+//                    Toast.makeText(getApplicationContext(), "choice: Silent",
+//                            Toast.LENGTH_SHORT).show();
+//                } else if (checkedId == vibrateRB.getId()) {
+//                    Toast.makeText(getApplicationContext(), "choice: Vibration",
+//                            Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
 
     private void saveTimeSlot() {

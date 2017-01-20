@@ -5,19 +5,14 @@ import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ListView;
 
+import com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.data.source.FakeAppDataSource;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,13 +21,9 @@ import org.junit.Test;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.hamcrest.Matchers.allOf;
+import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
 
 /**
  * This test use the fake data source.
@@ -116,33 +107,6 @@ public class TimeSlotListScreenTest {
         mTimeSlotListActivityTestRule.launchActivity(startIntent);
     }
 
-    /**
-     * A custom {@link Matcher} which matches an item in a {@link ListView} by its text.
-     * <p>
-     * View constraints:
-     * <ul>
-     * <li>View must be a child of a {@link ListView}
-     * <ul>
-     *
-     * @param itemText the text to match
-     * @return Matcher that matches text in the given view
-     */
-    private Matcher<View> withItemText(final String itemText) {
-        checkArgument(!TextUtils.isEmpty(itemText), "itemText cannot be null or empty");
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public boolean matchesSafely(View item) {
-                return allOf(isDescendantOfA(isAssignableFrom(ListView.class)),
-                        withText(itemText)).matches(item);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is isDescendantOfA LV with text " + itemText);
-            }
-        };
-    }
-
     @Test
     public void showAllTimeSlots() {
         // Add 2 timeSlots
@@ -152,8 +116,8 @@ public class TimeSlotListScreenTest {
         startTestActivity();
 
         //Verify that all our timeSlots are shown
-        onView(withItemText(TimeSlot1.name())).check(matches(isDisplayed()));
-        onView(withItemText(TimeSlot2.name())).check(matches(isDisplayed()));
+        onView(withItemText(TimeSlot1.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
+        onView(withItemText(TimeSlot2.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
     }
 
     @Test

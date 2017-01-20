@@ -42,7 +42,9 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.mycompany.chservicetime.presentation.CustomItemMatcher.matchToolbarTitle;
+import static com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
+import static com.mycompany.chservicetime.CustomItemMatcher.matchToolbarTitle;
+import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
 import static junit.framework.Assert.assertEquals;
 
 /**
@@ -171,7 +173,7 @@ public class WorkflowTest {
         onView(withId(R.id.time_slot_save)).perform(click());
 
         // Verify task is displayed on screen
-        onView(CustomItemMatcher.withItemText(name)).check(matches(isDisplayed()));
+        onView(withItemText(name, DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
         // verify the data display correctly
         onView(withId(R.id.nameTextView)).check(matches(withText(name)));
     }
