@@ -5,6 +5,7 @@ package com.mycompany.chservicetime.business.schedule;
  */
 public class ServiceTime {
     public static final Integer INVALID = null;
+    public static final Integer Mute = 0;
     public static final Integer Vibrate = 1;
     public static final Integer Normal = 2;
     public static final Integer NO_OPERATION = 3;

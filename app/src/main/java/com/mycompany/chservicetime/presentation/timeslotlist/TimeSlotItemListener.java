@@ -1,5 +1,8 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
+import com.mycompany.chservicetime.CHApplication;
+import com.mycompany.chservicetime.service.SchedulingIntentService;
+
 import static android.content.ContentValues.TAG;
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 
@@ -41,5 +44,7 @@ public class TimeSlotItemListener implements ItemActionListenerInterface {
     public void onActiveFlagSwitchClicked(String timeSlotId, boolean activeFlag) {
         LOGD(TAG, "onActiveFlagSwitchClicked(): timeSlotId=" + timeSlotId + " ; activeFlag=" + activeFlag);
         mPresenter.activateTimeSlot(timeSlotId, activeFlag);
+        // Send the open and close sound alarms based on the current data.
+        SchedulingIntentService.startActionSetAlarm(CHApplication.getContext());
     }
 }

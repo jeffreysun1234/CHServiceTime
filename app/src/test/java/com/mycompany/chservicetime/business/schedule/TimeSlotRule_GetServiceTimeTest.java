@@ -2,7 +2,6 @@ package com.mycompany.chservicetime.business.schedule;
 
 import com.mycompany.chservicetime.util.LogUtils;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +13,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -24,7 +24,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(Parameterized.class)
 @PrepareForTest(LogUtils.class)
-public class TimeSlotRuleTest {
+public class TimeSlotRule_GetServiceTimeTest {
 
     @Parameterized.Parameter(0)
     public int currentTime;
@@ -38,7 +38,7 @@ public class TimeSlotRuleTest {
     //Declares parameters here
     @Parameterized.Parameters(name = "{index}: ({0} --> {1} --> {2}")
     public static Collection<Object[]> data1() {
-        // {[0, 730],[800, 1320],[1600, 1830],[2100, 2500]}
+        // TimeSectors is {[0, 730],[800, 1320],[1600, 1830],[2100, 2500]}
         return Arrays.asList(new Object[][]{
                 {200, 730, ServiceTime.Vibrate},
                 {730, 800, ServiceTime.Normal},
@@ -48,7 +48,7 @@ public class TimeSlotRuleTest {
         });
     }
 
-    private ArrayList<int[]> originalTimeSectors;
+    private List<int[]> originalTimeSectors;
 
     @Before
     public void setUp() throws Exception {
@@ -63,18 +63,13 @@ public class TimeSlotRuleTest {
 
         // mock all the static methods in LogUtils
         mockStatic(LogUtils.class);
-
-        //expect( NetworkUtil.getLocalHostname() ).andReturn( "localhost" );
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
     }
 
     @Test
     public void testGetNextAlarmTime() throws Exception {
-        assertEquals(expected, TimeSlotRule.getServiceTime(originalTimeSectors, currentTime).nextAlarmTimeInt);
-        assertEquals(currentOperation, TimeSlotRule.getServiceTime(originalTimeSectors, currentTime).currentOperation);
+        ServiceTime serviceTime = TimeSlotRule.getServiceTime(originalTimeSectors, currentTime);
+        assertEquals(expected, serviceTime.nextAlarmTimeInt);
+        assertEquals(currentOperation, serviceTime.currentOperation);
     }
+
 }

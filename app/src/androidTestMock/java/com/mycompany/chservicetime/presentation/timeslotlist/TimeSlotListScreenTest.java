@@ -125,7 +125,7 @@ public class TimeSlotListScreenTest {
         startTestActivity();
 
         //Verify that all our timeSlots are shown
-        onView(withId(R.id.fab_add_timeslot)).check(matches(isDisplayed()));
+        onView(withId(R.id.add_time_slot)).check(matches(isDisplayed()));
         onView(withId(R.id.noTimeSlots)).check(matches(isDisplayed()));
     }
 
@@ -134,7 +134,7 @@ public class TimeSlotListScreenTest {
         startTestActivity();
 
         // Click on the add timeSlot button
-        onView(withId(R.id.fab_add_timeslot)).perform(click());
+        onView(withId(R.id.add_time_slot)).perform(click());
 
         // Check if the add timeSlot screen is displayed
         onView(withId(R.id.timeSlotNameEditText)).check(matches(isDisplayed()));
