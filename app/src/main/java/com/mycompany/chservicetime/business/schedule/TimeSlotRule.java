@@ -3,7 +3,6 @@ package com.mycompany.chservicetime.business.schedule;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.util.DateUtils;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +24,8 @@ public class TimeSlotRule {
     private static final String TAG = makeLogTag("TimeSlotRule");
 
     /**
+     * If there are more than one operation in a same time, the greater ordinar is higher priority.
+     *
      * @param originalTimeSectors TimeSlot is ordered by begintime and endtime ascending.
      *                            Data format: In 24 hours, [0] is begin time, [1] is end time.
      * @param currentTimeInt      In 24 hours format, for example, 920 means 9:20am.
@@ -54,35 +55,64 @@ public class TimeSlotRule {
           merge overlapping TimeSlots
         */
         ArrayList<int[]> operationTimeSlotList = new ArrayList<int[]>();
-        int[] timeSlotTemp = new int[2];
+        int[] timeSlotTemp = new int[3];
 
         timeSlotTemp[0] = originalTimeSectors.get(0)[0]; // begin time
         timeSlotTemp[1] = originalTimeSectors.get(0)[1]; // end time
+        timeSlotTemp[2] = originalTimeSectors.get(0)[2]; // operation
         for (int i = 1; i < originalTimeSectors.size(); i++) {
             if (originalTimeSectors.get(i)[0] <= timeSlotTemp[1]) // there is a overlap part in a time slot.
             {
-                // If the preceding time slot includes the current time slot, then skip the current time slot.
-                // If two TimeSlots are cross, extends the end time to the end time of the next time slot.
-                if (timeSlotTemp[1] < originalTimeSectors.get(i)[1]) {
-                    timeSlotTemp[1] = originalTimeSectors.get(i)[1];
+                // If the preceding time slot includes the current time slot,
+                // then compare operation to slips or skip the current time slot by operation.
+                // If two TimeSlots are cross, then compare operation to extends the end time
+                // to the end time of the next time slot or slips the time slot by operation
+                if (timeSlotTemp[1] < originalTimeSectors.get(i)[1]) { // cross
+                    if (timeSlotTemp[2] < originalTimeSectors.get(i)[2]) { //  later overlay previous
+                        operationTimeSlotList.add(
+                                new int[]{timeSlotTemp[0], originalTimeSectors.get(i)[0], timeSlotTemp[2]});
+                        timeSlotTemp[0] = originalTimeSectors.get(i)[0];
+                        timeSlotTemp[1] = originalTimeSectors.get(i)[1];
+                        timeSlotTemp[2] = originalTimeSectors.get(i)[2];
+                    } else if (timeSlotTemp[2] == originalTimeSectors.get(i)[2]) { // equal
+                        timeSlotTemp[1] = originalTimeSectors.get(i)[1];
+                    } else { // previous overlay later
+                        operationTimeSlotList.add(
+                                new int[]{timeSlotTemp[0], timeSlotTemp[1], timeSlotTemp[2]});
+                        timeSlotTemp[0] = timeSlotTemp[1];
+                        timeSlotTemp[1] = originalTimeSectors.get(i)[1];
+                        timeSlotTemp[2] = originalTimeSectors.get(i)[2];
+                    }
+                } else if (timeSlotTemp[1] > originalTimeSectors.get(i)[1]) { // include
+                    if (timeSlotTemp[2] < originalTimeSectors.get(i)[2]) { //  later overlay previous
+                        operationTimeSlotList.add(
+                                new int[]{timeSlotTemp[0], originalTimeSectors.get(i)[0], timeSlotTemp[2]});
+                        operationTimeSlotList.add(
+                                new int[]{originalTimeSectors.get(i)[0], originalTimeSectors.get(i)[1],
+                                        originalTimeSectors.get(i)[2]});
+                        timeSlotTemp[0] = originalTimeSectors.get(i)[1];
+                    }
+                } else { // timeSlotTemp[1] == originalTimeSectors.get(i)[1]
+                    if (timeSlotTemp[2] < originalTimeSectors.get(i)[2]) { //  later overlay previous
+                        operationTimeSlotList.add(
+                                new int[]{timeSlotTemp[0], originalTimeSectors.get(i)[0], timeSlotTemp[2]});
+                        timeSlotTemp[0] = originalTimeSectors.get(i)[1];
+                        timeSlotTemp[2] = originalTimeSectors.get(i)[2];
+                    }
                 }
             } else {
                 operationTimeSlotList.add(timeSlotTemp);
-                timeSlotTemp = new int[2];
+                timeSlotTemp = new int[3];
                 timeSlotTemp[0] = originalTimeSectors.get(i)[0];
                 timeSlotTemp[1] = originalTimeSectors.get(i)[1];
+                timeSlotTemp[2] = originalTimeSectors.get(i)[2];
             }
         }
         operationTimeSlotList.add(timeSlotTemp);
 
         int timePoint = getTimePoint(operationTimeSlotList, serviceTime);
 
-        try {
-            LOGD(TAG, currentTimeInt + " --> "
-                    + DateUtils.format(serviceTime.nextAlarmTime) + " === " + timePoint + " --> "
-                    + serviceTime.currentOperation);
-        } catch (ParseException e) {
-        }
+        LOGD(TAG, serviceTime.toString());
 
         return serviceTime;
     }
@@ -107,7 +137,7 @@ public class TimeSlotRule {
         for (int[] timeSlotTemp : timeSlotList) {
             // array structure is [beginTime, endTime].
             if (serviceTime.currentTime < timeSlotTemp[1]) {
-                serviceTime.currentOperation = ServiceTime.Vibrate;
+                serviceTime.currentOperation = timeSlotTemp[2];
                 serviceTime.nextAlarmTime = DateUtils.getCurrentTimestampOvernight(timeSlotTemp[1]);
                 vTimePoint = timeSlotTemp[1];
                 if (serviceTime.currentTime < timeSlotTemp[0]) {
@@ -245,9 +275,11 @@ public class TimeSlotRule {
         Collections.sort(timeSectors, new Comparator<int[]>() {
                     @Override
                     public int compare(int[] lhs, int[] rhs) {
-                        if (lhs[0] < rhs[0] || (lhs[0] == rhs[0] && lhs[1] < rhs[1])) {
+                        if (lhs[0] < rhs[0] || (lhs[0] == rhs[0] && lhs[1] < rhs[1])
+                                || (lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] < rhs[2])) {
                             return -1;
-                        } else if (lhs[0] > rhs[0] || (lhs[0] == rhs[0] && lhs[1] > rhs[1])) {
+                        } else if (lhs[0] > rhs[0] || (lhs[0] == rhs[0] && lhs[1] > rhs[1])
+                                || (lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] > rhs[2])) {
                             return 1;
                         }
                         return 0;

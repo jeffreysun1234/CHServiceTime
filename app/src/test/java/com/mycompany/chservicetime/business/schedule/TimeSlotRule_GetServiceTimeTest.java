@@ -53,12 +53,12 @@ public class TimeSlotRule_GetServiceTimeTest {
     @Before
     public void setUp() throws Exception {
         originalTimeSectors = new ArrayList<int[]>();
-        originalTimeSectors.add(new int[]{0, 330});
-        originalTimeSectors.add(new int[]{310, 730});
-        originalTimeSectors.add(new int[]{800, 1320});
-        originalTimeSectors.add(new int[]{1110, 1230});
-        originalTimeSectors.add(new int[]{1600, 1830});
-        originalTimeSectors.add(new int[]{2100, 2500});
+        originalTimeSectors.add(new int[]{0, 330, 2});
+        originalTimeSectors.add(new int[]{310, 730, 2});
+        originalTimeSectors.add(new int[]{800, 1320, 2});
+        originalTimeSectors.add(new int[]{1110, 1230, 2});
+        originalTimeSectors.add(new int[]{1600, 1830, 2});
+        originalTimeSectors.add(new int[]{2100, 2500, 2});
         // {[0, 730],[800, 1320],[1600, 1830],[2100, 2500]}
 
         // mock all the static methods in LogUtils

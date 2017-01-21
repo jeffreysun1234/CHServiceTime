@@ -17,8 +17,10 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -40,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotFragment;
@@ -58,7 +61,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Display a grid of {@link TimeSlot}s. User can choose to view all, active or completed timeSlots.
  */
-public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
+public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     View mNoTimeSlotsView;
     ImageView mNoTimeSlotIcon;
@@ -73,6 +77,9 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
      * Listener for clicks on timeSlots in the ListView.
      */
     ItemActionListenerInterface mItemListener;
+
+    TextView mNextAlarmTextView;
+    SharedPreferences sp;
 
     /**
      * 菜单创建器。在Item要创建菜单的时候调用。
@@ -169,6 +176,8 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         mNoTimeSlotAddView = (TextView) root.findViewById(R.id.noTimeSlotsAdd);
         mNoTimeSlotAddView.setOnClickListener(v -> showAddEditTimeSlot(null));
 
+        mNextAlarmTextView = (TextView) root.findViewById(R.id.nextOperationTextView);
+
         // Set up timeSlots view
         SwipeMenuRecyclerView listView = (SwipeMenuRecyclerView) root.findViewById(R.id.timeslot_list);
         listView.setHasFixedSize(true);
@@ -206,6 +215,9 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
         swipeRefreshLayout.setOnRefreshListener(() -> getPresenter().loadTimeSlots(false));
 
         setHasOptionsMenu(true);
+
+        // set preference manager
+        sp = PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
     @Override
@@ -237,6 +249,31 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        sp.registerOnSharedPreferenceChangeListener(this);
+        // always display the newest value.
+        mNextAlarmTextView.setText(PreferenceSupport.getNextAlarmDetail(getContext()));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    /******
+     * Preference Listener's method
+     ******/
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(PreferenceSupport.NEXT_ALARM_DETAIL)) {
+            mNextAlarmTextView.setText(PreferenceSupport.getNextAlarmDetail(getContext()));
+        }
+
     }
 
     @Override

@@ -29,6 +29,8 @@ public class RingerModeIntentService extends IntentService {
             "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_NORMAL";
     public static final String ACTION_SET_RINGER_MODE_VIBRATE =
             "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_VIBRATE";
+    public static final String ACTION_SET_RINGER_MODE_MUTE =
+            "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_MUTE";
 
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
@@ -51,10 +53,7 @@ public class RingerModeIntentService extends IntentService {
 
             LOGD(TAG, "RingerModeIntentService Action=" + action);
 
-            if (ACTION_SET_RINGER_MODE_NORMAL.equals(action) ||
-                    ACTION_SET_RINGER_MODE_VIBRATE.equals(action)) {
-                handleActionSetRingerMode(action);
-            }
+            handleActionSetRingerMode(action);
         }
     }
 
@@ -68,6 +67,9 @@ public class RingerModeIntentService extends IntentService {
         if (ACTION_SET_RINGER_MODE_VIBRATE.equals(action)) {
             LOGD(TAG, "set ringer mode: RINGER_MODE_VIBRATE");
             audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+        } else if (ACTION_SET_RINGER_MODE_MUTE.equals(action)) {
+            LOGD(TAG, "set ringer mode: RINGER_MODE_MUTE");
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         } else if (ACTION_SET_RINGER_MODE_NORMAL.equals(action)) {
             LOGD(TAG, "set ringer mode: RINGER_MODE_NORMAL");
             audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);

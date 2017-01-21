@@ -140,7 +140,8 @@ public class SchedulingIntentService extends IntentService {
 
             StringBuffer sb = new StringBuffer();
             if (serviceTime.currentOperation == ServiceTime.Normal
-                    || serviceTime.currentOperation == ServiceTime.Vibrate) {
+                    || serviceTime.currentOperation == ServiceTime.Vibrate
+                    || serviceTime.currentOperation == ServiceTime.Mute) {
                 sb.append(" at ")
                         .append(new SimpleDateFormat("MMM dd, HH:mm 'on' EEE", Locale.US)
                                 .format(serviceTime.nextAlarmTime));
@@ -157,6 +158,10 @@ public class SchedulingIntentService extends IntentService {
             RingerModeIntentService.startActionSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_VIBRATE);
+        } else if (serviceTime.currentOperation == ServiceTime.Mute) {
+            RingerModeIntentService.startActionSetRingerMode(
+                    getApplicationContext(),
+                    RingerModeIntentService.ACTION_SET_RINGER_MODE_MUTE);
         } else if (serviceTime.currentOperation == ServiceTime.Normal
                 || serviceTime.currentOperation == ServiceTime.NO_OPERATION) {
             RingerModeIntentService.startActionSetRingerMode(

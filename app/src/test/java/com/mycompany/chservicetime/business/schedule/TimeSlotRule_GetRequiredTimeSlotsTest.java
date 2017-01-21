@@ -20,21 +20,23 @@ public class TimeSlotRule_GetRequiredTimeSlotsTest {
     public void setUp() throws Exception {
         originalTimeSlots = new ArrayList<TimeSlot>();
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                23, 0, 1, 30, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                23, 0, 1, 30, "0111110", true, true, TimeSlot.ServiceOption.MUTE));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                3, 10, 7, 30, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                3, 10, 7, 30, "0111110", true, true, TimeSlot.ServiceOption.MUTE));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                16, 0, 18, 30, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                3, 10, 7, 30, "0111110", true, true, TimeSlot.ServiceOption.VIBRATION));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                8, 0, 13, 20, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                16, 0, 18, 30, "0111110", true, true, TimeSlot.ServiceOption.VIBRATION));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                11, 11, 13, 13, "0111110", true, false, TimeSlot.ServiceOption.NORMAL));
+                8, 0, 13, 20, "0111110", true, true, TimeSlot.ServiceOption.MUTE));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                22, 22, 3, 3, "0101110", true, true, TimeSlot.ServiceOption.NORMAL));
+                11, 11, 13, 13, "0111110", true, false, TimeSlot.ServiceOption.VIBRATION));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                11, 10, 12, 30, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                22, 22, 3, 3, "0101110", true, true, TimeSlot.ServiceOption.VIBRATION));
         originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                21, 0, 1, 0, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
+                11, 10, 12, 30, "0111110", true, true, TimeSlot.ServiceOption.VIBRATION));
+        originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
+                21, 0, 1, 0, "0111110", true, true, TimeSlot.ServiceOption.MUTE));
     }
 
     @Test
