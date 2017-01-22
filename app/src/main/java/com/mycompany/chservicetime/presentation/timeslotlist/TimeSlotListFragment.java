@@ -41,11 +41,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotFragment;
+import com.mycompany.chservicetime.service.SchedulingIntentService;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -290,6 +292,9 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
 
     @Override
     public void showTimeSlots(List<TimeSlot> timeSlots) {
+        // Send the open and close sound alarms based on the current data.
+        SchedulingIntentService.startActionSetAlarm(CHApplication.getContext());
+
         mListAdapter.replaceData(timeSlots);
 
         mTimeSlotsView.setVisibility(View.VISIBLE);
@@ -298,6 +303,9 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
 
     @Override
     public void showNoTimeSlots() {
+        // Send the open and close sound alarms based on the current data.
+        SchedulingIntentService.startActionSetAlarm(CHApplication.getContext());
+
         showNoTimeSlotsViews(
                 getResources().getString(R.string.no_timeslots_all),
                 R.drawable.ic_assignment_turned_in_24dp,

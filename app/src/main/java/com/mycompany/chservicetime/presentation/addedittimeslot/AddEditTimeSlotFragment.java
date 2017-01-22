@@ -39,6 +39,9 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
 
     private String mId;
 
+    // Temporary variable to store value.
+    boolean activationFlag;
+
     private char[] days = "0000000".toCharArray();
 
     private EditText nameEditText;
@@ -185,6 +188,8 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
             day6ToggleButton.setChecked(days[6] == '1');
             repeatFlagCheckBox.setChecked(timeSlot.repeat_flag());
             mapServiceOption(timeSlot.service_option());
+
+            activationFlag = timeSlot.activation_flag();
         }
     }
 
@@ -250,7 +255,7 @@ public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter
                 beginTimeTP.getCurrentHour(), beginTimeTP.getCurrentMinute(),
                 endTimeTP.getCurrentHour(), endTimeTP.getCurrentMinute(), String.copyValueOf(days),
                 repeatFlagCheckBox.isChecked(),
-                mapServiceOption(serviceOptionRG.getCheckedRadioButtonId()));
+                mapServiceOption(serviceOptionRG.getCheckedRadioButtonId()), activationFlag);
     }
 
     /**

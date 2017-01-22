@@ -96,7 +96,8 @@ public class AddEditTimeSlotPresenter extends BaseTiPresenter<AddEditTimeSlotVie
 
     public void saveTimeSlot(String name, String description,
                              int beginTimeHour, int beginTimeMinute, int endTimeHour, int endTimeMinute,
-                             String days, boolean repeatFlag, TimeSlot.ServiceOption serviceOption) {
+                             String days, boolean repeatFlag, TimeSlot.ServiceOption serviceOption,
+                             boolean activationFlag) {
         TimeSlot timeSlot = TimeSlot.createTimeSlot(name, description,
                 beginTimeHour, beginTimeMinute, endTimeHour, endTimeMinute,
                 days, repeatFlag, serviceOption);
@@ -110,7 +111,8 @@ public class AddEditTimeSlotPresenter extends BaseTiPresenter<AddEditTimeSlotVie
                 mAppRepository.saveTimeSlot(timeSlot);
             } else {
                 // update a TimeSlot, _id keeps same.
-                mAppRepository.saveTimeSlot(timeSlot.with_Id(mId));
+                mAppRepository.saveTimeSlot(
+                        timeSlot.toBuilder()._id(mId).activation_flag(activationFlag).build());
             }
 
             getView().showTimeSlotList();

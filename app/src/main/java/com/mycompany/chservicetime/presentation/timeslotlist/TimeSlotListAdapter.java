@@ -9,10 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.model.TimeSlot;
-import com.mycompany.chservicetime.service.SchedulingIntentService;
 import com.mycompany.chservicetime.util.DisplayUtils;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
 
@@ -35,9 +33,6 @@ public class TimeSlotListAdapter extends SwipeMenuAdapter<TimeSlotListAdapter.Vi
     public void replaceData(List<TimeSlot> timeSlots) {
         setList(timeSlots);
         notifyDataSetChanged();
-
-        // Send the open and close sound alarms based on the current data.
-        SchedulingIntentService.startActionSetAlarm(CHApplication.getContext());
     }
 
     private void setList(List<TimeSlot> timeSlots) {
