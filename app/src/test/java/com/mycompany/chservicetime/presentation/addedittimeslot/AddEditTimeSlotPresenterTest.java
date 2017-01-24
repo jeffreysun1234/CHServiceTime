@@ -62,7 +62,7 @@ public class AddEditTimeSlotPresenterTest {
         mAddEditTimeSlotPresenter.saveTimeSlot(timeSlot.name(), timeSlot.description(),
                 timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
                 timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
-                timeSlot.repeat_flag(), timeSlot.service_option());
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
 
         // Then a task is saved in the repository and the view updated
         verify(mAppRepository).saveTimeSlot(any(TimeSlot.class)); // saved to the model
@@ -82,7 +82,7 @@ public class AddEditTimeSlotPresenterTest {
         mAddEditTimeSlotPresenter.saveTimeSlot("", timeSlot.description(),
                 timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
                 timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
-                timeSlot.repeat_flag(), timeSlot.service_option());
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
 
         // Then an error is shown in the UI
         verify(mAddEditTimeSlotView).showMessage(
@@ -104,7 +104,7 @@ public class AddEditTimeSlotPresenterTest {
         mAddEditTimeSlotPresenter.saveTimeSlot(timeSlot.name(), timeSlot.description(),
                 timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
                 timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
-                timeSlot.repeat_flag(), timeSlot.service_option());
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
 
         // Then a task is saved in the repository and the view updated
         verify(mAppRepository).saveTimeSlot(any(TimeSlot.class)); // saved to the model

@@ -16,6 +16,12 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['autovaluegson.defaultCollectionsToEmpty': 'true']
+            }
+        }
+
     }
 
     compileOptions {
@@ -144,9 +150,10 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
     // Retrofit & Gson
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile "com.google.code.gson:gson:$rootProject.gsonVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofit2Version"
+    compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.retrofit2Version"
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
 
     // MVP Library
@@ -161,6 +168,10 @@ dependencies {
     provided "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
     annotationProcessor "com.google.auto.value:auto-value:$rootProject.autoValueVersion"
 
+    // AutoValue: Gson Extension
+    provided "com.ryanharter.auto.value:auto-value-gson:$rootProject.autoValueGsonVersion"
+    annotationProcessor "com.ryanharter.auto.value:auto-value-gson:$rootProject.autoValueGsonVersion"
+
     // Swipe RecyclerView
     compile "com.yanzhenjie:recyclerview-swipe:$rootProject.swipeRecyclerViewVersion"
 
@@ -170,6 +181,8 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-library:$rootProject.ext.hamcrestVersion"
     testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockitoVersion"
     testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockitoVersion"
+
+    // Mock Web Server
     testCompile "com.squareup.okhttp3:mockwebserver:$rootProject.ext.mockwebserverVersion"
 
     // Android Testing Support Library's runner and rules
