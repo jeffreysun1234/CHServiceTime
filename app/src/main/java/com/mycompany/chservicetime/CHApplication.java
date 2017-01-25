@@ -18,6 +18,7 @@ package com.mycompany.chservicetime;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.mycompany.chservicetime.di.component.AppRepositoryComponent;
 import com.mycompany.chservicetime.di.component.ApplicationComponent;
@@ -35,22 +36,28 @@ public class CHApplication extends Application {
 
     public static CHApplication INSTANCE;
 
-    // Global context used in this app
-    private static Context context = null;
+    // Global mContext used in this app
+    private static Context mContext = null;
     private static ApplicationComponent mApplicationComponent;
     private static AppRepositoryComponent mAppRepositoryComponent;
 
     /**
-     * If you want to mock context, then override this method in your mock subclass of CHApplication.
+     * If you want to mock mContext, then override this method in your mock subclass of CHApplication.
      */
     protected Context createContext() {
         return this.getApplicationContext();
     }
 
     public static Context getContext() {
-        if (context == null)
-            LOGD(TAG, "Application context is NULL.");
-        return context;
+        if (mContext == null)
+            LOGD(TAG, "Application mContext is NULL.");
+        return mContext;
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(this);
     }
 
     @Override
@@ -69,7 +76,7 @@ public class CHApplication extends Application {
             CHLog.setLogger(null);
         }
 
-        context = createContext();
+        mContext = createContext();
 
         // initialize Firebase
         //Firebase.setAndroidContext(this);

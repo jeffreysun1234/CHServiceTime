@@ -27,12 +27,11 @@ import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.di.component.DaggerTimeSlotListComponent;
 import com.mycompany.chservicetime.di.component.TimeSlotListComponent;
+import com.mycompany.chservicetime.presentation.BaseTiActivity;
 import com.mycompany.chservicetime.util.ActivityUtils;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
 
-import net.grandcentrix.thirtyinch.TiActivity;
-
-public class TimeSlotListActivity extends TiActivity<TimeSlotListPresenter, TimeSlotListView> {
+public class TimeSlotListActivity extends BaseTiActivity {
 
     TimeSlotListPresenter timeSlotListPresenter;
     TimeSlotListFragment timeSlotsFragment;

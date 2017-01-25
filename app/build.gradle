@@ -13,6 +13,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -40,13 +41,11 @@ android {
             debuggable true
             minifyEnabled false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
-            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
         release {
             minifyEnabled true
-            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
@@ -125,6 +124,7 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
 
     compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
+    compile 'com.android.support:multidex:1.0.1'
 
     compile "com.google.guava:guava:$rootProject.guavaVersion"
 
@@ -133,10 +133,11 @@ dependencies {
     compile "io.reactivex:rxandroid:$rootProject.rxandroidVersion"
 
     // Firebase
-    compile 'com.google.firebase:firebase-core:9.4.0'
-    compile 'com.google.firebase:firebase-database:9.4.0'
-    compile 'com.google.firebase:firebase-auth:9.4.0'
-    compile 'com.firebaseui:firebase-ui-auth:0.5.1'
+    compile "com.google.firebase:firebase-core:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-database:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-storage:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-auth:$rootProject.firebaseVersion"
+    compile "com.firebaseui:firebase-ui:$rootProject.firebaseUIVersion"
 
     // Rx access Database
     compile "com.squareup.sqlbrite:sqlbrite:$rootProject.sqlbriteVersion"
@@ -160,6 +161,8 @@ dependencies {
     compile "net.grandcentrix.thirtyinch:thirtyinch:$thirtyinchVersion"
     compile "net.grandcentrix.thirtyinch:thirtyinch-rx:$thirtyinchVersion"
     testCompile "net.grandcentrix.thirtyinch:thirtyinch-test:$thirtyinchVersion"
+    // contains CompositeActivity
+    compile "com.pascalwelsch.compositeandroid:activity:$rootProject.supportLibraryVersion"
 
     // This is only needed if you want to use encrypted databases
     compile "net.zetetic:android-database-sqlcipher:$sqlcipherVersion"

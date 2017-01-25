@@ -17,6 +17,7 @@ buildscript {
         // Retrolambda
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
 
+        // Firebase
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.2.2'
@@ -27,6 +28,7 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
@@ -50,6 +52,8 @@ ext {
     daggerVersion = '2.8'
     dexmakerVersion = '1.2'
     espressoVersion = '2.2.2'
+    firebaseVersion = '10.0.1'
+    firebaseUIVersion = '1.1.1'
     gsonVersion = '2.8.0'
     guavaVersion = '18.0'
     hamcrestVersion = '1.3'

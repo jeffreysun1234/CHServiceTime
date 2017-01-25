@@ -47,6 +47,10 @@
     <string name="sign_out_successful">Sign out successful</string>
     <string name="sign_in_successful">Sign in successful</string>
     <string name="sign_in_hint">"Please Login at first."</string>
+    <string name="unknown_response">Unexpected onActivityResult response code</string>
+    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
 
     <string name="progress_dialog_loading">Loading…</string>
     <string name="progress_dialog_access_firebase">Accessing Firebase</string>
@@ -64,4 +68,7 @@
 
     <string name="vibrate">Vibrate</string>
     <string name="mute">Mute</string>
+
+    <string name="unknown_error">An unknown error occurred</string>
+
 </resources>
