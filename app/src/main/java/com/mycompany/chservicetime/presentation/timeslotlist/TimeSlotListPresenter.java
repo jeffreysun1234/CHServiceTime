@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
-import com.mycompany.chservicetime.data.firebase.FirebaseRestDAO;
+import com.mycompany.chservicetime.data.firebase.FirebaseDAO;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.source.AppDataSource;
 import com.mycompany.chservicetime.data.source.AppRepository;
@@ -200,9 +200,12 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
                         LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
 
-                        FirebaseRestDAO.create().backupTimeSlotItemList(
+//                        FirebaseRestDAO.create().backupTimeSlotItemList(
+//                                userId,
+//                                authToken,
+//                                mAppRepository.getAllTimeSlot().toBlocking().first());
+                        FirebaseDAO.create().addTimeSlotItemList(
                                 userId,
-                                authToken,
                                 mAppRepository.getAllTimeSlot().toBlocking().first());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -239,8 +242,10 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
                         LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
 
-                        Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
-                                .restoreTimeSlotItemList(userId, authToken);
+//                        Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
+//                                .restoreTimeSlotItemList(userId, authToken);
+                        Collection<TimeSlotItem> timeSlotItemList = FirebaseDAO.create()
+                                .getTimeSlotItemList(userId);
 
                         for (TimeSlotItem tsItem : timeSlotItemList) {
                             mAppRepository.saveTimeSlot(ModelConverter.firebaseTimeSlotItemToTimeSlot(tsItem));

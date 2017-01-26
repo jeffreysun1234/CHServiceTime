@@ -29,7 +29,6 @@ import com.mycompany.chservicetime.data.source.AppRepository;
 public class Injection {
 
     public static AppRepository provideTimeSlotsRepository(@NonNull Context context) {
-        //return AppRepository.getInstance(CHServiceTimeDAO.getInstance(context));
-        return null;
+        return AppRepository.getInstance(CHServiceTimeDAO.getInstance(context));
     }
 }

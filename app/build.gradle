@@ -13,6 +13,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+
         multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -32,7 +33,7 @@ android {
 
     dexOptions {
         maxProcessCount 2 // this is the default value
-        javaMaxHeapSize "2g"
+        javaMaxHeapSize "3328m"
         preDexLibraries true
     }
 
@@ -91,6 +92,9 @@ android {
     }
 
     configurations {
+        all {
+            resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        }
         // Resolved 'com.android.support:support-annotations' versions for app (23.2.1) and test
         // app (23.1.0) differ.
         // Add this statement if 'com.android.support:support-annotations:x.x.x' dependencies was already defined in compile scheme.
@@ -102,6 +106,10 @@ android {
 
         //androidTestCompile.exclude group: 'com.google.code.findbugs', module: 'jsr305'
         testCompile.exclude group: 'com.android.support'
+
+        // conflict Firebase-Admin
+        compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
+        compile.exclude group: "org.json", module: "json"
     }
 }
 
@@ -125,9 +133,8 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
 
     compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
-    compile 'com.android.support:multidex:1.0.1'
 
-    compile "com.google.guava:guava:$rootProject.guavaVersion"
+    compile 'com.android.support:multidex:1.0.1'
 
     // RxJava
     compile "io.reactivex:rxjava:$rootProject.rxjavaVersion"
@@ -141,6 +148,7 @@ dependencies {
     compile "com.firebaseui:firebase-ui:$rootProject.firebaseUIVersion"
     // Firebase Admin
     //compile "com.google.firebase:firebase-admin:$rootProject.firebaseAdminVersion"
+    //compile "com.google.android.gms:play-services-auth:$rootProject.firebaseVersion"
 
     // Rx access Database
     compile "com.squareup.sqlbrite:sqlbrite:$rootProject.sqlbriteVersion"
@@ -148,6 +156,9 @@ dependencies {
     // Dagger dependencies
     compile "com.google.dagger:dagger:$rootProject.daggerVersion"
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+
+    // Dagger 2 has included it
+    //compile "com.google.guava:guava:$rootProject.guavaVersion"
 
     // adds the @Generated annotation lacking on Android
     // provided 'javax.annotation:jsr250-api:1.0'

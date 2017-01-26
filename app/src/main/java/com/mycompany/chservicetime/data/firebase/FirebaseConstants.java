@@ -61,10 +61,27 @@ public class FirebaseConstants {
                 FIREBASE_LOCATION_TIMESLOT_ITEMS + ".json";
     }
 
+    public static String timeSlotItemListURL(String userId, boolean isRest) {
+        String url = FIREBASE_LOCATION_TIMESLOT_LISTS +
+                "/" + userId + "/" +
+                FIREBASE_LOCATION_DEVICE_ID + "/" +
+                FIREBASE_LOCATION_TIMESLOT_ITEMS;
+        if (isRest) return url + ".json";
+        return url;
+    }
+
     // example: timeSlotLists/<uid>/phoneIMEI.json
     public static String timeSlotListRestURL(String userId) {
         return FIREBASE_LOCATION_TIMESLOT_LISTS +
                 "/" + userId + "/" +
                 FIREBASE_LOCATION_DEVICE_ID + ".json";
+    }
+
+    public static String timeSlotListURL(String userId, boolean isRest) {
+        String url = FIREBASE_LOCATION_TIMESLOT_LISTS +
+                "/" + userId + "/" +
+                FIREBASE_LOCATION_DEVICE_ID;
+        if (isRest) return url + ".json";
+        return url;
     }
 }
