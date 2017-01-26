@@ -39,7 +39,7 @@ public class FirebaseConstants {
     /**
      * Constants for Firebase URL
      */
-    public static final String FIREBASE_URL = "https://chservicetime-6ac05.firebaseio.com/";
+    public static final String FIREBASE_URL = "https://chservicetime.firebaseio.com";
     public static final String FIREBASE_URL_USERS = FIREBASE_URL + "/" + FIREBASE_LOCATION_USERS;
     public static final String FIREBASE_URL_TIMESLOT_LISTS =
             FIREBASE_URL + FIREBASE_LOCATION_TIMESLOT_LISTS;

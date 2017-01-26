@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -242,11 +243,11 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
                 getPresenter().loadTimeSlots(true);
                 return true;
             case R.id.backup_time_slot_list: {
-                //getPresenter().backupTimeSlotList();
+                getPresenter().backupTimeSlotList();
                 return true;
             }
             case R.id.restore_time_slot_list: {
-                //getPresenter().restoreTimeSlotList();
+                getPresenter().restoreTimeSlotList();
                 return true;
             }
         }
@@ -334,6 +335,11 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
     @Override
     public void showTimeSlotDeletedMessage() {
         showMessage(getString(R.string.timeslot_deleted));
+    }
+
+    @Override
+    public void showFeedbackMessage(@StringRes int messageRes) {
+        ((TimeSlotListActivity) getActivity()).showSnackbar(messageRes);
     }
 
     private void showNoTimeSlotsViews(String mainText, int iconRes, boolean showAddView) {

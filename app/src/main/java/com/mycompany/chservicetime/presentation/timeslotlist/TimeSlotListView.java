@@ -1,5 +1,7 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
+import android.support.annotation.StringRes;
+
 import com.mycompany.chservicetime.model.TimeSlot;
 
 import net.grandcentrix.thirtyinch.TiView;
@@ -29,4 +31,6 @@ public interface TimeSlotListView extends TiView {
     void showTimeSlotsClearedMessage();
 
     void showTimeSlotDeletedMessage();
+
+    void showFeedbackMessage(@StringRes int messageRes);
 }

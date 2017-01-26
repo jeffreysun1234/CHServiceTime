@@ -17,10 +17,16 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
+import com.mycompany.chservicetime.data.firebase.FirebaseRestDAO;
+import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.source.AppDataSource;
 import com.mycompany.chservicetime.data.source.AppRepository;
+import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.BaseTiPresenter;
 import com.mycompany.chservicetime.util.CHLog;
@@ -29,6 +35,8 @@ import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
 
 import net.grandcentrix.thirtyinch.rx.RxTiPresenterSubscriptionHandler;
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,12 +46,14 @@ import rx.Subscription;
 import rx.functions.Func1;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 
 /**
  * Listens to user actions from the UI ({@link TimeSlotListFragment}), retrieves the data and updates the
  * UI as required.
  */
 public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
+    private static final String TAG = "TimeSlotListPresenter";
 
     @NonNull
     AppRepository mAppRepository;
@@ -171,5 +181,86 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
     public void setForceUpdate(boolean mForceUpdate) {
         this.mForceUpdate = mForceUpdate;
+    }
+
+    public void backupTimeSlotList() {
+        if (FirebaseAuthAdapter.isSignIn()) {
+            new AsyncTask() {
+
+                @Override
+                protected void onPreExecute() {
+                    getView().setLoadingIndicator(true);
+                }
+
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    try {
+                        String userId = FirebaseAuthAdapter.getUserId();
+                        String authToken = FirebaseAuthAdapter.getAuthToken();
+
+                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+
+                        FirebaseRestDAO.create().backupTimeSlotItemList(
+                                userId,
+                                authToken,
+                                mAppRepository.getAllTimeSlot().toBlocking().first());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    getView().setLoadingIndicator(false);
+                    getView().showFeedbackMessage(R.string.backup_done);
+                }
+            }.execute();
+        } else {
+            getView().showFeedbackMessage(R.string.sign_in_hint);
+        }
+    }
+
+    public void restoreTimeSlotList() {
+        if (FirebaseAuthAdapter.isSignIn()) {
+            new AsyncTask() {
+
+                @Override
+                protected void onPreExecute() {
+                    getView().setLoadingIndicator(true);
+                }
+
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    try {
+                        String userId = FirebaseAuthAdapter.getUserId();
+                        String authToken = FirebaseAuthAdapter.getAuthToken();
+
+                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+
+                        Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
+                                .restoreTimeSlotItemList(userId, authToken);
+
+                        for (TimeSlotItem tsItem : timeSlotItemList) {
+                            mAppRepository.saveTimeSlot(ModelConverter.firebaseTimeSlotItemToTimeSlot(tsItem));
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Object o) {
+                    getView().setLoadingIndicator(false);
+                    getView().showFeedbackMessage(R.string.restore_done);
+                }
+            }.execute();
+        } else {
+            getView().showFeedbackMessage(R.string.sign_in_hint);
+        }
     }
 }

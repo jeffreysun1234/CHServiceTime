@@ -40,7 +40,7 @@ public interface FirebaseEndpointInterface {
      */
     @DELETE
     Call<Object> deleteTimeSlotItems(@Url String url,
-                                     @Query("auth") String auth);
+                                     @Query("access_token") String auth);
 
     /**
      * FirebaseConstants.timeSlotItemListRestURL();

@@ -65,6 +65,16 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
 
         mRootView = findViewById(android.R.id.content);
 
+        //FileInputStream serviceAccount = new FileInputStream("path/to/service_account_keyey.json");
+//        InputStream serviceAccount = getResources().openRawResource(R.raw.service_account_key);
+//
+//        FirebaseOptions options = new FirebaseOptions.Builder()
+//                .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+//                .setDatabaseUrl("https://chservicetime.firebaseio.com/")
+//                .build();
+//
+//        FirebaseApp.initializeApp(options);
+
         FirebaseAuthAdapter.FIREBASE_AUTH = FirebaseAuth.getInstance();
 
         /**

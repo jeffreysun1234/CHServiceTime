@@ -2,6 +2,7 @@ package com.mycompany.chservicetime.data.firebase;
 
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
+import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,7 +27,6 @@ import retrofit2.Response;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -148,9 +148,9 @@ public class RestCallTest {
 
     @Test
     public void testBackupTimeSlotItemList() throws Exception {
-        ArrayList<TimeSlotItem> tsItems = new ArrayList<TimeSlotItem>();
+        ArrayList<TimeSlot> tsItems = new ArrayList<TimeSlot>();
         tsItems.add(
-                new TimeSlotItem("time_slot_id_1234", "Test", "Test Item", 9, 10, 10, 10, "0011001", false, false));
+                TimeSlot.createTimeSlot("111", "Work", "work time", 9, 0, 17, 0, "0111110", true, false, TimeSlot.ServiceOption.NORMAL));
 
         int count = mFirebaseRestDAO.backupTimeSlotItemList(encodedUserEmail, authToken, tsItems);
 

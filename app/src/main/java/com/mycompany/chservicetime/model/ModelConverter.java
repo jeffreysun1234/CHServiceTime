@@ -77,13 +77,21 @@ public class ModelConverter {
     }
 
     public static TimeSlot firebaseTimeSlotItemToTimeSlot(TimeSlotItem tsItem) {
-//        TimeSlot timeSlot = new TimeSlot("", tsItem.getName(),tsItem.getDescription(),
-//                tsItem.getBeginTimeHour(), tsItem.getBeginTimeMinute(),
-//                tsItem.getEndTimeHour(), tsItem.getEndTimeMinute(),
-//                tsItem.getDays(), tsItem.isRepeatFlag());
-//        timeSlot.activationFlag = tsItem.isActivationFlag();
-//
-//        return timeSlot;
-        return null;
+        TimeSlot timeSlot = TimeSlot.createTimeSlot(
+                tsItem.getTimeSlotId(), tsItem.getName(), tsItem.getDescription(),
+                tsItem.getBeginTimeHour(), tsItem.getBeginTimeMinute(),
+                tsItem.getEndTimeHour(), tsItem.getEndTimeMinute(),
+                tsItem.getDays(), tsItem.isRepeatFlag(), tsItem.isActivationFlag(),
+                TimeSlot.ServiceOption.valueOf(tsItem.getServiceOption()));
+
+        return timeSlot;
+    }
+
+    public static TimeSlotItem TimeSlotToFirebaseTimeSlotItem(TimeSlot timeSlot) {
+        return new TimeSlotItem(timeSlot._id(), timeSlot.name(), timeSlot.description(),
+                timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
+                timeSlot.end_time_hour(), timeSlot.end_time_minute(),
+                timeSlot.days(), timeSlot.repeat_flag(), timeSlot.activation_flag(),
+                timeSlot.service_option().toString());
     }
 }

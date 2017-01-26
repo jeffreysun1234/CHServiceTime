@@ -48,11 +48,13 @@ ext {
     supportLibraryVersion = '25.1.0'
 
     autoValueVersion = '1.4-rc1'
+    autoValueFirebaseVersion = '1.0.1'
     autoValueGsonVersion = '0.4.5'
     daggerVersion = '2.8'
     dexmakerVersion = '1.2'
     espressoVersion = '2.2.2'
     firebaseVersion = '10.0.1'
+    firebaseAdminVersion = '4.1.0'
     firebaseUIVersion = '1.1.1'
     gsonVersion = '2.8.0'
     guavaVersion = '18.0'
