@@ -10,7 +10,7 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
+import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
@@ -90,7 +90,7 @@ public class RingerModeIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, TimeSlotsActivity.class), 0);
+                new Intent(this, TimeSlotListActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

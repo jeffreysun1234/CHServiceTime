@@ -16,10 +16,9 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.view.WindowManager;
 
-import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.AppDataSource;
-import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
+import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
 import com.mycompany.chservicetime.util.DateUtils;
 
 import org.junit.After;
@@ -57,7 +56,7 @@ public class WorkflowTest {
 
     private static final long UI_TEST_TIMEOUT = 5 * 1000; //5 seconds
 
-    private TimeSlotsActivity mActivity;
+    private TimeSlotListActivity mActivity;
 
     private int rvLayoutId;
 
@@ -72,8 +71,8 @@ public class WorkflowTest {
      * blocks of Junit tests.
      */
     @Rule
-    public IntentsTestRule<TimeSlotsActivity> mActivityRule =
-            new IntentsTestRule<TimeSlotsActivity>(TimeSlotsActivity.class, true /* Initial touch mode  */, true) {
+    public IntentsTestRule<TimeSlotListActivity> mActivityRule =
+            new IntentsTestRule<TimeSlotListActivity>(TimeSlotListActivity.class, true /* Initial touch mode  */, true) {
                 /**
                  * To avoid a long list of time slots and the need to scroll through the list to find a
                  * time slot, we call {@link AppDataSource#deleteAllTimeSlot()} before each test.
@@ -83,8 +82,8 @@ public class WorkflowTest {
                     super.beforeActivityLaunched();
 
                     // Doing this in @Before generates a race condition.
-                    Injection.provideTimeSlotsRepository(InstrumentationRegistry.getTargetContext())
-                            .deleteAllTimeSlot();
+//                    Injection.provideTimeSlotsRepository(InstrumentationRegistry.getTargetContext())
+//                            .deleteAllTimeSlot();
                 }
             };
 

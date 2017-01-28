@@ -73,7 +73,7 @@ public class FirebaseDAO {
     public Collection<TimeSlotItem> getTimeSlotItemList(String userId) throws IOException {
         Collection<TimeSlotItem> timeSlotItems = new ArrayList<>();
 
-        mDatabase.child(FirebaseConstants.timeSlotItemListRestURL(userId))
+        mDatabase.child(FirebaseConstants.timeSlotItemListURL(userId, false))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
