@@ -47,6 +47,7 @@ ext {
     // App dependencies
     supportLibraryVersion = '25.1.0'
 
+    andPermissionVersion = '1.0.4'
     autoValueVersion = '1.4-rc1'
     autoValueFirebaseVersion = '1.0.1'
     autoValueGsonVersion = '0.4.5'

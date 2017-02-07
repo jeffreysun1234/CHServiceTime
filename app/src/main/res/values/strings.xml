@@ -70,5 +70,9 @@
     <string name="mute">Mute</string>
 
     <string name="unknown_error">An unknown error occurred</string>
-
+    <string name="get_permission_phone_state_yes">READ_PHONE_STATE Permission has been granted.</string>
+    <string name="get_permission_phone_state_no">Permissions were not granted.</string>
+    <string name="back_from_system_setting">Back from Setting</string>
+    <string name="permission_write_setting_yes">WRITE_SETTINGS permission granted</string>
+    <string name="permission_write_setting_no">WRITE_SETTINGS permission not granted</string>
 </resources>

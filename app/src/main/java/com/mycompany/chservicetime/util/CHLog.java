@@ -31,6 +31,7 @@ public class CHLog {
     private static final String LOG_PREFIX = "CH_";
     private static final int LOG_PREFIX_LENGTH = LOG_PREFIX.length();
     private static final int MAX_LOG_TAG_LENGTH = 23;
+    private static final boolean isSaveLog = false; // if save logs to SDCard.
 
     private static final String TAG = makeLogTag("Default");
 
@@ -151,7 +152,7 @@ public class CHLog {
      */
     public static void d(String msg) {
         if (logger != null) {
-            CHLog.d(getCurrentClassName(), getCurrentMethodName() + "(): " + msg);
+            CHLog.d(getCurrentClassName(), getCurrentMethodName() + "(Line:" + getLineNumber() + "): " + msg);
         }
     }
 
@@ -212,12 +213,20 @@ public class CHLog {
         log(" ", " ");
     }
 
+    private static StackTraceElement getCallerStackTraceElement() {
+        return Thread.currentThread().getStackTrace()[4];
+    }
+
     private static String getCurrentMethodName() {
-        return Thread.currentThread().getStackTrace()[4].getMethodName();
+        return getCallerStackTraceElement().getMethodName();
+    }
+
+    private static int getLineNumber() {
+        return getCallerStackTraceElement().getLineNumber();
     }
 
     private static String getCurrentClassName() {
-        String className = Thread.currentThread().getStackTrace()[4].getClassName();
+        String className = getCallerStackTraceElement().getClassName();
         String[] temp = className.split("[\\.]");
         className = temp[temp.length - 1];
         return className;

@@ -24,6 +24,7 @@ android {
             }
         }
 
+        //resConfigs "en", "fr"
     }
 
     compileOptions {
@@ -201,6 +202,10 @@ dependencies {
 
     // Swipe RecyclerView
     compile "com.yanzhenjie:recyclerview-swipe:$rootProject.swipeRecyclerViewVersion"
+
+    // AndPermission
+    compile "com.yanzhenjie:permission:$rootProject.andPermissionVersion"
+
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
