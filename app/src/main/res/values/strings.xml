@@ -70,9 +70,15 @@
     <string name="mute">Mute</string>
 
     <string name="unknown_error">An unknown error occurred</string>
-    <string name="get_permission_phone_state_yes">READ_PHONE_STATE Permission has been granted.</string>
-    <string name="get_permission_phone_state_no">Permissions were not granted.</string>
+    <string name="permission_phone_state_yes">PHONE_STATE permission has been granted.</string>
+    <string name="permission_phone_state_no">Phone_State permission was denied.</string>
+    <string name="permission_phone_state_rationale">Phone_State permission is needed to configurate the sound mode.</string>
+    <string name="permission_phone_state_never_ask">Phone_State was denied with never ask again.</string>
+    <string name="permission_write_settings_yes">WRITE_SETTINGS permission granted</string>
+    <string name="permission_write_settings_no">WRITE_SETTINGS permission was denied.</string>
+    <string name="permission_write_settings_rationale">WRITE_SETTINGS permission is needed to configurate the sound mode.</string>
+    <string name="permission_write_settings_never_ask">WRITE_SETTINGS was denied with never ask again.</string>
     <string name="back_from_system_setting">Back from Setting</string>
-    <string name="permission_write_setting_yes">WRITE_SETTINGS permission granted</string>
-    <string name="permission_write_setting_no">WRITE_SETTINGS permission not granted</string>
+    <string name="button_allow">Allow</string>
+    <string name="button_deny">Deny</string>
 </resources>

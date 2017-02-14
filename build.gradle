@@ -47,7 +47,6 @@ ext {
     // App dependencies
     supportLibraryVersion = '25.1.0'
 
-    andPermissionVersion = '1.0.4'
     autoValueVersion = '1.4-rc1'
     autoValueFirebaseVersion = '1.0.1'
     autoValueGsonVersion = '0.4.5'
@@ -63,6 +62,7 @@ ext {
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     mockwebserverVersion = '3.4.1'
+    PermissionsDispatcherVersion = '2.3.1'
     powerMockitoVersion = '1.6.5'
     retrofit2Version = '2.1.0'
     rulesVersion = '0.5'

@@ -143,8 +143,8 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
                 Toast.makeText(getActivity(), "list第" + adapterPosition + "; In the right menu, 第" + menuPosition, Toast.LENGTH_SHORT).show();
             }
 
-            // TODO 这里特别注意，如果这里删除了Item，不要调用Adapter.notifyItemRemoved(position)，因为RecyclerView有个bug，调用这个方法后，后面的position会错误！
-            // TODO 删除Item后调用Adapter.notifyDataSetChanged()，下面是事例代码：
+            // *** 这里特别注意，如果这里删除了Item，不要调用Adapter.notifyItemRemoved(position)，因为RecyclerView有个bug，调用这个方法后，后面的position会错误！
+            // *** 删除Item后调用Adapter.notifyDataSetChanged()，下面是事例代码：
             if (menuPosition == 0) {// click Edit button
                 mItemListener.editItem(mListAdapter.mTimeSlots.get(adapterPosition)._id());
                 //mListAdapter.notifyDataSetChanged();

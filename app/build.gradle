@@ -203,8 +203,9 @@ dependencies {
     // Swipe RecyclerView
     compile "com.yanzhenjie:recyclerview-swipe:$rootProject.swipeRecyclerViewVersion"
 
-    // AndPermission
-    compile "com.yanzhenjie:permission:$rootProject.andPermissionVersion"
+    // PermissionsDispatcher
+    compile "com.github.hotchemi:permissionsdispatcher:$rootProject.PermissionsDispatcherVersion"
+    annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.PermissionsDispatcherVersion"
 
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"

@@ -7,14 +7,12 @@ package com.mycompany.chservicetime.presentation;
 
 import android.Manifest;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,14 +32,17 @@ import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListPresenter;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListView;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionNo;
-import com.yanzhenjie.permission.PermissionYes;
 
 import net.grandcentrix.thirtyinch.TiActivity;
 
 import java.util.Arrays;
-import java.util.List;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
@@ -51,8 +52,9 @@ import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
  * It enable "Logout" in all activities
  * and defines variables that are being shared across all activities
  */
-public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, TimeSlotListView> implements
-        GoogleApiClient.OnConnectionFailedListener {
+@RuntimePermissions
+public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, TimeSlotListView>
+        implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = makeLogTag("BaseActivity");
 
     private static final int RC_SIGN_IN = 100;
@@ -74,29 +76,9 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: runtime error
-        // Permission: WRITE_SETTING
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.System.canWrite(this)) {
-                // Do stuff here
-            } else {
-                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
-                intent.setData(Uri.parse("package:" + this.getPackageName()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(intent, RC_PERMISSION_WRITE_SETTING);
-            }
-        }
-
         // Permission Setting for Android 6.0
-        AndPermission.with(this)
-                .requestCode(RC_PERMISSION_PHONE_STATE)
-                .permission(Manifest.permission.READ_PHONE_STATE)
-                // rationale作用是：用户拒绝一次权限，再次申请时先征求用户同意，再打开授权对话框，避免用户勾选不再提示。
-                .rationale((requestCode, rationale) ->
-                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
-                        AndPermission.rationaleDialog(BaseTiActivity.this, rationale).show()
-                )
-                .send();
+        BaseTiActivityPermissionsDispatcher.getPermissionWriteSettingsWithCheck(this);
+        BaseTiActivityPermissionsDispatcher.getPermissionPhoneStateWithCheck(this);
 
         mRootView = findViewById(android.R.id.content);
 
@@ -196,22 +178,9 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case RC_PERMISSION_WRITE_SETTING: {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Settings.System.canWrite(this)) {
-                        showSnackbar(R.string.permission_write_setting_yes);
-                    } else {
-                        showSnackbar(R.string.permission_write_setting_no);
-                    }
+        BaseTiActivityPermissionsDispatcher.onActivityResult(this, requestCode);
 
-                }
-                return;
-            }
-            case RC_PERMISSION_SETTING: {
-                showSnackbar(R.string.back_from_system_setting);
-                return;
-            }
+        switch (requestCode) {
             // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
             case RC_SIGN_IN: {
                 handleSignInResponse(resultCode, data);
@@ -293,40 +262,60 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 
-    //----------------------------------Phone_State读写权限----------------------------------//
+    //---------------------------------- BEGIN Runtime Permissions ----------------------------------//
 
-    /**
-     * <p>权限全部申请成功才会回调这个方法，否则回调失败的方法。</p>
-     *
-     * @param grantedPermissions AndPermission回调过来的申请成功的权限。
-     */
-    @PermissionYes(RC_PERMISSION_PHONE_STATE)
-    private void getPermissionPhoneStateYes(List<String> grantedPermissions) {
-        showSnackbar(R.string.get_permission_phone_state_yes);
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    void getPermissionPhoneState() {
     }
 
-    /**
-     * <p>只要有一个权限申请失败就会回调这个方法，并且不会回调成功的方法。</p>
-     *
-     * @param deniedPermissions AndPermission回调过来的申请失败的权限。
-     */
-    @PermissionNo(RC_PERMISSION_PHONE_STATE)
-    private void getPermissionPhoneStateNo(List<String> deniedPermissions) {
-        showSnackbar(R.string.get_permission_phone_state_no);
-        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
-        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
-            AndPermission.defaultSettingDialog(this, RC_PERMISSION_SETTING).show();
-        }
+    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
+    void showDeniedForPhoneState() {
+        showSnackbar(R.string.permission_phone_state_no);
     }
 
-    //----------------------------------权限回调处理----------------------------------//
+    @OnShowRationale(Manifest.permission.READ_PHONE_STATE)
+    void showRationaleForPhoneState(final PermissionRequest request) {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.permission_phone_state_rationale)
+                .setPositiveButton(R.string.button_allow, (dialog, button) -> request.proceed())
+                .setNegativeButton(R.string.button_deny, (dialog, button) -> request.cancel())
+                .show();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_PHONE_STATE)
+    void showNeverAskForPhoneState() {
+        showSnackbar(R.string.permission_phone_state_never_ask);
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AndPermission.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        BaseTiActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    //*** Special Permissions ***//
+
+    @NeedsPermission(Manifest.permission.WRITE_SETTINGS)
+    void getPermissionWriteSettings() {
+    }
+
+    @OnShowRationale(Manifest.permission.WRITE_SETTINGS)
+    void showRationaleForWriteSettings(final PermissionRequest request) {
+        showSnackbar(R.string.permission_write_settings_rationale);
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_SETTINGS)
+    void showDeniedForWriteSettings() {
+        //showSnackbar(R.string.permission_write_settings_no);
+        finish();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_SETTINGS)
+    void showNeverAskAgainForWriteSettings() {
+        showSnackbar(R.string.permission_write_settings_never_ask);
+    }
+
+    //---------------------------------- END Runtime Permissions ----------------------------------//
 }
 
