@@ -16,6 +16,7 @@
 
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -49,6 +50,7 @@ import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotActivity;
 import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotFragment;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
+import com.mycompany.chservicetime.util.CHLog;
 import com.yanzhenjie.recyclerview.swipe.Closeable;
 import com.yanzhenjie.recyclerview.swipe.OnSwipeMenuItemClickListener;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenu;
@@ -66,6 +68,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
         SharedPreferences.OnSharedPreferenceChangeListener {
+
+    // Because onActivityResult() actually is called before onRestart() then onStart(),
+    // we need a flag to show a message when onResume().
+    boolean isSuccessfullySavedMessage = false;
 
     View mNoTimeSlotsView;
     ImageView mNoTimeSlotIcon;
@@ -159,7 +165,14 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        getPresenter().result(requestCode, resultCode);
+        CHLog.d("requestCode=" + requestCode + ", resultCode=" + resultCode);
+
+        // If a timeSlot was successfully added, show snackbar.
+        if (AddEditTimeSlotActivity.REQUEST_ADD_TIME_SLOT == requestCode && Activity.RESULT_OK == resultCode) {
+            isSuccessfullySavedMessage = true;
+        } else {
+            isSuccessfullySavedMessage = false;
+        }
     }
 
     @Nullable
@@ -260,6 +273,8 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
         sp.registerOnSharedPreferenceChangeListener(this);
         // always display the newest value.
         mNextAlarmTextView.setText(PreferenceSupport.getNextAlarmDetail(getContext()));
+        // show save message successfully if needed.
+        showSuccessfullySavedMessage();
     }
 
     @Override
@@ -316,7 +331,11 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
 
     @Override
     public void showSuccessfullySavedMessage() {
-        showMessage(getString(R.string.successfully_saved_timeslot));
+        if (isSuccessfullySavedMessage) {
+            showMessage(getString(R.string.successfully_saved_timeslot));
+            // clear the flag for not showing repeat message when showing lists at normal statue.
+            isSuccessfullySavedMessage = false;
+        }
     }
 
     @Override

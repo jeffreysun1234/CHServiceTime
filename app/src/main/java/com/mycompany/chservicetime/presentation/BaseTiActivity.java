@@ -217,8 +217,6 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
                 handleSignInResponse(resultCode, data);
                 return;
             }
-            default:
-                showSnackbar(R.string.unknown_response);
         }
     }
 

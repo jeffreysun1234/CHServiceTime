@@ -214,7 +214,8 @@ public class CHLog {
     }
 
     private static StackTraceElement getCallerStackTraceElement() {
-        return Thread.currentThread().getStackTrace()[4];
+        // Change the level of StackTrace based on the code structure. ( methods invoke )
+        return Thread.currentThread().getStackTrace()[5];
     }
 
     private static String getCurrentMethodName() {

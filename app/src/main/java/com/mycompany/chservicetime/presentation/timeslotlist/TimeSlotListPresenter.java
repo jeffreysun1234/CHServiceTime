@@ -16,7 +16,6 @@
 
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -29,7 +28,6 @@ import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.BaseTiPresenter;
-import com.mycompany.chservicetime.util.CHLog;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
 import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
 
@@ -79,17 +77,6 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
         super.onAttachView(view);
 
         rxHelper.manageViewSubscription(loadTimeSlots(mForceUpdate));
-    }
-
-    public void result(int requestCode, int resultCode) {
-        //TODO: getView() is null.
-        CHLog.d("******requestCode=" + requestCode + ",,,,resultCode=" + resultCode);
-        // If a timeSlot was successfully added, show snackbar
-        //if (AddEditTimeSlotActivity.REQUEST_ADD_TASK == requestCode && Activity.RESULT_OK == resultCode) {
-        if (Activity.RESULT_OK == resultCode) {
-            CHLog.d("--------- " + getView());
-            //getView().showSuccessfullySavedMessage();
-        }
     }
 
     public Subscription loadTimeSlots(boolean forceUpdate) {

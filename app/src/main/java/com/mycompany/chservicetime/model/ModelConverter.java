@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
-import com.mycompany.chservicetime.data.source.local.CHServiceTimeContract.TimeSlots;
 
 import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 
@@ -36,22 +35,23 @@ public class ModelConverter {
     }
 
     public static TimeSlotItem cursorToTimeSlotItem(Cursor cursor, ColumnIndexCache mColumnIndexCache) {
-        TimeSlotItem timeSlotItem = new TimeSlotItem();
-        timeSlotItem.setTimeSlotId(cursor.getString(mColumnIndexCache
-                .getColumnIndex(cursor, TimeSlots.TIME_SLOT_ID)));
-        timeSlotItem.setName(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.NAME)));
-        timeSlotItem.setDescription(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DESCRIPTION)));
-        timeSlotItem.setBeginTimeHour(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.BEGIN_TIME_HOUR)));
-        timeSlotItem.setBeginTimeMinute(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.BEGIN_TIME_MINUTE)));
-        timeSlotItem.setEndTimeHour(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_HOUR)));
-        timeSlotItem.setEndTimeMinute(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_MINUTE)));
-        timeSlotItem.setDays(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DAYS)));
-        timeSlotItem.setRepeatFlag(cursor.getInt(mColumnIndexCache
-                .getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1);
-        timeSlotItem.setActivationFlag(cursor.getInt(mColumnIndexCache
-                .getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1);
-
-        return timeSlotItem;
+//        TimeSlotItem timeSlotItem = new TimeSlotItem();
+//        timeSlotItem.setTimeSlotId(cursor.getString(mColumnIndexCache
+//                .getColumnIndex(cursor, TimeSlots.TIME_SLOT_ID)));
+//        timeSlotItem.setName(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.NAME)));
+//        timeSlotItem.setDescription(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DESCRIPTION)));
+//        timeSlotItem.setBeginTimeHour(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.BEGIN_TIME_HOUR)));
+//        timeSlotItem.setBeginTimeMinute(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.BEGIN_TIME_MINUTE)));
+//        timeSlotItem.setEndTimeHour(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_HOUR)));
+//        timeSlotItem.setEndTimeMinute(cursor.getInt(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.END_TIME_MINUTE)));
+//        timeSlotItem.setDays(cursor.getString(mColumnIndexCache.getColumnIndex(cursor, TimeSlots.DAYS)));
+//        timeSlotItem.setRepeatFlag(cursor.getInt(mColumnIndexCache
+//                .getColumnIndex(cursor, TimeSlots.REPEAT_FLAG)) == 1);
+//        timeSlotItem.setActivationFlag(cursor.getInt(mColumnIndexCache
+//                .getColumnIndex(cursor, TimeSlots.ACTIVATION_FLAG)) == 1);
+//
+//        return timeSlotItem;
+        return null;
     }
 
     /**

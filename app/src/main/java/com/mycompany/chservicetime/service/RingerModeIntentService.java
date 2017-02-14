@@ -18,9 +18,6 @@ import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
  */
 public class RingerModeIntentService extends IntentService {
     public static final String TAG = makeLogTag("RingerModeIntentService");
@@ -40,7 +37,11 @@ public class RingerModeIntentService extends IntentService {
         super("RingerModeIntentService");
     }
 
-    public static void startActionSetRingerMode(Context context, String action) {
+    /**
+     * @param context
+     * @param action  ACTION_SET_RINGER_MODE_NORMAL or ACTION_SET_RINGER_MODE_VIBRATE or ACTION_SET_RINGER_MODE_MUTE
+     */
+    public static void startSetRingerMode(Context context, String action) {
         Intent intent = new Intent(context, RingerModeIntentService.class);
         intent.setAction(action);
         context.startService(intent);
@@ -58,8 +59,7 @@ public class RingerModeIntentService extends IntentService {
     }
 
     /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
+     * Handle action in the provided background thread with the provided parameters.
      */
     private void handleActionSetRingerMode(String action) {
         AudioManager audioManager =

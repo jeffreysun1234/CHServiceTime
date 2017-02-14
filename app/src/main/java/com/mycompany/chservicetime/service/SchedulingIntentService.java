@@ -155,16 +155,16 @@ public class SchedulingIntentService extends IntentService {
 
         // execute the operation
         if (serviceTime.currentOperation == ServiceTime.Vibrate) {
-            RingerModeIntentService.startActionSetRingerMode(
+            RingerModeIntentService.startSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_VIBRATE);
         } else if (serviceTime.currentOperation == ServiceTime.Mute) {
-            RingerModeIntentService.startActionSetRingerMode(
+            RingerModeIntentService.startSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_MUTE);
         } else if (serviceTime.currentOperation == ServiceTime.Normal
                 || serviceTime.currentOperation == ServiceTime.NO_OPERATION) {
-            RingerModeIntentService.startActionSetRingerMode(
+            RingerModeIntentService.startSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_NORMAL);
         }
