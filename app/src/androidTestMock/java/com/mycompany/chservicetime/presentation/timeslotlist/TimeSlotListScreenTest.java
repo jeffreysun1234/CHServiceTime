@@ -58,19 +58,6 @@ public class TimeSlotListScreenTest {
             new ActivityTestRule<TimeSlotListActivity>(TimeSlotListActivity.class
                     , true /* Initial touch mode  */
                     , false /* Lazily launch activity */);
-    // TODO: check the lifecycle of ActivityTestRule when launchtype is true or false
-    // https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/
-//            {
-//                /**
-//                 * To avoid a long list of tasks and the need to scroll through the list to find a
-//                 * TimeSlot, we delete all data before each test.
-//                 */
-//                @Override
-//                protected void beforeActivityLaunched() {
-//                    super.beforeActivityLaunched();
-//                    cleanTimeSlots();
-//                }
-//            };
 
     @Before
     public void setUp() throws Exception {

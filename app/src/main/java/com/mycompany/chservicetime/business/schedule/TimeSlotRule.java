@@ -27,7 +27,8 @@ public class TimeSlotRule {
      * If there are more than one operation in a same time, the greater ordinar is higher priority.
      *
      * @param originalTimeSectors TimeSlot is ordered by begintime and endtime ascending.
-     *                            Data format: In 24 hours, [0] is begin time, [1] is end time.
+     *                            Data format: In 24 hours, [0] is begin time, [1] is end time,
+     *                            [2] is operation.
      * @param currentTimeInt      In 24 hours format, for example, 920 means 9:20am.
      * @return ServiceTime.nextAlarmTime : null means "No more alarm today". </p>
      * ServiceTime.currentOperation : null means keeping current state. no operation

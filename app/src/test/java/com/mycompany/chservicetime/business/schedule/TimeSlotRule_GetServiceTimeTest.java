@@ -35,11 +35,11 @@ public class TimeSlotRule_GetServiceTimeTest {
     public static Collection<Object[]> data1() {
         // TimeSectors is {[0, 730],[800, 1320],[1600, 1830],[2100, 2500]}
         return Arrays.asList(new Object[][]{
-                {200, 730, ServiceTime.Vibrate},
+                {200, 730, ServiceTime.Mute},
                 {730, 800, ServiceTime.Normal},
-                {1600, 1830, ServiceTime.Vibrate},
+                {1600, 1830, ServiceTime.Mute},
                 {2050, 2100, ServiceTime.Normal},
-                {2350, 2500, ServiceTime.Vibrate}
+                {2350, 2500, ServiceTime.Mute}
         });
     }
 

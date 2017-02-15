@@ -1,8 +1,11 @@
 package com.mycompany.chservicetime.business.schedule;
 
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.CHLog;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +18,16 @@ import static org.junit.Assert.assertEquals;
 public class TimeSlotRule_GetRequiredTimeSlotsTest {
 
     private List<TimeSlot> originalTimeSlots;
+
+    @BeforeClass
+    public static void runOnceBeforeClass() {
+        CHLog.setLogger(CHLog.TESTOUT);
+    }
+
+    @AfterClass
+    public static void runOnceAfterClass() {
+        CHLog.setLogger(null);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -39,6 +52,9 @@ public class TimeSlotRule_GetRequiredTimeSlotsTest {
                 21, 0, 1, 0, "0111110", true, true, TimeSlot.ServiceOption.MUTE));
     }
 
+    /**
+     * This test includes overnight time sector, valid sort, and filter by day in week.
+     */
     @Test
     public void testGetRequiredTimeSlots() throws Exception {
         List<int[]> timeSectors =
@@ -46,37 +62,9 @@ public class TimeSlotRule_GetRequiredTimeSlotsTest {
 
         // expect is
         // [[0, 100], [0, 130], [0, 303], [310, 730], [800, 1320], [1110, 1230], [1600, 1830], [2100, 2500], [2300, 2530]]
-        System.out.println(Arrays.deepToString(timeSectors.toArray()));
-    }
+        CHLog.d("testGetRequiredTimeSlots", Arrays.deepToString(timeSectors.toArray()));
 
-    // TODO: detail test usecases.
-    @Test
-    public void filterByActivationFlag_IsTrue() {
-        originalTimeSlots = new ArrayList<TimeSlot>();
-        originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                16, 0, 18, 30, "0111110", true, true, TimeSlot.ServiceOption.NORMAL));
-        originalTimeSlots.add(TimeSlot.createTimeSlot("111", "Work", "work time",
-                8, 0, 13, 20, "0111110", true, false, TimeSlot.ServiceOption.NORMAL));
-
-        List<int[]> expect = new ArrayList<int[]>();
-        expect.add(new int[]{1600, 1830});
-
-        List<int[]> timeSectors =
-                TimeSlotRule.getRequiredTimeSlots(originalTimeSlots, Calendar.TUESDAY, true);
-
-        assertEquals(1, timeSectors.size());
-        //assertThat(expect, containsInAnyOrder(timeSectors));
-        // filterByActivationFlag. true
-
-        // Include overnight time sector.
-
-
-        // if begin_time < end_time, then end_time + 2400
-
-        // valid sort
-
-        // filter by activationFlag = false
-
-        // filter by day in week
+        assertEquals(Arrays.deepToString(timeSectors.toArray()),
+                "[[0, 100, 2], [0, 130, 2], [0, 303, 1], [310, 730, 1], [310, 730, 2], [800, 1320, 2], [1110, 1230, 1], [1600, 1830, 1], [2100, 2500, 2], [2300, 2530, 2]]");
     }
 }

@@ -121,6 +121,7 @@ public class AddEditTimeSlotScreenTest {
         FakeAppDataSource source = FakeAppDataSource.getInstance();
         source.deleteAllTimeSlot();
         source.saveTimeSlot(timeSlot1.toBuilder().build());
+
         startActivityWithStubbedTimeSlot(timeSlot1);
 
         // Check that the TimeSlot name are displayed

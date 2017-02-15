@@ -34,7 +34,7 @@ import static android.support.test.runner.lifecycle.Stage.RESUMED;
 /**
  * Useful test methods common to all activities
  */
-public class TestUtils {
+public class TestHelper {
 
     private static void rotateToLandscape(Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

@@ -16,10 +16,13 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.view.WindowManager;
 
+import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.AppDataSource;
+import com.mycompany.chservicetime.data.source.local.AppLocalDataSource;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
 import com.mycompany.chservicetime.util.DateUtils;
+import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +47,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
 import static com.mycompany.chservicetime.CustomItemMatcher.matchToolbarTitle;
 import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by szhx on 8/31/2016.
@@ -55,6 +58,10 @@ import static junit.framework.Assert.assertEquals;
 public class WorkflowTest {
 
     private static final long UI_TEST_TIMEOUT = 5 * 1000; //5 seconds
+
+    private BaseSchedulerProvider mSchedulerProvider;
+
+    private AppLocalDataSource mLocalDataSource;
 
     private TimeSlotListActivity mActivity;
 
@@ -82,8 +89,20 @@ public class WorkflowTest {
                     super.beforeActivityLaunched();
 
                     // Doing this in @Before generates a race condition.
-//                    Injection.provideTimeSlotsRepository(InstrumentationRegistry.getTargetContext())
-//                            .deleteAllTimeSlot();
+                    ((CHApplication) InstrumentationRegistry.getTargetContext()
+                            .getApplicationContext()).getAppRepositoryComponent()
+                            .getAppRepository().deleteAllTimeSlot();
+
+//                    AppLocalDataSource.destroyInstance();
+//                    mSchedulerProvider = new ImmediateSchedulerProvider();
+
+//                    //Whenever we run Instrumented unit tests, we can't change production environment Database.
+//                    //Because App might have stored an important data on Production environment Database.
+//                    //For such a reason, we use RenamingDelegatingContext, and create SQLite test file.
+//                    Context context = new RenamingDelegatingContext
+//                            (InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
+//                    mLocalDataSource = AppLocalDataSource.getInstance(context, mSchedulerProvider);
+//                    mLocalDataSource.deleteAllTimeSlot();
                 }
             };
 
@@ -98,8 +117,9 @@ public class WorkflowTest {
     public void setUp() throws Exception {
         mActivity = mActivityRule.getActivity();
 
-        rvLayoutId = R.id.timeSlotListRecyclerView;
+        //rvLayoutId = R.id.timeSlotListRecyclerView;
 
+        // Keep the screen on.
         try {
             mActivityRule.runOnUiThread(new Runnable() {
                 @Override
@@ -137,9 +157,72 @@ public class WorkflowTest {
         Espresso.unregisterIdlingResources(mActivityRule.getActivity().getCountingIdlingResource());
     }
 
+    @Test
+    public void normalWorkflow() {
+
+        // There is no data at begin.
+        emptyTimeSlotList();
+
+        clickAddTimeSlotIcon_opensAddTimeSlotUi();
+
+        // add TimeSlot dat
+        String timeSlotName = "Work";
+        int vBeginTime = 0;
+        int vEndTime = 0;
+        try {
+            vBeginTime = DateUtils.getHHmm(System.currentTimeMillis());
+            vEndTime = DateUtils.getHHmm(System.currentTimeMillis() + 10 * 60 * 1000); // future 10 minute
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int vBeginHour = vBeginTime / 100;
+        int vBeginMinute = vBeginTime % 100;
+        int vEndHour = vEndTime / 100;
+        int vEndMinute = vEndTime % 100;
+        createTimeSlot(timeSlotName, vBeginHour, vBeginMinute, vEndHour, vEndMinute, "0111110");
+
+        // locate to the position 0.
+        onView(withId(R.id.timeslot_list)).perform(RecyclerViewActions.scrollToPosition(0));
+
+        // click activation checkbox
+        onView(withId(R.id.activeSwitch)).perform(click());
+
+        // verify the vibrate status
+        int currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
+        assertEquals(AudioManager.RINGER_MODE_VIBRATE, currentRingMode);
+
+//        // TODO: verify Edit icon is hidden
+//        //onView(withId(R.id.edit_item_button)).check(matches((isCompletelyDisplayed())));
+
+        // swipe
+        onView(withId(R.id.nameTextView)).perform(swipeLeft());
+
+        // click Edit icon
+        onView(withItemText("Edit", DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()))
+                .perform(click());
+
+        // Check if the add TimeSlot screen is displayed
+        matchToolbarTitle(mActivity.getResources().getString(R.string.edit_timeSlot));
+
+        String newTimeSlotName = "Change Name";
+        changeItemName(timeSlotName, newTimeSlotName);
+
+        // swipe again and click Delete icon
+        onView(withId(R.id.nameTextView)).perform(swipeLeft());
+        onView(withItemText("Delete", DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()))
+                .perform(click());
+
+        // verify the item to be deleted.
+        emptyTimeSlotList();
+
+        // verify the vibrate status
+        currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
+        assertEquals(AudioManager.RINGER_MODE_NORMAL, currentRingMode);
+    }
+
     private void emptyTimeSlotList() {
-        onView(withId(R.id.empty_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.empty_tv)).check(matches(withText(R.string.no_time_slot)));
+        onView(withId(R.id.noTimeSlots)).check(matches(isDisplayed()));
+        onView(withId(R.id.noTimeSlotsMain)).check(matches(withText(R.string.no_time_slot)));
     }
 
     private void clickAddTimeSlotIcon_opensAddTimeSlotUi() {
@@ -153,12 +236,6 @@ public class WorkflowTest {
     private void createTimeSlot(String name, int beginHour, int beginMinute, int endHour, int endMinuter,
                                 String days) {
         onView(withId(R.id.timeSlotNameEditText)).perform(typeText(name), closeSoftKeyboard());
-        //onView(withId(R.id.timeSlotNameEditText)).perform(replaceText("Espresso Test\n"));
-
-        //EspressoIdlingResource.increment();
-        //closeSoftKeyboard();
-        //EspressoIdlingResource.decrement();
-
         onView(withId(R.id.beginTimePicker)).perform(PickerActions.setTime(beginHour, beginMinute));
         onView(withId(R.id.endTimePicker)).perform(PickerActions.setTime(endHour, endMinuter));
         if (days.charAt(0) == '1') onView(withId(R.id.day0InWeekToggleButton)).perform(click());
@@ -171,7 +248,7 @@ public class WorkflowTest {
 
         onView(withId(R.id.time_slot_save)).perform(click());
 
-        // Verify task is displayed on screen
+        // Verify timeslot is displayed on screen
         onView(withItemText(name, DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
         // verify the data display correctly
         onView(withId(R.id.nameTextView)).check(matches(withText(name)));
@@ -183,68 +260,12 @@ public class WorkflowTest {
         onView(withId(R.id.time_slot_save)).perform(click());
 
         // verify the name of the item to be changed
-        onView(withId(R.id.timeSlotListRecyclerView)).perform(RecyclerViewActions.scrollToPosition(0));
+        //onView(withId(R.id.timeSlotListRecyclerView)).perform(RecyclerViewActions.scrollToPosition(0));
+        onView(withItemText(newName, DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
         onView(withId(R.id.nameTextView)).check(matches(withText(newName)));
 
         // Verify previous TimeSlot is not displayed
         onView(withText(oldName)).check(doesNotExist());
-    }
-
-    @Test
-    public void normalWorkflow() {
-
-        // There is no data at begin.
-        emptyTimeSlotList();
-
-        clickAddTimeSlotIcon_opensAddTimeSlotUi();
-
-        // add TimeSlot dat
-        String timeSlotName = "Work";
-        int currentHHmm = 900;
-        try {
-            currentHHmm = DateUtils.getHHmm(System.currentTimeMillis());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        int vBeginHour = (int) Math.floor(currentHHmm / 100.0d);
-        int vBeginMinute = currentHHmm % 100;
-        createTimeSlot(timeSlotName, vBeginHour, vBeginMinute, vBeginHour + 1, vBeginMinute, "1111111");
-
-        // locate to the position 0.
-        onView(withId(R.id.timeSlotListRecyclerView)).perform(RecyclerViewActions.scrollToPosition(0));
-
-        // click activation checkbox
-        onView(withId(R.id.activeSwitch)).perform(click());
-
-        // verify the vibrate status
-        int currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
-        assertEquals(AudioManager.RINGER_MODE_VIBRATE, currentRingMode);
-
-        // TODO: verify Edit icon is hidden
-        //onView(withId(R.id.edit_item_button)).check(matches((isCompletelyDisplayed())));
-
-        // swipe
-        onView(withId(R.id.nameTextView)).perform(swipeLeft());
-
-        // click Edit icon
-        onView(withId(R.id.edit_item_button)).perform(click());
-
-        //Wait for the root view of the TimeSlot fragment.
-        //onView(isRoot()).perform(waitForMatch(withId(R.id.time_slot_root_view), UI_TEST_TIMEOUT));
-
-        String newTimeSlotName = "Change Name";
-        changeItemName(timeSlotName, newTimeSlotName);
-
-        // swipe again and click Delete icon
-        onView(withId(R.id.nameTextView)).perform(swipeLeft());
-        onView(withId(R.id.delete_item_button)).perform(click());
-
-        // verify the item to be deleted.
-        onView(withId(R.id.empty_tv)).check(matches(withText(R.string.no_time_slot)));
-
-        // verify the vibrate status
-        currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
-        assertEquals(AudioManager.RINGER_MODE_NORMAL, currentRingMode);
     }
 
     private int getCurrentRingMode(Context context) {

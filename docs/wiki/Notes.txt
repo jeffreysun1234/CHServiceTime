@@ -1,6 +1,8 @@
 
 When Esprosse tests is running, the screen must note be sleeping.
 
+https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/
+
 1. Rewrite the content provider, and added a test case for the content provider, while uses ProviderTestCase2 (AndroidTest)
 2. AddEditTimeSlot UI: AddEditTimeSlotPresenterTest (Mockito, Test) and AddEditTimeSlotScreenTest (AndroidMockTest)
 3. Multiple Flovors (mock and prod): multiple AndroidManifest.xml, multiple Injection.java, FakeTimeSlotDataSource, MockCursorProvider
