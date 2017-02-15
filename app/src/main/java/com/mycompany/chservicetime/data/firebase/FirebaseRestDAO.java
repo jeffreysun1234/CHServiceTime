@@ -4,7 +4,7 @@ import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
-import com.mycompany.chservicetime.util.LogUtils;
+import com.mycompany.chservicetime.util.CHLog;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -17,8 +17,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 3/24/2016.
@@ -36,7 +35,7 @@ public class FirebaseRestDAO {
                     .addConverterFactory(GsonConverterFactory.create());
 
             // Log Http request and response information
-            if (LogUtils.LOGGING_ENABLED) {
+            if (CHLog.getLogger() == null) {
                 // set logging
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
@@ -129,7 +128,7 @@ public class FirebaseRestDAO {
                     FirebaseConstants.timeSlotItemListRestURL(userId), authToken)
                     .execute();
             if (response.isSuccessful()) {
-                LOGD(TAG, "successful clear TimeSlotItems on Firebase.");
+                CHLog.d(TAG, "successful clear TimeSlotItems on Firebase.");
 
                 for (TimeSlot tsItem : timeSlotItems) {
                     // save to Firebase
@@ -143,13 +142,13 @@ public class FirebaseRestDAO {
                 }
 
                 if (ii == timeSlotItems.size()) {
-                    LOGD(TAG, "successful backup all TimeSlotItem on Firebase.");
+                    CHLog.d(TAG, "successful backup all TimeSlotItem on Firebase.");
                 } else {
-                    LOGD(TAG, "fail backup all TimeSlotItem on Firebase.");
+                    CHLog.d(TAG, "fail backup all TimeSlotItem on Firebase.");
                 }
 
             } else {
-                LOGD(TAG, "fail to clear TimeSlotItems on Firebase.");
+                CHLog.d(TAG, "fail to clear TimeSlotItems on Firebase.");
             }
 
         }

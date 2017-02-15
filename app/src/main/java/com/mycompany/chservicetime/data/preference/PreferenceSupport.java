@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * A wrap class for accessing Preference. <br>

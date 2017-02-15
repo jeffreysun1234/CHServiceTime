@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mycompany.chservicetime.data.firebase.model.HttpResult;
-import com.mycompany.chservicetime.util.LogUtils;
+import com.mycompany.chservicetime.util.CHLog;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,7 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 1/22/2017.
@@ -60,7 +60,7 @@ public class RestRepository {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
 
             // Log Http request and response information
-            if (LogUtils.LOGGING_ENABLED) {
+            if (CHLog.getLogger() == null) {
                 // set logging
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level

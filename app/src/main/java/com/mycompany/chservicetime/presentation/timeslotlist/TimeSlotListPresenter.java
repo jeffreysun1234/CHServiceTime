@@ -28,6 +28,7 @@ import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.BaseTiPresenter;
+import com.mycompany.chservicetime.util.CHLog;
 import com.mycompany.chservicetime.util.EspressoIdlingResource;
 import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
 
@@ -44,7 +45,6 @@ import rx.Subscription;
 import rx.functions.Func1;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
 
 /**
  * Listens to user actions from the UI ({@link TimeSlotListFragment}), retrieves the data and updates the
@@ -185,7 +185,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                         String userId = FirebaseAuthAdapter.getUserId();
                         String authToken = FirebaseAuthAdapter.getAuthToken();
 
-                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+                        CHLog.d(TAG, "userId: " + userId + " ; authToken: " + authToken);
 
 //                        FirebaseRestDAO.create().backupTimeSlotItemList(
 //                                userId,
@@ -227,7 +227,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                         String userId = FirebaseAuthAdapter.getUserId();
                         String authToken = FirebaseAuthAdapter.getAuthToken();
 
-                        LOGD(TAG, "userId: " + userId + " ; authToken: " + authToken);
+                        CHLog.d(TAG, "userId: " + userId + " ; authToken: " + authToken);
 
 //                        Collection<TimeSlotItem> timeSlotItemList = FirebaseRestDAO.create()
 //                                .restoreTimeSlotItemList(userId, authToken);

@@ -5,7 +5,7 @@ import android.database.Cursor;
 
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 3/24/2016.

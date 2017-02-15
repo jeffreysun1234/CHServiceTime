@@ -1,12 +1,9 @@
 package com.mycompany.chservicetime.business.schedule;
 
-import com.mycompany.chservicetime.util.LogUtils;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
@@ -16,14 +13,12 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Created by szhx on 4/6/2016.
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(Parameterized.class)
-@PrepareForTest(LogUtils.class)
 public class TimeSlotRule_GetServiceTimeTest {
 
     @Parameterized.Parameter(0)
@@ -61,8 +56,6 @@ public class TimeSlotRule_GetServiceTimeTest {
         originalTimeSectors.add(new int[]{2100, 2500, 2});
         // {[0, 730],[800, 1320],[1600, 1830],[2100, 2500]}
 
-        // mock all the static methods in LogUtils
-        mockStatic(LogUtils.class);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.mycompany.chservicetime.business.schedule;
 
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.CHLog;
 import com.mycompany.chservicetime.util.DateUtils;
 
 import java.util.ArrayList;
@@ -12,8 +13,7 @@ import java.util.List;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 import static java.lang.System.out;
 
 
@@ -112,7 +112,7 @@ public class TimeSlotRule {
 
         int timePoint = getTimePoint(operationTimeSlotList, serviceTime);
 
-        LOGD(TAG, serviceTime.toString());
+        CHLog.d(TAG, serviceTime.toString());
 
         return serviceTime;
     }
@@ -132,7 +132,7 @@ public class TimeSlotRule {
 //        try{
 
         out.println(Arrays.deepToString(timeSlotList.toArray()));
-        LOGD(TAG, "TimeSlotList: " + Arrays.deepToString(timeSlotList.toArray()));
+        CHLog.d(TAG, "TimeSlotList: " + Arrays.deepToString(timeSlotList.toArray()));
 
         for (int[] timeSlotTemp : timeSlotList) {
             // array structure is [beginTime, endTime].

@@ -28,8 +28,7 @@ import com.mycompany.chservicetime.di.module.AppRepositoryModule;
 import com.mycompany.chservicetime.di.module.ApplicationModule;
 import com.mycompany.chservicetime.util.CHLog;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 public class CHApplication extends Application {
     private static final String TAG = makeLogTag("CHApplication");
@@ -50,7 +49,7 @@ public class CHApplication extends Application {
 
     public static Context getContext() {
         if (mContext == null)
-            LOGD(TAG, "Application mContext is NULL.");
+            CHLog.d(TAG, "Application mContext is NULL.");
         return mContext;
     }
 

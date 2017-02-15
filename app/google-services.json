@@ -40,15 +40,66 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
+              "client_id": "990207716449-e7so4564a53afpqcla79ev3q7hfsuou9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
               "client_id": "990207716449-mi0ep7orpmn7qroovr3q25eloog9f4p4.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.mycompany.chservicetime"
               }
-            },
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990207716449:android:2233f5853e7de951",
+        "android_client_info": {
+          "package_name": "com.mycompany.chservicetime.mock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990207716449-nf7mn9ralq3brjcog1416krkndq6446h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.chservicetime.mock",
+            "certificate_hash": "8F7BA10CDF2F2D09B79E1887D17A6D4176EDBADA"
+          }
+        },
+        {
+          "client_id": "990207716449-e7so4564a53afpqcla79ev3q7hfsuou9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUr9gCL_V2t5p0mjL8tIXK3yUmAi4u_yM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
             {
               "client_id": "990207716449-e7so4564a53afpqcla79ev3q7hfsuou9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "990207716449-mi0ep7orpmn7qroovr3q25eloog9f4p4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.chservicetime"
+              }
             }
           ]
         },

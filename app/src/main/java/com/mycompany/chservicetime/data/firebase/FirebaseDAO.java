@@ -9,6 +9,7 @@ import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.model.ModelConverter;
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.CHLog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,8 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 3/24/2016.
@@ -106,7 +106,7 @@ public class FirebaseDAO {
             // clear TimeSlotItems on Firebase
             deleteTimeSlotItems(userId);
 
-            LOGD(TAG, "successful clear TimeSlotItems on Firebase.");
+            CHLog.d(TAG, "successful clear TimeSlotItems on Firebase.");
 
             for (TimeSlot tsItem : timeSlotItems) {
                 addTimeSlotItemList(userId, ModelConverter.TimeSlotToFirebaseTimeSlotItem(tsItem));
@@ -114,9 +114,9 @@ public class FirebaseDAO {
             }
 
             if (ii == timeSlotItems.size()) {
-                LOGD(TAG, "successful backup all TimeSlotItem on Firebase.");
+                CHLog.d(TAG, "successful backup all TimeSlotItem on Firebase.");
             } else {
-                LOGD(TAG, "fail backup all TimeSlotItem on Firebase.");
+                CHLog.d(TAG, "fail backup all TimeSlotItem on Firebase.");
             }
         }
 

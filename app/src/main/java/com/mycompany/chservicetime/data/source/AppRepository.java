@@ -112,16 +112,16 @@ public class AppRepository implements AppDataSource {
 
         // Query the local storage if available.
         Observable<List<TimeSlot>> localTimeSlots = mAppLocalDataSource.getAllTimeSlot()
-                .flatMap(timeSlots ->
-                        Observable.from(timeSlots)
-                                .doOnNext(timeSlot -> mCachedTimeSlots.put(timeSlot._id(), timeSlot))
-                                .toList())
                 .map(timeSlots -> {
-                    if (timeSlots == null) {
+                    if (timeSlots == null || timeSlots.size() == 0) {
                         throw new NoSuchElementException("No timeSlot list found with timeSlotId ");
                     }
                     return timeSlots;
                 })
+                .flatMap(timeSlots ->
+                        Observable.from(timeSlots)
+                                .doOnNext(timeSlot -> mCachedTimeSlots.put(timeSlot._id(), timeSlot))
+                                .toList())
                 .doOnCompleted(() -> mCacheIsDirty = false)
                 .first();
 

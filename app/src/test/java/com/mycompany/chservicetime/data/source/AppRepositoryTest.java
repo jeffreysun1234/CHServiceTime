@@ -261,6 +261,7 @@ public class AppRepositoryTest {
 
     private void setTimeSlotListNotAvailable(AppDataSource dataSource) {
         when(dataSource.getAllTimeSlot()).thenReturn(Observable.just(Collections.<TimeSlot>emptyList()));
+        //when(dataSource.getAllTimeSlot()).thenReturn(Observable.just(null));
     }
 
     private void setTimeSlotListAvailable(AppDataSource dataSource, List<TimeSlot> timeslots) {

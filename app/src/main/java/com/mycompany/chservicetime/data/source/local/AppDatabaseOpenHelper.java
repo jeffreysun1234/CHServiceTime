@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.CHLog;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 11/28/2016.
@@ -52,7 +52,7 @@ public class AppDatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        LOGD(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
+        CHLog.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
     }
 
     @Override

@@ -288,4 +288,8 @@ public class CHLog {
     public static void setLogger(@Nullable final Logger logger) {
         CHLog.logger = logger;
     }
+
+    public static Logger getLogger() {
+        return logger;
+    }
 }

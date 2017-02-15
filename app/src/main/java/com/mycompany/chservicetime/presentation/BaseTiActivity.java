@@ -32,6 +32,7 @@ import com.mycompany.chservicetime.business.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListPresenter;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListView;
+import com.mycompany.chservicetime.util.CHLog;
 
 import net.grandcentrix.thirtyinch.TiActivity;
 
@@ -44,8 +45,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * BaseActivity class is used as a base class for all activities in the app
@@ -113,10 +113,10 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
                 FirebaseAuthAdapter.FIREBASE_USER = firebaseAuth.getCurrentUser();
                 if (FirebaseAuthAdapter.FIREBASE_USER != null) {
                     // User is signed in
-                    LOGD(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.getUserId());
+                    CHLog.d(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.getUserId());
                 } else {
                     // User is signed out
-                    LOGD(TAG, "onAuthStateChanged:signed_out");
+                    CHLog.d(TAG, "onAuthStateChanged:signed_out");
                 }
 
                 // update Menu
@@ -254,7 +254,7 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        LOGD(TAG, "onConnectionFailed:" + connectionResult);
+        CHLog.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
     @MainThread

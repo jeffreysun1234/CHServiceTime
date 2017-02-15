@@ -14,6 +14,7 @@ import com.mycompany.chservicetime.di.module.AppRepositoryModule;
 import com.mycompany.chservicetime.di.module.ApplicationModule;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.receiver.AlarmReceiver;
+import com.mycompany.chservicetime.util.CHLog;
 import com.mycompany.chservicetime.util.DateUtils;
 
 import java.text.ParseException;
@@ -21,8 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -78,7 +78,7 @@ public class SchedulingIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            LOGD(TAG, "SchedulingIntentService Action=" + action);
+            CHLog.d(TAG, "SchedulingIntentService Action=" + action);
 
             if (ACTION_SET_ALARM.equals(action)) {
                 try {
@@ -127,7 +127,7 @@ public class SchedulingIntentService extends IntentService {
         // get ServiceTime for current time.
         ServiceTime serviceTime = TimeSlotRule.getServiceTime(timeSlotList,
                 DateUtils.getHHmm(System.currentTimeMillis()));
-        LOGD(TAG, "Set Alarm: timePoint=" + serviceTime.nextAlarmTimeInt
+        CHLog.d(TAG, "Set Alarm: timePoint=" + serviceTime.nextAlarmTimeInt
                 + "[" + DateUtils.format(serviceTime.nextAlarmTime)
                 + "], operation = " + serviceTime.currentOperation
                 + " for current time = " + serviceTime.currentTime);
