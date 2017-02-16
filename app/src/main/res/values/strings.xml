@@ -16,7 +16,7 @@
     <string name="time_slot_unknown_error">Unknown error in TimeSlot.</string>
     <string name="fail_save_time_slot_error">Fail to save data.</string>
 
-    <string name="no_time_slot">No Time Schedule.</string>
+    <string name="no_timeslots_all">You have no TimeSlots!</string>
     <string name="no_timeslots_add">Add a TimeSlot item +</string>
     <string name="next_operation_no">No more alarms today.</string>
     <string name="next_operation">Next alarm :</string>
@@ -28,7 +28,6 @@
     <string name="timeslot_deleted">A TimeSlot is deleted.</string>
     <string name="timeslots_cleared">All timeSlot is deleted.</string>
     <string name="next_operation_invalid">Time slots is no available now.</string>
-    <string name="no_timeslots_all">You have no TimeSlots!</string>
 
     <string name="alert_message">Change ringer mode</string>
 

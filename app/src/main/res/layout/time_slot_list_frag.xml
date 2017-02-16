@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/list_item_padding"
-                android:text="@string/no_time_slot" />
+                android:text="@string/no_timeslots_all" />
 
             <TextView
                 android:id="@+id/noTimeSlotsAdd"

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.test.runner.lifecycle.ActivityLifecycleMonitor;
@@ -99,5 +100,11 @@ public class TestHelper {
 
     public static String getText(Context context, int stringId) {
         return context.getResources().getString(stringId);
+    }
+
+    public static int getCurrentRingMode(Context context) {
+        AudioManager audioManager =
+                (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        return audioManager.getRingerMode();
     }
 }

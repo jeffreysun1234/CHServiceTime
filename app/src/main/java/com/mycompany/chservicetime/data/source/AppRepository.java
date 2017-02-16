@@ -113,7 +113,7 @@ public class AppRepository implements AppDataSource {
         // Query the local storage if available.
         Observable<List<TimeSlot>> localTimeSlots = mAppLocalDataSource.getAllTimeSlot()
                 .map(timeSlots -> {
-                    if (timeSlots == null || timeSlots.size() == 0) {
+                    if (timeSlots == null) {
                         throw new NoSuchElementException("No timeSlot list found with timeSlotId ");
                     }
                     return timeSlots;

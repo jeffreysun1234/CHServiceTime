@@ -41,12 +41,15 @@ import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
 import static com.mycompany.chservicetime.CustomItemMatcher.matchToolbarTitle;
 import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
+import static com.mycompany.chservicetime.TestHelper.getCurrentRingMode;
+import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -222,7 +225,7 @@ public class WorkflowTest {
 
     private void emptyTimeSlotList() {
         onView(withId(R.id.noTimeSlots)).check(matches(isDisplayed()));
-        onView(withId(R.id.noTimeSlotsMain)).check(matches(withText(R.string.no_time_slot)));
+        onView(withId(R.id.noTimeSlotsMain)).check(matches(withText(R.string.no_timeslots_all)));
     }
 
     private void clickAddTimeSlotIcon_opensAddTimeSlotUi() {
@@ -268,10 +271,8 @@ public class WorkflowTest {
         onView(withText(oldName)).check(doesNotExist());
     }
 
-    private int getCurrentRingMode(Context context) {
-        AudioManager audioManager =
-                (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-        return audioManager.getRingerMode();
+    private void clickCheckBoxForActivate(String title) {
+        onView(allOf(withId(R.id.activeSwitch), hasSibling(withText(title)))).perform(click());
     }
 }
 
