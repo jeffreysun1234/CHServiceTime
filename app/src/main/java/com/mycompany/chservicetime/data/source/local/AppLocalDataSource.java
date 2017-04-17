@@ -70,13 +70,13 @@ public class AppLocalDataSource implements AppDataSource {
 
     @Override
     public Observable<List<TimeSlot>> getAllTimeSlot() {
-        return mBriteDB.createQuery(TimeSlot.TABLE_NAME, TimeSlot.SELECT_ALL)
+        return mBriteDB.createQuery(TimeSlot.TABLE_NAME, TimeSlot.FACTORY.select_all().statement)
                 .mapToList(mTimeSlotMapperFunction);
     }
 
     @Override
     public Observable<TimeSlot> getTimeSlot(@NonNull String id) {
-        return mBriteDB.createQuery(TimeSlot.TABLE_NAME, TimeSlot.SELECT_BY_ID, id)
+        return mBriteDB.createQuery(TimeSlot.TABLE_NAME, TimeSlot.FACTORY.select_by_id(id).statement, id)
                 .mapToOneOrDefault(mTimeSlotMapperFunction, null);
     }
 
