@@ -19,8 +19,6 @@ import javax.inject.Singleton;
 
 import rx.Observable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Concrete implementation to load TimeSlots from the data sources into a cache.
  * <p>
@@ -133,7 +131,6 @@ public class AppRepository implements AppDataSource {
      */
     @Override
     public Observable<TimeSlot> getTimeSlot(@NonNull final String id) {
-        checkNotNull(id);
 
         final TimeSlot cachedTimeSlot = getTimeSlotWithId(id);
 
@@ -165,7 +162,6 @@ public class AppRepository implements AppDataSource {
      */
     @Override
     public void saveTimeSlot(@NonNull TimeSlot timeSlot) {
-        checkNotNull(timeSlot);
         mAppLocalDataSource.saveTimeSlot(timeSlot);
 
         // Do in memory cache update to keep the app UI up to date
@@ -174,7 +170,6 @@ public class AppRepository implements AppDataSource {
     }
 
     public int updateActivationFlag(@NonNull String id, boolean activationFlag) {
-        checkNotNull(id);
         int rows = mAppLocalDataSource.updateActivationFlag(id, activationFlag);
         buildCachedTimeSlotsIfNotExist();
 
@@ -227,7 +222,6 @@ public class AppRepository implements AppDataSource {
 
     @Nullable
     private TimeSlot getTimeSlotWithId(@NonNull String id) {
-        checkNotNull(id);
         if (mCachedTimeSlots == null || mCachedTimeSlots.isEmpty()) {
             return null;
         } else {

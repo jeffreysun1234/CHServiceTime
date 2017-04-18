@@ -16,8 +16,6 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class TimeSlotListAdapter extends SwipeMenuAdapter<TimeSlotListAdapter.ViewHolder> {
     private static final String TAG = "TimeSlotListAdapter";
 
@@ -36,7 +34,8 @@ public class TimeSlotListAdapter extends SwipeMenuAdapter<TimeSlotListAdapter.Vi
     }
 
     private void setList(List<TimeSlot> timeSlots) {
-        mTimeSlots = checkNotNull(timeSlots);
+//        mTimeSlots = checkNotNull(timeSlots);
+        mTimeSlots = timeSlots;
     }
 
     @Override
@@ -92,7 +91,7 @@ public class TimeSlotListAdapter extends SwipeMenuAdapter<TimeSlotListAdapter.Vi
         }
 
         public void setListeners() {
-            checkNotNull(mItemListener);
+//            checkNotNull(mItemListener);
 
             itemView.setOnLongClickListener(view -> {
                 int position = getAdapterPosition();

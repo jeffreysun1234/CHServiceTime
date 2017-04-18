@@ -1,16 +1,13 @@
 package com.mycompany.chservicetime.business.auth;
 
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.util.CHLog;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +24,6 @@ public class FirebaseAuthAdapter {
         return FIREBASE_USER != null;
     }
 
-    public static String getEmail() {
-        return FIREBASE_USER.getEmail();
-    }
-
     public static void showLoginHintInSnackbar(View view) {
         if (!isSignIn())
             Snackbar.make(view, CHApplication.getContext().getString(R.string.sign_in_hint), Snackbar.LENGTH_LONG)
@@ -43,38 +36,42 @@ public class FirebaseAuthAdapter {
      * @return
      */
     public static String getAuthToken() {
-        final String[] authToken = new String[1];
+        final StringBuilder token = new StringBuilder();
 
-        if (isSignIn()) {
-            final CountDownLatch latch = new CountDownLatch(1);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        CHLog.d("Current user(Display name): " + user.getDisplayName());
 
-            Task<GetTokenResult> getTokenResultTask = FIREBASE_USER.getToken(true)
-                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            if (task.isSuccessful()) {
-                                authToken[0] = task.getResult().getToken();
-                            }
-
-                            latch.countDown();
+        if (user != null) {
+            final CountDownLatch countDownLatch = new CountDownLatch(1);
+            user.getToken(true)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            CHLog.d("Auth token: " + task.getResult().getToken());
+                            token.append(task.getResult().getToken());
                         }
+                        countDownLatch.countDown();
                     });
-
             try {
-                latch.await(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                int i = 0;
+                // wait 5*20=100 seconds
+                while (countDownLatch.getCount() != 0 && i < 20) {
+                    countDownLatch.await(5L, TimeUnit.SECONDS);
+                    i++;
+                }
+            } catch (InterruptedException ie) {
+                return null;
             }
-
-            authToken[0] = getTokenResultTask.getResult().getToken();
-        } else {
-            return authToken[0] = null;
         }
 
-        return authToken[0];
+        return token.toString();
     }
 
     public static String getUserId() {
         return FIREBASE_USER.getUid();
+    }
+
+    public static String getUserEmail() {
+        CHLog.d("Test-Tag", FIREBASE_AUTH.getCurrentUser().getEmail());
+        return FIREBASE_USER.getEmail();
     }
 }

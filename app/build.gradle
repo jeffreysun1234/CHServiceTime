@@ -14,9 +14,13 @@ android {
         versionCode 1
         versionName "1.0"
 
-        multiDexEnabled true
+//        multiDexEnabled true
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        compileOptions {
+            incremental true
+        }
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -43,7 +47,8 @@ android {
             applicationIdSuffix '.debug'
 
             debuggable true
-            minifyEnabled false
+            minifyEnabled true
+            //useProguard false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
@@ -133,7 +138,7 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
 
-    compile 'com.android.support:multidex:1.0.1'
+//    compile 'com.android.support:multidex:1.0.1'
 
     // RxJava
     compile "io.reactivex:rxjava:$rootProject.rxjavaVersion"
@@ -147,12 +152,6 @@ dependencies {
     compile "com.firebaseui:firebase-ui-auth:$rootProject.firebaseUIVersion"
     //compile "com.firebaseui:firebase-ui-database:$rootProject.firebaseUIVersion"
 
-    // Firebase Admin
-
-    //compile "com.google.firebase:firebase-admin:$rootProject.firebaseAdminVersion"
-
-    //compile "com.google.android.gms:play-services-auth:$rootProject.firebaseVersion"
-
     // Rx access Database
     compile "com.squareup.sqlbrite:sqlbrite:$rootProject.sqlbriteVersion"
     // Dagger dependencies
@@ -160,7 +159,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
     // Dagger 2 has included it
 
-    compile "com.google.guava:guava:$rootProject.guavaVersion"
+//    compile "com.google.guava:guava:$rootProject.guavaVersion"
 
     // adds the @Generated annotation lacking on Android
     // provided 'javax.annotation:jsr250-api:1.0'
@@ -171,7 +170,8 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofit2Version"
     compile "com.squareup.retrofit2:adapter-rxjava:$rootProject.retrofit2Version"
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    compile "com.squareup.okhttp3:okhttp:$okhttpVersion"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
     // MVP Library
     compile "net.grandcentrix.thirtyinch:thirtyinch:$thirtyinchVersion"
@@ -216,7 +216,7 @@ dependencies {
     testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockitoVersion"
     testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockitoVersion"
     // Mock Web Server
-    testCompile "com.squareup.okhttp3:mockwebserver:$rootProject.ext.mockwebserverVersion"
+    testCompile "com.squareup.okhttp3:mockwebserver:$rootProject.ext.okhttpVersion"
     // Android Testing Support Library's runner and rules
     androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
     androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"

@@ -73,8 +73,6 @@ public class FirebaseRestDAO {
     public TimeSlotList addTimeSlotList(String userId, String authToken) throws
             IOException {
         /* build a TimeSlot list */
-//        TimeSlotList newTimeSlotList = new TimeSlotList("My List", FirebaseAuthAdapter.getEmail(),
-//                FirebaseUtils.getTimestampNowObject());
         TimeSlotList newTimeSlotList = new TimeSlotList("My List", userId,
                 FirebaseUtils.getTimestampNowObject());
 

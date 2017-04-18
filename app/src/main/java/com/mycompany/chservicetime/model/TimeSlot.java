@@ -1,7 +1,6 @@
 package com.mycompany.chservicetime.model;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Strings;
 import com.mycompany.chservicetime.data.source.local.DateAdapter;
 import com.squareup.sqldelight.EnumColumnAdapter;
 
@@ -132,9 +131,9 @@ public abstract class TimeSlot implements TimeSlotModel {
      * Custom methods
      ***/
 
-    public boolean isEmpty() {
-        return Strings.isNullOrEmpty(name());
-    }
+//    public boolean isEmpty() {
+//        return Strings.isNullOrEmpty(name());
+//    }
 
     /**
      * exclude the update_timestamp field

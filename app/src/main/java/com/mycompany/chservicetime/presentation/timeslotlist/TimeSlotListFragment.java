@@ -61,8 +61,6 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Display a grid of {@link TimeSlot}s. User can choose to view all, active or completed timeSlots.
  */
@@ -391,6 +389,7 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
     }
 
     public void setPresenter(@NonNull TimeSlotListPresenter timeSlotListPresenter) {
-        mTimeSlotListPresenter = checkNotNull(timeSlotListPresenter);
+//        mTimeSlotListPresenter = checkNotNull(timeSlotListPresenter);
+        mTimeSlotListPresenter = timeSlotListPresenter;
     }
 }

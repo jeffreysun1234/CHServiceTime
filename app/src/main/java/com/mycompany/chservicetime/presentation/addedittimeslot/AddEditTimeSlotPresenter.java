@@ -15,8 +15,6 @@ import javax.inject.Inject;
 
 import rx.Subscription;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Created by szhx on 5/1/2016.
  */
@@ -51,7 +49,8 @@ public class AddEditTimeSlotPresenter extends BaseTiPresenter<AddEditTimeSlotVie
                                     @NonNull BaseSchedulerProvider schedulerProvider) {
         mId = id;
         mAppRepository = appRepository;
-        mSchedulerProvider = checkNotNull(schedulerProvider, "schedulerProvider cannot be null!");
+        //mSchedulerProvider = checkNotNull(schedulerProvider, "schedulerProvider cannot be null!");
+        mSchedulerProvider = schedulerProvider;
     }
 
     /**

@@ -18,7 +18,6 @@ package com.mycompany.chservicetime;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
 
 import com.mycompany.chservicetime.di.component.AppRepositoryComponent;
 import com.mycompany.chservicetime.di.component.ApplicationComponent;
@@ -53,11 +52,11 @@ public class CHApplication extends Application {
         return mContext;
     }
 
-    @Override
-    protected void attachBaseContext(Context context) {
-        super.attachBaseContext(context);
-        MultiDex.install(this);
-    }
+//    @Override
+//    protected void attachBaseContext(Context context) {
+//        super.attachBaseContext(context);
+//        MultiDex.install(this);
+//    }
 
     @Override
     public void onCreate() {

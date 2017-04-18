@@ -18,8 +18,6 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Concrete implementation of a data source as a db.
  */
@@ -39,8 +37,8 @@ public class AppLocalDataSource implements AppDataSource {
     // Prevent direct instantiation.
     private AppLocalDataSource(@NonNull Context context,
                                @NonNull BaseSchedulerProvider schedulerProvider) {
-        checkNotNull(context, "context cannot be null");
-        checkNotNull(schedulerProvider, "scheduleProvider cannot be null");
+//        checkNotNull(context, "context cannot be null");
+//        checkNotNull(schedulerProvider, "scheduleProvider cannot be null");
         dbHelper = AppDatabaseOpenHelper.getInstance(context);
         dbHelper.getWritableDatabase();
         SqlBrite sqlBrite = new SqlBrite.Builder().build();
@@ -82,7 +80,7 @@ public class AppLocalDataSource implements AppDataSource {
 
     @Override
     public void saveTimeSlot(@NonNull TimeSlot timeSlot) {
-        checkNotNull(timeSlot);
+//        checkNotNull(timeSlot);
         ContentValues values = TimeSlot.getMarshal(timeSlot).asContentValues();
 
         mBriteDB.insert(TimeSlot.TABLE_NAME, values, SQLiteDatabase.CONFLICT_REPLACE);

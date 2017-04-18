@@ -22,6 +22,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -82,24 +83,6 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
 
         mRootView = findViewById(android.R.id.content);
 
-//        FileInputStream serviceAccount = null;
-//        try {
-//            serviceAccount = new FileInputStream("path/to/service_account_keyey.json");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-        //InputStream serviceAccount = getResources().openRawResource(R.raw.service_account_key);
-//        FirebaseOptions options = new FirebaseOptions.Builder()
-//                .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-//                .setDatabaseUrl("https://chservicetime.firebaseio.com/")
-//                .build();
-
-//        FirebaseOptions options = new FirebaseOptions.Builder()
-//                .setServiceAccount(serviceAccount)
-//                .setDatabaseUrl("https://chservicetime.firebaseio.com")
-//                .build();
-//        FirebaseApp.initializeApp(options);
-
         FirebaseAuthAdapter.FIREBASE_AUTH = FirebaseAuth.getInstance();
 
         /**
@@ -113,7 +96,7 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
                 FirebaseAuthAdapter.FIREBASE_USER = firebaseAuth.getCurrentUser();
                 if (FirebaseAuthAdapter.FIREBASE_USER != null) {
                     // User is signed in
-                    CHLog.d(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.getUserId());
+                    CHLog.d(TAG, "onAuthStateChanged:signed_in:" + FirebaseAuthAdapter.getUserEmail());
                 } else {
                     // User is signed out
                     CHLog.d(TAG, "onAuthStateChanged:signed_out");
@@ -242,6 +225,10 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
     }
 
     private void signIn() {
+        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                .setPermissions(Arrays.asList(Scopes.GAMES))
+                .build();
+
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setProviders(Arrays.asList(
