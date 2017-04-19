@@ -241,6 +241,8 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 protected void onPostExecute(Object o) {
                     getView().setLoadingIndicator(false);
                     getView().showFeedbackMessage(R.string.restore_done);
+                    // refresh view
+                    loadTimeSlots(false, false);
                 }
             }.execute();
         } else {

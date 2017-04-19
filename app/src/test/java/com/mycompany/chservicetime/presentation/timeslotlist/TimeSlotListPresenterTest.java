@@ -1,6 +1,5 @@
 package com.mycompany.chservicetime.presentation.timeslotlist;
 
-import com.google.common.collect.Lists;
 import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class TimeSlotListPresenterTest {
         mTimeSlotListPresenter = new TimeSlotListPresenter(mAppRepository, mSchedulerProvider);
         mTimeSlotListPresenter.create();
 
-        TIMESLOTS = Lists.newArrayList(TimeSlot1, TimeSlot2, TimeSlot3);
+        TIMESLOTS = Arrays.asList(TimeSlot1, TimeSlot2, TimeSlot3);
     }
 
     @Test

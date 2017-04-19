@@ -232,8 +232,9 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()
+//                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()
+                        ))
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .build(),
                 RC_SIGN_IN);

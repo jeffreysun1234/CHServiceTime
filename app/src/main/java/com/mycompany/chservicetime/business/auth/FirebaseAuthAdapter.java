@@ -71,7 +71,6 @@ public class FirebaseAuthAdapter {
     }
 
     public static String getUserEmail() {
-        CHLog.d("Test-Tag", FIREBASE_AUTH.getCurrentUser().getEmail());
         return FIREBASE_USER.getEmail();
     }
 }

@@ -2,7 +2,6 @@ package com.mycompany.chservicetime.data.source;
 
 import android.content.Context;
 
-import com.google.common.collect.Lists;
 import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.After;
@@ -11,6 +10,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,7 +37,7 @@ public class AppRepositoryTest {
     final static TimeSlot TimeSlot3 = TimeSlot.createTimeSlot("333", "Test", "test",
             6, 20, 12, 22, "1100011", true, false, TimeSlot.ServiceOption.MUTE);
 
-    private static List<TimeSlot> TIMESLOTS = Lists.newArrayList(TimeSlot1, TimeSlot2, TimeSlot3);
+    private static List<TimeSlot> TIMESLOTS = Arrays.asList(TimeSlot1, TimeSlot2, TimeSlot3);
 
     private AppRepository mAppRepository;
 
