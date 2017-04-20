@@ -6,6 +6,7 @@ package com.mycompany.chservicetime.presentation;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
@@ -44,6 +45,7 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
@@ -58,6 +60,8 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
         implements GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = makeLogTag("BaseActivity");
 
+    // The Request_code should be greater 100, for avoid to conflict with the value of
+    // PermissionDispatcher generator.
     private static final int RC_SIGN_IN = 100;
     private static final int RC_PERMISSION_PHONE_STATE = 101;
     private static final int RC_PERMISSION_WRITE_SETTING = 102;
@@ -78,6 +82,8 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
         super.onCreate(savedInstanceState);
 
         // Permission Setting for Android 6.0
+//        showNeedPermissionDialog(this, new String[]{Manifest.permission.WRITE_SETTINGS,
+//                Manifest.permission.READ_PHONE_STATE});
         BaseTiActivityPermissionsDispatcher.getPermissionWriteSettingsWithCheck(this);
         BaseTiActivityPermissionsDispatcher.getPermissionPhoneStateWithCheck(this);
 
@@ -252,13 +258,30 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
 
     //---------------------------------- BEGIN Runtime Permissions ----------------------------------//
 
-    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
-    void getPermissionPhoneState() {
+    private static void showNeedPermissionDialog(final Context context, String[] permissions) {
+
+        if (!PermissionUtils.hasSelfPermissions(context, permissions)) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            final AlertDialog alert = builder.create();
+            builder.setMessage(context.getResources().getString(R.string.need_permission_dialog_message,
+                    Arrays.toString(permissions)))
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, id) -> alert.dismiss());
+            alert.show();
+        }
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
-    void showDeniedForPhoneState() {
-        showSnackbar(R.string.permission_phone_state_no);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        BaseTiActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    //*** permission.READ_PHONE_STATE ***//
+
+    @NeedsPermission(Manifest.permission.READ_PHONE_STATE)
+    void getPermissionPhoneState() {
     }
 
     @OnShowRationale(Manifest.permission.READ_PHONE_STATE)
@@ -267,19 +290,18 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
                 .setMessage(R.string.permission_phone_state_rationale)
                 .setPositiveButton(R.string.button_allow, (dialog, button) -> request.proceed())
                 .setNegativeButton(R.string.button_deny, (dialog, button) -> request.cancel())
+                .setCancelable(false)
                 .show();
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
+    void showDeniedForPhoneState() {
+        showSnackbar(R.string.permission_phone_state_no);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_PHONE_STATE)
     void showNeverAskForPhoneState() {
         showSnackbar(R.string.permission_phone_state_never_ask);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        BaseTiActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     //*** Special Permissions ***//
