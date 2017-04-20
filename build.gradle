@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -15,7 +15,7 @@ buildscript {
         classpath 'com.squareup.sqldelight:gradle-plugin:0.6.1'
 
         // Retrolambda
-        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
 
         // Firebase
         classpath 'com.google.gms:google-services:3.0.0'
@@ -45,7 +45,7 @@ ext {
     buildToolsVersion = '24.0.3'
 
     // App dependencies
-    supportLibraryVersion = '25.1.0'
+    supportLibraryVersion = '25.3.1'
 
     autoValueVersion = '1.4-rc1'
     autoValueFirebaseVersion = '1.0.1'
@@ -53,6 +53,7 @@ ext {
     daggerVersion = '2.8'
     dexmakerVersion = '1.2'
     espressoVersion = '2.2.2'
+    easypermissionsVersion = '0.3.1'
     firebaseVersion = '10.2.0'
     firebaseAdminVersion = '4.1.0'
     firebaseUIVersion = '1.2.0'
@@ -63,7 +64,7 @@ ext {
     mockitoVersion = '1.10.19'
     mockwebserverVersion = '3.4.1'
     okhttpVersion = '3.6.0'
-    PermissionsDispatcherVersion = '2.3.1'
+    PermissionsDispatcherVersion = '2.3.2'
     powerMockitoVersion = '1.6.5'
     retrofit2Version = '2.2.0'
     rulesVersion = '0.5'
