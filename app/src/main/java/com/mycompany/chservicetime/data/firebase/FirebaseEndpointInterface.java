@@ -3,7 +3,6 @@ package com.mycompany.chservicetime.data.firebase;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -27,6 +26,10 @@ public interface FirebaseEndpointInterface {
      */
     @GET("example.json")
     Call<String> getTestString();
+
+    @PUT("/")
+    Call<String> createNode(@Body HashMap<String, Object> nodePathMap,
+                            @Query("auth") String auth);
 
     /**
      * FirebaseConstants.timeSlotListRestURL();

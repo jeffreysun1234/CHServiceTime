@@ -37,5 +37,26 @@ cloud test
 http://www.testin.cn
 http://www.scirocco-cloud.com/en/
 
+******************************************
+* MVP + Data binding
+* RxJava / RxAndroid
+* Gherkin and Cucumber: BDD Testing
+* Test: Junit + Mockito + Espresso + UIAutomate + Robolectric 
+* Retrofit + Json + + MockWebServer
+* QA: checkstyle + PMD + findbug + lint
+* Continouns Intergration: CircleCI + Slack
+* fabric Crashlytics
 
+*****************************
+Icepick + Nucleus + Dragger 2 +   + Glide +  DBFlow/requery ( + SQLCipher ) + Guava +  + Hamcrest +  + JaCoCo + Jenkins +  + SonarQube + Timber
+
+Tools: stetho + 
+https://designcode.io/sketch  --- Design Tool
+https://slack.com/pricing# --- free message
+
+https://martinhbramwell.github.io/Meteor-CI-Tutorial/
+
+BBD ---> Android Stuido Cookbook
+
+**************************
 

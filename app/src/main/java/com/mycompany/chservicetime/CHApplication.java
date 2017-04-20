@@ -19,36 +19,86 @@ package com.mycompany.chservicetime;
 import android.app.Application;
 import android.content.Context;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import com.mycompany.chservicetime.di.component.AppRepositoryComponent;
+import com.mycompany.chservicetime.di.component.ApplicationComponent;
+import com.mycompany.chservicetime.di.component.DaggerAppRepositoryComponent;
+import com.mycompany.chservicetime.di.component.DaggerApplicationComponent;
+import com.mycompany.chservicetime.di.module.AppRepositoryModule;
+import com.mycompany.chservicetime.di.module.ApplicationModule;
+import com.mycompany.chservicetime.util.CHLog;
+
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 public class CHApplication extends Application {
     private static final String TAG = makeLogTag("CHApplication");
 
-    // Global context used in this app
-    private static Context context = null;
+    public static CHApplication INSTANCE;
+
+    // Global mContext used in this app
+    private static Context mContext = null;
+    private static ApplicationComponent mApplicationComponent;
+    private static AppRepositoryComponent mAppRepositoryComponent;
 
     /**
-     * If you want to mock context, then override this method in your mock subclass of CHApplication.
+     * If you want to mock mContext, then override this method in your mock subclass of CHApplication.
      */
     protected Context createContext() {
         return this.getApplicationContext();
     }
 
     public static Context getContext() {
-        if (context == null)
-            LOGD(TAG, "Application context is NULL.");
-        return context;
+        if (mContext == null)
+            CHLog.d(TAG, "Application mContext is NULL.");
+        return mContext;
     }
+
+//    @Override
+//    protected void attachBaseContext(Context context) {
+//        super.attachBaseContext(context);
+//        MultiDex.install(this);
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        context = createContext();
+        INSTANCE = this;
+
+        setDaggerGraph();
+
+        if (BuildConfig.DEBUG) {
+            // log output with System.out.println
+            CHLog.setLogger(CHLog.TESTOUT);
+        } else {
+            // disable log
+            CHLog.setLogger(null);
+        }
+
+        mContext = createContext();
 
         // initialize Firebase
         //Firebase.setAndroidContext(this);
 
+    }
+
+    private void setDaggerGraph() {
+        ApplicationModule applicationModule = new ApplicationModule(getApplicationContext());
+
+        mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(applicationModule)
+                .build();
+
+        mAppRepositoryComponent = DaggerAppRepositoryComponent.builder()
+                .applicationModule(applicationModule)
+                .appRepositoryModule(new AppRepositoryModule())
+                .build();
+    }
+
+    public ApplicationComponent getApplicationComponent() {
+        return mApplicationComponent;
+    }
+
+    public AppRepositoryComponent getAppRepositoryComponent() {
+        return mAppRepositoryComponent;
     }
 }

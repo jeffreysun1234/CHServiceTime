@@ -10,18 +10,14 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.presentation.timeslots.TimeSlotsActivity;
-import com.mycompany.chservicetime.receiver.AlarmReceiver;
+import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
+import com.mycompany.chservicetime.util.CHLog;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
  */
 public class RingerModeIntentService extends IntentService {
     public static final String TAG = makeLogTag("RingerModeIntentService");
@@ -30,6 +26,8 @@ public class RingerModeIntentService extends IntentService {
             "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_NORMAL";
     public static final String ACTION_SET_RINGER_MODE_VIBRATE =
             "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_VIBRATE";
+    public static final String ACTION_SET_RINGER_MODE_MUTE =
+            "com.mycompany.servicetime.schedule.action.SET_RINGER_MODE_MUTE";
 
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
@@ -39,7 +37,11 @@ public class RingerModeIntentService extends IntentService {
         super("RingerModeIntentService");
     }
 
-    public static void startActionSetRingerMode(Context context, String action) {
+    /**
+     * @param context
+     * @param action  ACTION_SET_RINGER_MODE_NORMAL or ACTION_SET_RINGER_MODE_VIBRATE or ACTION_SET_RINGER_MODE_MUTE
+     */
+    public static void startSetRingerMode(Context context, String action) {
         Intent intent = new Intent(context, RingerModeIntentService.class);
         intent.setAction(action);
         context.startService(intent);
@@ -50,27 +52,26 @@ public class RingerModeIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            LOGD(TAG, "RingerModeIntentService Action=" + action);
+            CHLog.d(TAG, "RingerModeIntentService Action=" + action);
 
-            if (ACTION_SET_RINGER_MODE_NORMAL.equals(action) ||
-                    ACTION_SET_RINGER_MODE_VIBRATE.equals(action)) {
-                handleActionSetRingerMode(action);
-            }
+            handleActionSetRingerMode(action);
         }
     }
 
     /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
+     * Handle action in the provided background thread with the provided parameters.
      */
     private void handleActionSetRingerMode(String action) {
         AudioManager audioManager =
                 (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         if (ACTION_SET_RINGER_MODE_VIBRATE.equals(action)) {
-            LOGD(TAG, "set ringer mode: RINGER_MODE_VIBRATE");
+            CHLog.d(TAG, "set ringer mode: RINGER_MODE_VIBRATE");
             audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+        } else if (ACTION_SET_RINGER_MODE_MUTE.equals(action)) {
+            CHLog.d(TAG, "set ringer mode: RINGER_MODE_MUTE");
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         } else if (ACTION_SET_RINGER_MODE_NORMAL.equals(action)) {
-            LOGD(TAG, "set ringer mode: RINGER_MODE_NORMAL");
+            CHLog.d(TAG, "set ringer mode: RINGER_MODE_NORMAL");
             audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
             Settings.System.putInt(this.getContentResolver(), Settings.System.VIBRATE_ON, 1);
             audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,
@@ -79,7 +80,7 @@ public class RingerModeIntentService extends IntentService {
                     AudioManager.VIBRATE_SETTING_ON);
         }
 
-        LOGD(TAG, "Current ringer mode: " + audioManager.getRingerMode());
+        CHLog.d(TAG, "Current ringer mode: " + audioManager.getRingerMode());
         //sendNotification("Success");
     }
 
@@ -89,7 +90,7 @@ public class RingerModeIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, TimeSlotsActivity.class), 0);
+                new Intent(this, TimeSlotListActivity.class), 0);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

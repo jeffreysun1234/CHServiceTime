@@ -1,6 +1,7 @@
-Repository and DAO, in conclusion, they have similar intentions only that the Repository is a higher level concept dealing directly with business/domain objects, while DAO is more lower level, closer to the database/storage dealing only with data. A (micro)ORM is a DAO that is used by a Repository. For data-centric apps, a repository and DAO are interchangeable because the ‘business’ objects are simple data.
 
 When Esprosse tests is running, the screen must note be sleeping.
+
+https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test-lifecycle/
 
 1. Rewrite the content provider, and added a test case for the content provider, while uses ProviderTestCase2 (AndroidTest)
 2. AddEditTimeSlot UI: AddEditTimeSlotPresenterTest (Mockito, Test) and AddEditTimeSlotScreenTest (AndroidMockTest)
@@ -16,6 +17,5 @@ When Esprosse tests is running, the screen must note be sleeping.
 10. Fix bug: changing a time slot does not trigger the scheduling service.
 11. Code static review
 12. Permission code ( for android 6.0)
-    TODO: later use https://github.com/kaknazaveshtakipishi/PermissionEverywhere for easy coding.
 
 

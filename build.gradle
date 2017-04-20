@@ -3,13 +3,21 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.3.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
+        // SQLDelight
+        classpath 'com.squareup.sqldelight:gradle-plugin:0.6.1'
+
+        // Retrolambda
+        classpath 'me.tatarka:gradle-retrolambda:3.6.0'
+
+        // Firebase
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.2.2'
@@ -19,9 +27,53 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+// Define versions in a single place
+ext {
+    // Sdk and tools
+    minSdkVersion = 16
+    targetSdkVersion = 24
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.3'
+
+    // App dependencies
+    supportLibraryVersion = '25.3.1'
+
+    autoValueVersion = '1.4-rc1'
+    autoValueFirebaseVersion = '1.0.1'
+    autoValueGsonVersion = '0.4.5'
+    daggerVersion = '2.8'
+    dexmakerVersion = '1.2'
+    espressoVersion = '2.2.2'
+    easypermissionsVersion = '0.3.1'
+    firebaseVersion = '10.2.0'
+    firebaseAdminVersion = '4.1.0'
+    firebaseUIVersion = '1.2.0'
+    gsonVersion = '2.8.0'
+    guavaVersion = '18.0'
+    hamcrestVersion = '1.3'
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    mockwebserverVersion = '3.4.1'
+    okhttpVersion = '3.6.0'
+    PermissionsDispatcherVersion = '2.3.2'
+    powerMockitoVersion = '1.6.5'
+    retrofit2Version = '2.2.0'
+    rulesVersion = '0.5'
+    runnerVersion = '0.5'
+    rxjavaVersion = '1.2.1'
+    rxandroidVersion = '1.2.1'
+    sqlbriteVersion = '1.1.1'
+    sqlcipherVersion = '3.5.4'
+    swipeRecyclerViewVersion = '1.0.2'
+    thirtyinchVersion = '0.8.0-rc1'
+    uiAutomatorVersion = '2.1.2'
 }

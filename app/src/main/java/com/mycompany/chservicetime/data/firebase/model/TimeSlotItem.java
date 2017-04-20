@@ -14,13 +14,14 @@ public class TimeSlotItem {
     private String days;
     private boolean repeatFlag;
     private boolean activationFlag;
+    private String serviceOption;
 
     public TimeSlotItem() {
     }
 
     public TimeSlotItem(String timeSlotId, String name, String description,
                         int beginTimeHour, int beginTimeMinute, int endTimeHour, int endTimeMinute,
-                        String days, boolean repeatFlag, boolean activationFlag
+                        String days, boolean repeatFlag, boolean activationFlag, String serviceOption
     ) {
         this.timeSlotId = timeSlotId;
         this.name = name;
@@ -32,7 +33,7 @@ public class TimeSlotItem {
         this.days = days;
         this.repeatFlag = repeatFlag;
         this.activationFlag = activationFlag;
-
+        this.serviceOption = serviceOption;
     }
 
     public int getBeginTimeHour() {
@@ -113,5 +114,13 @@ public class TimeSlotItem {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getServiceOption() {
+        return serviceOption;
+    }
+
+    public void setServiceOption(String serviceOption) {
+        this.serviceOption = serviceOption;
     }
 }

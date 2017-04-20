@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,24 +13,34 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.di.component.AddEditTimeSlotComponent;
+import com.mycompany.chservicetime.di.component.DaggerAddEditTimeSlotComponent;
+import com.mycompany.chservicetime.di.module.AddEditTimeSlotPresenterModule;
 import com.mycompany.chservicetime.model.TimeSlot;
+
+import net.grandcentrix.thirtyinch.TiFragment;
 
 import java.util.Calendar;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlotContract.View {
+public class AddEditTimeSlotFragment extends TiFragment<AddEditTimeSlotPresenter, AddEditTimeSlotView>
+        implements AddEditTimeSlotView {
 
     public static final String ARGUMENT_EDIT_TIME_SLOT_ID = "EDIT_TIME_SLOT_ID";
 
-    private AddEditTimeSlotContract.Presenter mPresenter;
+    private String mId;
 
-    private String mEditedTimeSlotId;
+    // Temporary variable to store value.
+    boolean activationFlag;
 
     private char[] days = "0000000".toCharArray();
 
@@ -46,6 +55,9 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     private ToggleButton day4ToggleButton;
     private ToggleButton day5ToggleButton;
     private ToggleButton day6ToggleButton;
+    private RadioButton muteRB;
+    private RadioButton vibrateRB;
+    private RadioGroup serviceOptionRG;
 
     public AddEditTimeSlotFragment() {
         // Required empty public constructor
@@ -68,8 +80,33 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         return fragment;
     }
 
+    @NonNull
+    @Override
+    public AddEditTimeSlotPresenter providePresenter() {
+        /*
+        * Inject the AddEditTimeSlotFragment instance to Dagger Graph,
+        * then the injected fields can be instanced, in this case, create the presenter.
+        */
+        AddEditTimeSlotComponent addEditTimeSlotComponent = DaggerAddEditTimeSlotComponent.builder()
+                .appRepositoryComponent(CHApplication.INSTANCE.getAppRepositoryComponent())
+                .addEditTimeSlotPresenterModule(new AddEditTimeSlotPresenterModule(mId))
+                .build();
+
+        return addEditTimeSlotComponent.getAddEditTimeSlotPresenter();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // Because providePresenter() uses this argument, the sentence must be before super.onCreate()
+        setTimeSlotIdIfAny();
+
+        super.onCreate(savedInstanceState);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         View root = inflater.inflate(R.layout.fragment_add_edit_time_slot, container, false);
 
         initViews(root);
@@ -78,19 +115,6 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         setRetainInstance(true);
 
         return root;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        setTimeSlotIdIfAny();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.start();
     }
 
     @Override
@@ -113,37 +137,26 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     ////// Contract implements //////
 
     @Override
-    public void setPresenter(@NonNull AddEditTimeSlotContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showError(int error) {
+    public void showMessage(int messageType) {
         int stringResId = R.string.time_slot_unknown_error;
-        switch (error) {
-            case AddEditTimeSlotPresenter.INPUT_NAME_ERROR:
+        switch (messageType) {
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_NAME_ERROR:
                 stringResId = R.string.input_name_error;
                 break;
-            case AddEditTimeSlotPresenter.INPUT_TIME_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_TIME_ERROR:
                 stringResId = R.string.input_time_error;
                 break;
-            case AddEditTimeSlotPresenter.INPUT_DAY_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_DAY_ERROR:
                 stringResId = R.string.input_day_error;
                 break;
-            case AddEditTimeSlotPresenter.FAIL_GET_TIME_SLOT_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_FAIL_GET_TIME_SLOT_ERROR:
                 stringResId = R.string.fail_get_time_slot_error;
                 break;
-            case AddEditTimeSlotPresenter.FAIL_SAVE_TIME_SLOT_ERROR:
+            case AddEditTimeSlotPresenter.MESSAGE_TYPE_FAIL_SAVE_TIME_SLOT_ERROR:
                 stringResId = R.string.fail_save_time_slot_error;
                 break;
         }
         Snackbar.make(nameEditText, getString(stringResId), Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void finishView() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
     }
 
     /**
@@ -152,17 +165,20 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     @Override
     public void setTimeSlotFields(TimeSlot timeSlot) {
         if (timeSlot == null) {
+            nameEditText.setText("");
             // fix android bug in 4.1
             int currentHourIn24 = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             beginTimeTP.setCurrentHour(currentHourIn24);
             endTimeTP.setCurrentHour(currentHourIn24);
+            // default is vibrate
+            mapServiceOption(TimeSlot.ServiceOption.VIBRATION);
         } else {
-            nameEditText.setText(timeSlot.name);
-            beginTimeTP.setCurrentHour(timeSlot.beginTimeHour);
-            beginTimeTP.setCurrentMinute(timeSlot.beginTimeMinute);
-            endTimeTP.setCurrentHour(timeSlot.endTimeHour);
-            endTimeTP.setCurrentMinute(timeSlot.endTimeMinute);
-            days = timeSlot.days.toCharArray();
+            nameEditText.setText(timeSlot.name());
+            beginTimeTP.setCurrentHour(timeSlot.begin_time_hour());
+            beginTimeTP.setCurrentMinute(timeSlot.begin_time_minute());
+            endTimeTP.setCurrentHour(timeSlot.end_time_hour());
+            endTimeTP.setCurrentMinute(timeSlot.end_time_minute());
+            days = timeSlot.days().toCharArray();
             day0ToggleButton.setChecked(days[0] == '1');
             day1ToggleButton.setChecked(days[1] == '1');
             day2ToggleButton.setChecked(days[2] == '1');
@@ -170,23 +186,40 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
             day4ToggleButton.setChecked(days[4] == '1');
             day5ToggleButton.setChecked(days[5] == '1');
             day6ToggleButton.setChecked(days[6] == '1');
-            repeatFlagCheckBox.setChecked(timeSlot.repeatFlag);
+            repeatFlagCheckBox.setChecked(timeSlot.repeat_flag());
+            mapServiceOption(timeSlot.service_option());
+
+            activationFlag = timeSlot.activation_flag();
         }
     }
 
+    private void mapServiceOption(TimeSlot.ServiceOption serviceOption) {
+        if (serviceOption.equals(TimeSlot.ServiceOption.MUTE)) {
+            muteRB.setChecked(true);
+            vibrateRB.setChecked(false);
+        } else if (serviceOption.equals(TimeSlot.ServiceOption.VIBRATION)) {
+            muteRB.setChecked(false);
+            vibrateRB.setChecked(true);
+        }
+    }
+
+    private TimeSlot.ServiceOption mapServiceOption(int selectedId) {
+        if (selectedId == muteRB.getId())
+            return TimeSlot.ServiceOption.MUTE;
+        else
+            return TimeSlot.ServiceOption.VIBRATION;
+    }
+
     @Override
-    public boolean isActive() {
-        return isAdded();
+    public void showTimeSlotList() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     private void setTimeSlotIdIfAny() {
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_EDIT_TIME_SLOT_ID)) {
-            mEditedTimeSlotId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
+            mId = getArguments().getString(ARGUMENT_EDIT_TIME_SLOT_ID);
         }
-    }
-
-    private boolean isNewTimeSlot() {
-        return mEditedTimeSlotId == null;
     }
 
     private void initViews(View rootView) {
@@ -203,6 +236,9 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
         day5ToggleButton = (ToggleButton) rootView.findViewById(R.id.day5InWeekToggleButton);
         day6ToggleButton = (ToggleButton) rootView.findViewById(R.id.day6InWeekToggleButton);
         repeatFlagCheckBox = (CheckBox) rootView.findViewById(R.id.repeatWeeklyCheckBox);
+        serviceOptionRG = (RadioGroup) rootView.findViewById(R.id.serviceOptionRadioGroup);
+        muteRB = (RadioButton) rootView.findViewById(R.id.radio_mute);
+        vibrateRB = (RadioButton) rootView.findViewById(R.id.radio_vibrate);
 
         day0ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(0));
         day1ToggleButton.setOnCheckedChangeListener(new daysOnCheckedChangeListener(1));
@@ -214,11 +250,12 @@ public class AddEditTimeSlotFragment extends Fragment implements AddEditTimeSlot
     }
 
     private void saveTimeSlot() {
-        mPresenter.createOrUpdateTimeSlot(mEditedTimeSlotId, nameEditText.getText().toString(),
+        getPresenter().saveTimeSlot(nameEditText.getText().toString(),
                 "", // TODO: description field.
                 beginTimeTP.getCurrentHour(), beginTimeTP.getCurrentMinute(),
                 endTimeTP.getCurrentHour(), endTimeTP.getCurrentMinute(), String.copyValueOf(days),
-                repeatFlagCheckBox.isChecked());
+                repeatFlagCheckBox.isChecked(),
+                mapServiceOption(serviceOptionRG.getCheckedRadioButtonId()), activationFlag);
     }
 
     /**

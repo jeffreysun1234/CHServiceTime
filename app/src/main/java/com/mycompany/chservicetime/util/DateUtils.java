@@ -11,6 +11,8 @@ public class DateUtils {
     private static final String date_format = "yyyyMMdd:HHmm";
     private static ThreadLocal<DateFormat> threadLocal = new ThreadLocal<DateFormat>();
 
+    public static int CURRENT_TIMESTAMP_FLAG = -1;
+
     public static DateFormat getDateFormat() {
         DateFormat df = threadLocal.get();
         if (df == null) {
@@ -52,6 +54,7 @@ public class DateUtils {
 
     /**
      * Returns this current time value in millisecond.
+     *
      * @param currentTime24 In 24 hour format, for example, 920 means 9:20am
      * @return
      */
@@ -82,7 +85,7 @@ public class DateUtils {
     /**
      * Get the begin time of next day. It is 0:00 am.
      */
-    public static long getBeginTimeOfNextDay(){
+    public static long getBeginTimeOfNextDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR, 0);
@@ -93,7 +96,6 @@ public class DateUtils {
     }
 
     /**
-     *
      * @param timestamp
      * @return
      * @throws ParseException
@@ -101,6 +103,35 @@ public class DateUtils {
     public static int getHHmm(long timestamp) throws ParseException {
         String date_format = "HHmm";
         return Integer.parseInt(new SimpleDateFormat(date_format, Locale.US).format(timestamp));
+    }
+
+    /**
+     *
+     */
+
+    /**
+     * Get a number of indicating the day of the week
+     *
+     * @param timeStampInMillis milliseconds. <p>
+     *                          If value is DateUtils.CURRENT_TIMESTAMP_FLAG, calculate the current time.
+     * @return If -1, unavailable value.
+     */
+    public static int getDayInWeek(long timeStampInMillis) {
+        int dayInWeek = -1;
+
+        Calendar calendar = Calendar.getInstance();
+        if (timeStampInMillis <= 0) {
+            calendar.setTimeInMillis(System.currentTimeMillis());
+        } else {
+            calendar.setTimeInMillis(timeStampInMillis);
+        }
+        try {
+            dayInWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return dayInWeek;
     }
 
 }

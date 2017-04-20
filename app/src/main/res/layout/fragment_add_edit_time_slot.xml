@@ -1,8 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".presentation.addedittimeslot.AddEditTimeSlotFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.addedittimeslot.AddEditTimeSlotFragment">
 
     <LinearLayout
         android:id="@+id/time_slot_root_view"
@@ -23,8 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_slot_name"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <EditText
                 android:id="@+id/timeSlotNameEditText"
@@ -34,12 +33,13 @@
                 android:inputType="text"
                 android:lines="1"
                 android:maxLength="15"
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/normal_margin"
             android:orientation="horizontal">
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="Begin"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="End"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,13 +69,13 @@
                 android:id="@+id/beginTimePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <TimePicker
                 android:id="@+id/endTimePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -90,7 +90,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Su"
-                android:textOn="Su"/>
+                android:textOn="Su" />
 
             <ToggleButton
                 android:id="@+id/day1InWeekToggleButton"
@@ -99,7 +99,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Mo"
-                android:textOn="Mo"/>
+                android:textOn="Mo" />
 
             <ToggleButton
                 android:id="@+id/day2InWeekToggleButton"
@@ -108,7 +108,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Tu"
-                android:textOn="Tu"/>
+                android:textOn="Tu" />
 
             <ToggleButton
                 android:id="@+id/day3InWeekToggleButton"
@@ -117,7 +117,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="We"
-                android:textOn="We"/>
+                android:textOn="We" />
 
             <ToggleButton
                 android:id="@+id/day4InWeekToggleButton"
@@ -126,7 +126,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Th"
-                android:textOn="Th"/>
+                android:textOn="Th" />
 
             <ToggleButton
                 android:id="@+id/day5InWeekToggleButton"
@@ -135,7 +135,7 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Fr"
-                android:textOn="Fr"/>
+                android:textOn="Fr" />
 
             <ToggleButton
                 android:id="@+id/day6InWeekToggleButton"
@@ -144,14 +144,35 @@
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
                 android:textOff="Sa"
-                android:textOn="Sa"/>
+                android:textOn="Sa" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
+            android:layout_marginTop="@dimen/normal_margin"
             android:orientation="horizontal">
+
+            <RadioGroup
+                android:id="@+id/serviceOptionRadioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_mute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mute" />
+
+                <RadioButton
+                    android:id="@+id/radio_vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vibrate" />
+            </RadioGroup>
 
             <CheckBox
                 android:id="@+id/repeatWeeklyCheckBox"
@@ -159,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:enabled="false"
-                android:text="Repeat weekly"/>
+                android:text="Repeat weekly" />
         </LinearLayout>
 
     </LinearLayout>

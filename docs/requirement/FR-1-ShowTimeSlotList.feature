@@ -1,6 +1,6 @@
 Feature: Show TimeSlot List UI
 
-  Background:
+Background:
     Given the app is started.
 
   Scenario: show TimeSlot list without data

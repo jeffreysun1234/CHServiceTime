@@ -1,117 +1,151 @@
 package com.mycompany.chservicetime.presentation.addedittimeslot;
 
-import com.mycompany.chservicetime.data.source.TimeSlotDataSource;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
+import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.model.TimeSlot;
-import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotContract;
-import com.mycompany.chservicetime.presentation.addedittimeslot.AddEditTimeSlotPresenter;
+import com.mycompany.chservicetime.util.schedulers.BaseSchedulerProvider;
+import com.mycompany.chservicetime.util.schedulers.ImmediateSchedulerProvider;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.NoSuchElementException;
+
+import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Created by szhx on 8/20/2016.
+ * Unit tests for the implementation of {@link AddEditTimeSlotPresenter}.
  */
-@RunWith(MockitoJUnitRunner.class)
 public class AddEditTimeSlotPresenterTest {
 
     @Mock
-    private TimeSlotRepository mTimeSlotRepository;
+    private AppRepository mAppRepository;
 
     @Mock
-    private AddEditTimeSlotContract.View mAddEditTimeSlotView;
+    private AddEditTimeSlotView mAddEditTimeSlotView;
 
-    /**
-     * {@link ArgumentCaptor} is a powerful Mockito API to capture argument values and use them to
-     * perform further actions or assertions on them.
-     */
-    @Captor
-    private ArgumentCaptor<TimeSlotDataSource.GetTimeSlotCallback> mGetTimeSlotCallbackCaptor;
+    private BaseSchedulerProvider mSchedulerProvider;
 
     private AddEditTimeSlotPresenter mAddEditTimeSlotPresenter;
 
+    private TimeSlot timeSlot;
+
     @Before
-    public void setUp() throws Exception {
+    public void setupMocksAndView() {
         // Mockito has a very convenient way to inject mocks by using the @Mock annotation. To
         // inject the mocks in the test the initMocks method needs to be called.
         MockitoAnnotations.initMocks(this);
 
-        // The presenter wont't update the view unless it's active.
-        when(mAddEditTimeSlotView.isActive()).thenReturn(true);
+        mSchedulerProvider = new ImmediateSchedulerProvider();
+
+        timeSlot = TimeSlot.createTimeSlot("111", "Work", "work time",
+                9, 0, 17, 0, "0111110", true, false, TimeSlot.ServiceOption.NORMAL);
     }
 
     @Test
-    public void saveNewTimeSlotToRepository_showsSuccessUi() {
+    public void saveNewTimeSlotToRepository_showsSuccessMessageUi() {
         // Get a reference to the class under test
-        mAddEditTimeSlotPresenter = givenAddEditTimeSlotPresenter(null);
+        mAddEditTimeSlotPresenter = new AddEditTimeSlotPresenter(null, mAppRepository, mSchedulerProvider);
 
-        // When the presenter is asked to save a timeSlot
-        mAddEditTimeSlotPresenter.createOrUpdateTimeSlot(null, "Work", "This is for work time.",
-                9, 0, 17, 0, "0111110", true);
+        // Initialize the presenter
+        mAddEditTimeSlotPresenter.create();
+        mAddEditTimeSlotPresenter.attachView(mAddEditTimeSlotView);
 
-        // Then a timeSlot is saved in the repository and the view updated
-        verify(mTimeSlotRepository).createOrUpdateTimeSlot(any(TimeSlot.class)); // saved to the model
-        verify(mAddEditTimeSlotView).finishView(); // finish the current view.
+        // When the presenter is asked to save a task
+        mAddEditTimeSlotPresenter.saveTimeSlot(timeSlot.name(), timeSlot.description(),
+                timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
+                timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
+
+        // Then a task is saved in the repository and the view updated
+        verify(mAppRepository).saveTimeSlot(any(TimeSlot.class)); // saved to the model
+        verify(mAddEditTimeSlotView).showTimeSlotList(); // shown in the UI
     }
 
     @Test
-    public void saveTimeSlot_emptyTimeSlotShowsErrorMessageUi() {
+    public void saveTimeSlot_emptyNameTimeSlotShowsErrorUi() {
         // Get a reference to the class under test
-        mAddEditTimeSlotPresenter = givenAddEditTimeSlotPresenter(null);
+        mAddEditTimeSlotPresenter = new AddEditTimeSlotPresenter(null, mAppRepository, mSchedulerProvider);
 
-        // When the presenter is asked to save an error TimeSlot which name is empty.
-        mAddEditTimeSlotPresenter.createOrUpdateTimeSlot(null, "", "", 9, 0, 17, 0, "0111110", true);
+        // Initialize the presenter
+        mAddEditTimeSlotPresenter.create();
+        mAddEditTimeSlotPresenter.attachView(mAddEditTimeSlotView);
 
-        // Then an empty not error is shown in the UI
-        verify(mAddEditTimeSlotView).showError(any(Integer.class));
+        // When the presenter is asked to save an empty TimeSlot
+        mAddEditTimeSlotPresenter.saveTimeSlot("", timeSlot.description(),
+                timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
+                timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
+
+        // Then an error is shown in the UI
+        verify(mAddEditTimeSlotView).showMessage(
+                eq(AddEditTimeSlotPresenter.MESSAGE_TYPE_INPUT_NAME_ERROR));
     }
 
     @Test
     public void saveExistingTimeSlotToRepository_showsSuccessMessageUi() {
-        String timeSlotId = "1";
+        when(mAppRepository.getTimeSlot(timeSlot._id())).thenReturn(Observable.just(timeSlot));
 
         // Get a reference to the class under test
-        mAddEditTimeSlotPresenter = givenAddEditTimeSlotPresenter(timeSlotId);
+        mAddEditTimeSlotPresenter = new AddEditTimeSlotPresenter(timeSlot._id(), mAppRepository, mSchedulerProvider);
 
-        // When the presenter is asked to save an existing timeSlot
-        mAddEditTimeSlotPresenter.createOrUpdateTimeSlot(timeSlotId, "Test", "", 9, 0, 17, 0, "0111110", true);
+        // Initialize the presenter
+        mAddEditTimeSlotPresenter.create();
+        mAddEditTimeSlotPresenter.attachView(mAddEditTimeSlotView);
 
-        // Then a timeSlot is saved in the repository and the view updated
-        verify(mTimeSlotRepository).createOrUpdateTimeSlot(any(TimeSlot.class)); // saved to the model
-        verify(mAddEditTimeSlotView).finishView(); // finish the current view.
+        // When the presenter is asked to save an existing task
+        mAddEditTimeSlotPresenter.saveTimeSlot(timeSlot.name(), timeSlot.description(),
+                timeSlot.begin_time_hour(), timeSlot.begin_time_minute(),
+                timeSlot.end_time_hour(), timeSlot.end_time_minute(), timeSlot.days(),
+                timeSlot.repeat_flag(), timeSlot.service_option(), timeSlot.activation_flag());
+
+        // Then a task is saved in the repository and the view updated
+        verify(mAppRepository).saveTimeSlot(any(TimeSlot.class)); // saved to the model
+        verify(mAddEditTimeSlotView).showTimeSlotList(); // shown in the UI
     }
 
     @Test
-    public void populateTimeSlot_callsRepoAndUpdatesView() {
-        TimeSlot testTimeSlot = new TimeSlot("1-1", "Test", "", 9, 0, 17, 0, "0111110", true);
+    public void populateTimeSlot_callsRepoAndUpdatesViewOnSuccess() {
+        when(mAppRepository.getTimeSlot(timeSlot._id())).thenReturn(Observable.just(timeSlot));
 
         // Get a reference to the class under test
-        mAddEditTimeSlotPresenter = givenAddEditTimeSlotPresenter(testTimeSlot.timeSlotId);
+        mAddEditTimeSlotPresenter = new AddEditTimeSlotPresenter(timeSlot._id(), mAppRepository, mSchedulerProvider);
 
-        // When the presenter is asked to populate an existing timeSlot
-        mAddEditTimeSlotPresenter.populateTimeSlot();
+        // Initialize the presenter
+        mAddEditTimeSlotPresenter.create();
+        mAddEditTimeSlotPresenter.attachView(mAddEditTimeSlotView);
 
-        // Then the timeSlot repository is queried and the view updated
-        verify(mTimeSlotRepository).getTimeSlot(eq(testTimeSlot.timeSlotId), mGetTimeSlotCallbackCaptor.capture());
+        // Then the TimeSlot repository is queried and the view updated
+        verify(mAppRepository).getTimeSlot(eq(timeSlot._id()));
 
-        // Simulate callback
-        mGetTimeSlotCallbackCaptor.getValue().onTimeSlotLoaded(testTimeSlot);
-
-        verify(mAddEditTimeSlotView).setTimeSlotFields(testTimeSlot);
+        verify(mAddEditTimeSlotView).setTimeSlotFields(timeSlot);
+        //assertThat(mAddEditTimeSlotPresenter.isDataMissing(), is(false));
     }
 
-    private AddEditTimeSlotPresenter givenAddEditTimeSlotPresenter(String timeSlotId) {
-        return new AddEditTimeSlotPresenter(timeSlotId, mTimeSlotRepository, mAddEditTimeSlotView);
+    @Test
+    public void populateTimeSlot_callsRepoAndUpdatesViewOnError() {
+        when(mAppRepository.getTimeSlot(timeSlot._id())).thenReturn(
+                Observable.<TimeSlot>error(new NoSuchElementException()));
+
+        // Get a reference to the class under test
+        mAddEditTimeSlotPresenter = new AddEditTimeSlotPresenter(timeSlot._id(), mAppRepository, mSchedulerProvider);
+
+        // Initialize the presenter
+        mAddEditTimeSlotPresenter.create();
+        mAddEditTimeSlotPresenter.attachView(mAddEditTimeSlotView);
+
+        // Then the TimeSlot repository is queried and the view updated
+        verify(mAppRepository).getTimeSlot(eq(timeSlot._id()));
+
+        verify(mAddEditTimeSlotView).showMessage(
+                eq(AddEditTimeSlotPresenter.MESSAGE_TYPE_FAIL_GET_TIME_SLOT_ERROR));
+        verify(mAddEditTimeSlotView, never()).setTimeSlotFields(any(TimeSlot.class));
     }
 }

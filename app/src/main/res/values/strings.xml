@@ -16,18 +16,22 @@
     <string name="time_slot_unknown_error">Unknown error in TimeSlot.</string>
     <string name="fail_save_time_slot_error">Fail to save data.</string>
 
-    <string name="no_time_slot">No Time Schedule.</string>
+    <string name="no_timeslots_all">You have no TimeSlots!</string>
+    <string name="no_timeslots_add">Add a TimeSlot item +</string>
     <string name="next_operation_no">No more alarms today.</string>
     <string name="next_operation">Next alarm :</string>
 
-    <string name="timeslot_marked_active">TimeSlot is active</string>
-    <string name="timeslot_marked_inactive">TimeSlot is not active</string>
+    <string name="timeslot_marked_active">TimeSlot (%1$s) is active</string>
+    <string name="timeslot_marked_inactive">TimeSlot (%1$s) is NOT active</string>
     <string name="loading_timeslots_error">Error while loading TimeSlots</string>
     <string name="successfully_saved_timeslot">TimeSlot is saved</string>
-    <string name="timeslot_deleted">TimeSlot is deleted.</string>
+    <string name="timeslot_deleted">A TimeSlot is deleted.</string>
+    <string name="timeslots_cleared">All timeSlot is deleted.</string>
     <string name="next_operation_invalid">Time slots is no available now.</string>
 
     <string name="alert_message">Change ringer mode</string>
+
+    <string name="refresh">Refresh</string>
 
     <!-- Menu Strings -->
     <string name="action_logout">Logout</string>
@@ -36,11 +40,16 @@
     <string name="menu_add">Add</string>
     <string name="menu_backup">Backup</string>
     <string name="menu_restore">Restore</string>
+    <string name="menu_clear">Clear All Items</string>
 
     <string name="sign_out_failed">Sign out failed</string>
     <string name="sign_out_successful">Sign out successful</string>
     <string name="sign_in_successful">Sign in successful</string>
     <string name="sign_in_hint">"Please Login at first."</string>
+    <string name="unknown_response">Unexpected onActivityResult response code</string>
+    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
+    <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
 
     <string name="progress_dialog_loading">Loading…</string>
     <string name="progress_dialog_access_firebase">Accessing Firebase</string>
@@ -55,4 +64,21 @@
     <string name="permissions_not_granted">Permissions were not granted.</string>
     <string name="permission_READ_PHONE_STATE_rationale">READ_PHONE_STATE permission is needed to control
         the sound of the phone.</string>
+
+    <string name="vibrate">Vibrate</string>
+    <string name="mute">Mute</string>
+
+    <string name="unknown_error">An unknown error occurred</string>
+    <string name="need_permission_dialog_message">"Please give the following permissions to use the App. \n %1$s"</string>
+    <string name="permission_phone_state_yes">PHONE_STATE permission has been granted.</string>
+    <string name="permission_phone_state_no">Phone_State permission was denied. Please consider granting it in order to use the app.</string>
+    <string name="permission_phone_state_rationale">Phone_State permission is needed to configurate the sound mode.</string>
+    <string name="permission_phone_state_never_ask">Phone_State was denied with never ask again. You can revoke the permissions at any time at the Settings of your device.</string>
+    <string name="permission_write_settings_yes">WRITE_SETTINGS permission granted</string>
+    <string name="permission_write_settings_no">WRITE_SETTINGS permission was denied. Please consider granting it in order to use the app.</string>
+    <string name="permission_write_settings_rationale">WRITE_SETTINGS permission is needed to configurate the sound mode.</string>
+    <string name="permission_write_settings_never_ask">WRITE_SETTINGS was denied with never ask again. You can revoke the permissions at any time at the Settings of your device.</string>
+    <string name="back_from_system_setting">Back from Setting</string>
+    <string name="button_allow">Allow</string>
+    <string name="button_deny">Deny</string>
 </resources>

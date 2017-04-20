@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.mycompany.chservicetime.schedule.ServiceTime;
-import com.mycompany.chservicetime.service.RingerModeIntentService;
 import com.mycompany.chservicetime.service.SchedulingIntentService;
 
 import java.util.Calendar;
 
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 public class AlarmReceiver extends WakefulBroadcastReceiver {
     public static final String TAG = makeLogTag("AlarmReceiver");

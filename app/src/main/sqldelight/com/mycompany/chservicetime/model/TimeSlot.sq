@@ -1,0 +1,48 @@
+import com.mycompany.chservicetime.model.TimeSlot;
+import java.util.Calendar;
+
+CREATE TABLE time_slot (
+    _id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    begin_time_hour INTEGER AS Integer NOT NULL,
+    begin_time_minute INTEGER AS Integer NOT NULL,
+    end_time_hour INTEGER AS Integer NOT NULL,
+    end_time_minute INTEGER AS Integer NOT NULL,
+    days TEXT NOT NULL DEFAULT '0000000',
+    repeat_flag INTEGER AS Boolean DEFAULT 1,
+    activation_flag INTEGER AS Boolean DEFAULT 0,
+    service_option TEXT AS TimeSlot.ServiceOption,
+    update_timestamp INTEGER AS Calendar NOT NULL
+
+);
+
+select_all:
+SELECT *
+FROM time_slot;
+
+select_by_id:
+SELECT *
+FROM time_slot
+WHERE _id LIKE ?;
+
+insert_time_slot:
+INSERT INTO time_slot (_id, name, description, begin_time_hour, begin_time_minute,
+        end_time_hour, end_time_minute, days, repeat_flag, activation_flag,
+        service_option, update_timestamp)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update_activation_flag:
+update time_slot
+set activation_flag = ?
+where _id like ?;
+
+delete_by_id:
+delete from time_slot
+where _id like ?;
+
+--delete_by_completed:
+
+--delete from time_slot
+
+--where completed like ?;

@@ -4,23 +4,25 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 
-import com.mycompany.chservicetime.Injection;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.business.schedule.ServiceTime;
+import com.mycompany.chservicetime.business.schedule.TimeSlotRule;
 import com.mycompany.chservicetime.data.preference.PreferenceSupport;
-import com.mycompany.chservicetime.data.source.TimeSlotRepository;
+import com.mycompany.chservicetime.data.source.AppRepository;
+import com.mycompany.chservicetime.di.component.DaggerAppRepositoryComponent;
+import com.mycompany.chservicetime.di.module.AppRepositoryModule;
+import com.mycompany.chservicetime.di.module.ApplicationModule;
+import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.receiver.AlarmReceiver;
-import com.mycompany.chservicetime.schedule.ServiceTime;
-import com.mycompany.chservicetime.schedule.TimeSlotRule;
+import com.mycompany.chservicetime.util.CHLog;
 import com.mycompany.chservicetime.util.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -31,11 +33,11 @@ public class SchedulingIntentService extends IntentService {
 
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_SET_ALARM =
-            "com.mycompany.chservicetime.schedule.action.SET_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.SET_ALARM";
     public static final String ACTION_STOP_ALARM =
-            "com.mycompany.chservicetime.schedule.action.STOP_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.STOP_ALARM";
     public static final String ACTION_INIT_ALARM =
-            "com.mycompany.chservicetime.schedule.action.INIT_ALARM";
+            "com.mycompany.chservicetime.business.schedule.action.INIT_ALARM";
 
     public SchedulingIntentService() {
         super("SchedulingIntentService");
@@ -76,7 +78,7 @@ public class SchedulingIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            LOGD(TAG, "SchedulingIntentService Action=" + action);
+            CHLog.d(TAG, "SchedulingIntentService Action=" + action);
 
             if (ACTION_SET_ALARM.equals(action)) {
                 try {
@@ -104,20 +106,28 @@ public class SchedulingIntentService extends IntentService {
      */
     private void handleActionSetAlarm() throws ParseException {
         // Data repository
-        TimeSlotRepository timeSlotRepository = Injection.provideTimeSlotsRepository(getApplicationContext());
+        AppRepository appRepository = DaggerAppRepositoryComponent.builder()
+                .applicationModule(new ApplicationModule(getApplicationContext()))
+                .appRepositoryModule(new AppRepositoryModule())
+                .build()
+                .getAppRepository();
+
+        // Get all time slots.
+        rx.Observable<List<TimeSlot>> rxTimeSlots = appRepository.getAllTimeSlot();
+        // TODO: implement Rx
+        List<TimeSlot> timeSlots = rxTimeSlots.toBlocking().first();
 
         // get the number for current time, indicating the day of the week
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int currentDayInWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int currentDayInWeek = DateUtils.getDayInWeek(DateUtils.CURRENT_TIMESTAMP_FLAG);
 
         // get TimeSlot list for current time.
-        ArrayList<int[]> timeSlotList = timeSlotRepository.getRequiredTimeSlots(currentDayInWeek, true);
+        List<int[]> timeSlotList =
+                TimeSlotRule.getRequiredTimeSlots(timeSlots, currentDayInWeek, true);
 
         // get ServiceTime for current time.
         ServiceTime serviceTime = TimeSlotRule.getServiceTime(timeSlotList,
                 DateUtils.getHHmm(System.currentTimeMillis()));
-        LOGD(TAG, "Set Alarm: timePoint=" + serviceTime.nextAlarmTimeInt
+        CHLog.d(TAG, "Set Alarm: timePoint=" + serviceTime.nextAlarmTimeInt
                 + "[" + DateUtils.format(serviceTime.nextAlarmTime)
                 + "], operation = " + serviceTime.currentOperation
                 + " for current time = " + serviceTime.currentTime);
@@ -130,7 +140,8 @@ public class SchedulingIntentService extends IntentService {
 
             StringBuffer sb = new StringBuffer();
             if (serviceTime.currentOperation == ServiceTime.Normal
-                    || serviceTime.currentOperation == ServiceTime.Vibrate) {
+                    || serviceTime.currentOperation == ServiceTime.Vibrate
+                    || serviceTime.currentOperation == ServiceTime.Mute) {
                 sb.append(" at ")
                         .append(new SimpleDateFormat("MMM dd, HH:mm 'on' EEE", Locale.US)
                                 .format(serviceTime.nextAlarmTime));
@@ -144,12 +155,16 @@ public class SchedulingIntentService extends IntentService {
 
         // execute the operation
         if (serviceTime.currentOperation == ServiceTime.Vibrate) {
-            RingerModeIntentService.startActionSetRingerMode(
+            RingerModeIntentService.startSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_VIBRATE);
+        } else if (serviceTime.currentOperation == ServiceTime.Mute) {
+            RingerModeIntentService.startSetRingerMode(
+                    getApplicationContext(),
+                    RingerModeIntentService.ACTION_SET_RINGER_MODE_MUTE);
         } else if (serviceTime.currentOperation == ServiceTime.Normal
                 || serviceTime.currentOperation == ServiceTime.NO_OPERATION) {
-            RingerModeIntentService.startActionSetRingerMode(
+            RingerModeIntentService.startSetRingerMode(
                     getApplicationContext(),
                     RingerModeIntentService.ACTION_SET_RINGER_MODE_NORMAL);
         }

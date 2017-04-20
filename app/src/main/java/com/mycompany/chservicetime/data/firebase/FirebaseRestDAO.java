@@ -1,18 +1,15 @@
 package com.mycompany.chservicetime.data.firebase;
 
-import android.content.Context;
-import android.util.Config;
-
-import com.mycompany.chservicetime.auth.FirebaseAuthAdapter;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
-import com.mycompany.chservicetime.util.LogUtils;
+import com.mycompany.chservicetime.model.ModelConverter;
+import com.mycompany.chservicetime.model.TimeSlot;
+import com.mycompany.chservicetime.util.CHLog;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,8 +17,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.mycompany.chservicetime.util.LogUtils.LOGD;
-import static com.mycompany.chservicetime.util.LogUtils.makeLogTag;
+import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
 /**
  * Created by szhx on 3/24/2016.
@@ -39,7 +35,7 @@ public class FirebaseRestDAO {
                     .addConverterFactory(GsonConverterFactory.create());
 
             // Log Http request and response information
-            if (LogUtils.LOGGING_ENABLED) {
+            if (CHLog.getLogger() != null) {
                 // set logging
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
@@ -77,7 +73,7 @@ public class FirebaseRestDAO {
     public TimeSlotList addTimeSlotList(String userId, String authToken) throws
             IOException {
         /* build a TimeSlot list */
-        TimeSlotList newTimeSlotList = new TimeSlotList("My List", FirebaseAuthAdapter.getEmail(),
+        TimeSlotList newTimeSlotList = new TimeSlotList("My List", userId,
                 FirebaseUtils.getTimestampNowObject());
 
         /* access firebase database */
@@ -85,7 +81,7 @@ public class FirebaseRestDAO {
                 FirebaseConstants.timeSlotListRestURL(userId), newTimeSlotList,
                 authToken).execute();
         if (response.isSuccessful()) {
-            return (TimeSlotList) response.body();
+            return response.body();
         } else {
             return null;
         }
@@ -95,10 +91,11 @@ public class FirebaseRestDAO {
      * restore TimeSlot list
      */
     public Collection<TimeSlotItem> restoreTimeSlotItemList(String userId,
-                                                            String authToken) throws
-            IOException {
+                                                            String authToken)
+            throws IOException {
+        String encodeUserId = FirebaseUtils.encodeEmail(userId);
         Response<HashMap<String, TimeSlotItem>> response = mService
-                .getTimeSlotItemList(FirebaseConstants.timeSlotItemListRestURL(userId),
+                .getTimeSlotItemList(FirebaseConstants.timeSlotItemListRestURL(encodeUserId),
                         authToken).execute();
 
         if (response.isSuccessful()) {
@@ -117,42 +114,63 @@ public class FirebaseRestDAO {
      * @return the count saved successfully.
      */
     public int backupTimeSlotItemList(String userId, String authToken,
-                                      ArrayList<TimeSlotItem> timeSlotItems) throws IOException {
+                                      List<TimeSlot> timeSlotItems) throws IOException {
 
         int ii = 0; // count successful save.
 
+        String encodeUserId = FirebaseUtils.encodeEmail(userId);
+
         // add a TimeSlotList to Firebase
-        addTimeSlotList(userId, authToken);
+        addTimeSlotList(encodeUserId, authToken);
 
         if (timeSlotItems != null && timeSlotItems.size() > 0) {
             // clear TimeSlotItems on Firebase
             Response<Object> response = mService.deleteTimeSlotItems(
-                    FirebaseConstants.timeSlotItemListRestURL(userId), authToken)
+                    FirebaseConstants.timeSlotItemListRestURL(encodeUserId), authToken)
                     .execute();
             if (response.isSuccessful()) {
-                LOGD(TAG, "successful clear TimeSlotItems on Firebase.");
+                CHLog.d(TAG, "successful clear TimeSlotItems on Firebase.");
 
-                for (TimeSlotItem tsItem : timeSlotItems) {
+                for (TimeSlot tsItem : timeSlotItems) {
                     // save to Firebase
                     Response<HashMap<String, String>> message = mService.addTimeSlotItemList(
-                            FirebaseConstants.timeSlotItemListRestURL(userId), tsItem, authToken)
+                            FirebaseConstants.timeSlotItemListRestURL(encodeUserId),
+                            ModelConverter.TimeSlotToFirebaseTimeSlotItem(tsItem),
+                            authToken)
                             .execute();
                     if (message.isSuccessful())
                         ii++;
                 }
 
                 if (ii == timeSlotItems.size()) {
-                    LOGD(TAG, "successful backup all TimeSlotItem on Firebase.");
+                    CHLog.d(TAG, "successful backup all TimeSlotItem on Firebase.");
                 } else {
-                    LOGD(TAG, "fail backup all TimeSlotItem on Firebase.");
+                    CHLog.d(TAG, "fail backup all TimeSlotItem on Firebase.");
                 }
 
             } else {
-                LOGD(TAG, "fail to clear TimeSlotItems on Firebase.");
+                CHLog.d(TAG, "fail to clear TimeSlotItems on Firebase.");
             }
-
         }
 
         return ii;
+    }
+
+    public boolean createNode(String userId, String authToken) throws IOException {
+        // Create timeSlotList node
+        HashMap<String, Object> userIdMap = new HashMap<>();
+        userIdMap.put(userId, "");
+        HashMap<String, Object> timeSlotListMap = new HashMap<>();
+        timeSlotListMap.put(FirebaseConstants.FIREBASE_LOCATION_TIMESLOT_LISTS, userIdMap);
+        Response<String> resp = mService.createNode(
+                timeSlotListMap,
+                authToken).execute();
+        if (resp.isSuccessful()) {
+            CHLog.d(TAG, "successful create node path.");
+            return true;
+        } else {
+            CHLog.d(TAG, "fail to create node path.");
+            return false;
+        }
     }
 }
