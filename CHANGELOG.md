@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 0.3.0 (2017-04-20)
 
 ### Added:
 
@@ -14,18 +14,6 @@
 - Refactor CHLog.java
 - Upgrade to Firebase API 10.2.0
 - Refactor source codes to Lambda expressions
-
-### Deprecated:
-
-(for once-stable features removed in upcoming releases.)
-
-### Removed:
-
-(for deprecated features removed in this release.)
-
-### Fixed:
-
-(for any bug fixes.)
 
 ## 0.2.1 (2017-01-13)
 
