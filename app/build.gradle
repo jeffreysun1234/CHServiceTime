@@ -19,11 +19,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId "com.mycompany.chservicetime"
+        applicationId "com.mycompany.servicetime"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.3.0"
 
 //        multiDexEnabled true
 
@@ -55,7 +55,7 @@ android {
             applicationIdSuffix '.debug'
             debuggable true
             minifyEnabled true
-            //useProguard false
+            useProguard false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
