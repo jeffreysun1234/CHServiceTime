@@ -30,6 +30,8 @@
     <string name="next_operation_invalid">Time slots is no available now.</string>
 
     <string name="alert_message">Change ringer mode</string>
+    <string name="notificaiton_reset_ringer_mode_title">Reset Ringer</string>
+    <string name="ringer_mode_monitor_message">The current ringer mode is not correct. You can reset it.</string>
 
     <string name="refresh">Refresh</string>
 

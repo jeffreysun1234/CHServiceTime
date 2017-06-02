@@ -2,6 +2,7 @@ package com.mycompany.chservicetime.data.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.preference.PreferenceManager;
 
 import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
@@ -22,6 +23,7 @@ public class PreferenceSupport {
     public static final String SIGNUP_EMAIL = "signup_email";
 
     public static final String NEXT_ALARM_DETAIL = "next_alarm_detail";
+    public static final String CURRENT_RINGER_MODE = "current_ringer_mode";
 
     public static final String AUTH_TOKEN = "auth_token";
     public static final String PREF_APP_VERSION = "app_version";
@@ -73,6 +75,17 @@ public class PreferenceSupport {
     public static String getNextAlarmDetail(final Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(NEXT_ALARM_DETAIL, "");
+    }
+
+    /*--- current_ringer_mode ---*/
+    public static void setCurrentRingerMode(final Context context, final int ringerMode) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt(CURRENT_RINGER_MODE, ringerMode).commit();
+    }
+
+    public static int getCurrentRingerMode(final Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt(CURRENT_RINGER_MODE, AudioManager.RINGER_MODE_NORMAL);
     }
 
     /*--- auth_token ---*/

@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.data.preference.PreferenceSupport;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
 import com.mycompany.chservicetime.util.CHLog;
 
@@ -66,12 +67,15 @@ public class RingerModeIntentService extends IntentService {
                 (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         if (ACTION_SET_RINGER_MODE_VIBRATE.equals(action)) {
             CHLog.d(TAG, "set ringer mode: RINGER_MODE_VIBRATE");
+            PreferenceSupport.setCurrentRingerMode(getApplicationContext(), AudioManager.RINGER_MODE_VIBRATE);
             audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
         } else if (ACTION_SET_RINGER_MODE_MUTE.equals(action)) {
             CHLog.d(TAG, "set ringer mode: RINGER_MODE_MUTE");
+            PreferenceSupport.setCurrentRingerMode(getApplicationContext(), AudioManager.RINGER_MODE_SILENT);
             audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         } else if (ACTION_SET_RINGER_MODE_NORMAL.equals(action)) {
             CHLog.d(TAG, "set ringer mode: RINGER_MODE_NORMAL");
+            PreferenceSupport.setCurrentRingerMode(getApplicationContext(), AudioManager.RINGER_MODE_NORMAL);
             audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
             Settings.System.putInt(this.getContentResolver(), Settings.System.VIBRATE_ON, 1);
             audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER,

@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.4.0 (2017-06-20)
+
+### Added:
+
+- Monitor the ringer mode change to notify the user
+
 ## 0.3.0 (2017-04-20)
 
 ### Added:
