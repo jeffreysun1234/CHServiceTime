@@ -2,21 +2,23 @@ package com.mycompany.chservicetime.presentation.timeslotlist;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
+import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
 import com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
 import com.mycompany.chservicetime.R;
+import com.mycompany.chservicetime.TestHelper;
 import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.data.source.FakeAppDataSource;
 import com.mycompany.chservicetime.model.TimeSlot;
-import com.mycompany.chservicetime.util.EspressoIdlingResource;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -28,6 +30,8 @@ import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
 /**
  * This test use the fake data source.
  */
+@RunWith(AndroidJUnit4.class)
+@LargeTest
 public class TimeSlotListScreenTest {
 
     final static TimeSlot TimeSlot1 = TimeSlot.createTimeSlot("111", "Work", "work time",
@@ -67,8 +71,11 @@ public class TimeSlotListScreenTest {
          * This helps Espresso to synchronize your test actions, which makes tests significantly more reliable.
          */
         //mIdlingResource = mTimeSlotListActivityTestRule.getActivity().getCountingIdlingResource();
-        mIdlingResource = EspressoIdlingResource.getIdlingResource();
-        Espresso.registerIdlingResources(mIdlingResource);
+//        mIdlingResource = EspressoIdlingResource.getIdlingResource();
+//        Espresso.registerIdlingResources(mIdlingResource);
+
+        // reset database
+        cleanTimeSlots();
     }
 
     /**
@@ -76,9 +83,9 @@ public class TimeSlotListScreenTest {
      */
     @After
     public void tearDown() {
-        if (mIdlingResource != null) {
-            Espresso.unregisterIdlingResources(mIdlingResource);
-        }
+//        if (mIdlingResource != null) {
+//            Espresso.unregisterIdlingResources(mIdlingResource);
+//        }
     }
 
     /**
@@ -97,7 +104,6 @@ public class TimeSlotListScreenTest {
     @Test
     public void showAllTimeSlots() {
         // Add 2 timeSlots
-        cleanTimeSlots();
         createTimeSlots(TimeSlot1, TimeSlot2);
 
         startTestActivity();
@@ -127,13 +133,38 @@ public class TimeSlotListScreenTest {
         onView(withId(R.id.timeSlotNameEditText)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void orientationChange() {
+        createTimeSlots(TimeSlot1, TimeSlot2);
+
+        startTestActivity();
+
+        //Verify that all our timeSlots are shown
+        onView(withItemText(TimeSlot1.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
+        onView(withItemText(TimeSlot2.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
+
+        TestHelper.rotateOrientation(mTimeSlotListActivityTestRule.getActivity());
+
+        //Verify that all our timeSlots are shown
+        onView(withItemText(TimeSlot1.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
+        onView(withItemText(TimeSlot2.name(), DATA_VIEW_TYPE.RECYCLERVIEW)).check(matches(isDisplayed()));
+    }
+
     private void cleanTimeSlots() {
         FakeAppDataSource.getInstance().deleteAllTimeSlot();
     }
 
+    // TODO: can not found addTimeSlots() method
+//    private void createTimeSlots(TimeSlot... timeSlots) {
+//        if (timeSlots != null) {
+//            FakeAppDataSource.getInstance().addTimeSlots(timeSlots);
+//        }
+//    }
+
     private void createTimeSlots(TimeSlot... timeSlots) {
-        if (timeSlots != null) {
-            FakeAppDataSource.getInstance().addTimeSlots(timeSlots);
+        if (timeSlots != null && timeSlots.length > 0) {
+            for (TimeSlot ts : timeSlots)
+                FakeAppDataSource.getInstance().saveTimeSlot(ts);
         }
     }
 }

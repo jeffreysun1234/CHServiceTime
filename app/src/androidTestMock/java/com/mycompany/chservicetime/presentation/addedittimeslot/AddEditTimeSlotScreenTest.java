@@ -40,7 +40,6 @@ public class AddEditTimeSlotScreenTest {
      */
     private TimeSlot timeSlot1 = TimeSlot.createTimeSlot("111", "Work", "work time",
             9, 0, 17, 0, "0111110", true, false, TimeSlot.ServiceOption.MUTE);
-
     /**
      * {@link IntentsTestRule} is an {@link ActivityTestRule} which inits and releases Espresso
      * Intents before and after each test run.
@@ -51,12 +50,13 @@ public class AddEditTimeSlotScreenTest {
      */
     @Rule
     public IntentsTestRule<AddEditTimeSlotActivity> mAddTaskIntentsTestRule =
-            new IntentsTestRule<>(AddEditTimeSlotActivity.class,
+            new IntentsTestRule<AddEditTimeSlotActivity>(AddEditTimeSlotActivity.class,
                     true /* Initial touch mode  */,
                     false /* Lazily launch activity */);
 
     @Before
     public void setUp() throws Exception {
+        // TODO: IdlingResource usage
         /**
          * we register an IdlingResources with Espresso.
          * IdlingResource resource is a great way to tell Espresso when your app is in an idle state.

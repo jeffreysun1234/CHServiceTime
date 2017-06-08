@@ -37,7 +37,7 @@ public class FakeAppDataSource implements AppDataSource {
     private static final Map<String, TimeSlot> TIMESLOT_DATA = new LinkedHashMap<>();
 
     // Prevent direct instantiation.
-    private FakeAppDataSource() {
+    public FakeAppDataSource() {
     }
 
     public static FakeAppDataSource getInstance() {

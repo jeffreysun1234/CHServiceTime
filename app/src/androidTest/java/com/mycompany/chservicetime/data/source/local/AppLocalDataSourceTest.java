@@ -58,7 +58,6 @@ public class AppLocalDataSourceTest {
         AppLocalDataSource.destroyInstance();
         mSchedulerProvider = new ImmediateSchedulerProvider();
 
-
         //Whenever we run Instrumented unit tests, we can't change production environment Database.
         //Because App might have stored an important data on Production environment Database.
         //For such a reason, we use RenamingDelegatingContext, and create SQLite test file.
