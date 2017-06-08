@@ -9,4 +9,14 @@ The application demostrates a couple of technologies:
 - SQLBrite and SQLDelight
 - Retrofit and Gson
 - AutoValue
-- Firebase Authentication
+- Firebase Authentication``
+
+--------------------
+### Development Tools ###
+
+* Android Studio v2.3.2
+* gradle-plugin v2.3.2
+* Android SDK Build Tools v25.0.2
+* MinSdkVersion 16
+* CompileSDKVersion 25
+* Retrolambda v3.6.0

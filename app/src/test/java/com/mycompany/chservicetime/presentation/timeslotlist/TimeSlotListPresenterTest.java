@@ -7,7 +7,10 @@ import com.mycompany.chservicetime.util.schedulers.ImmediateSchedulerProvider;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import rx.Observable;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -71,11 +75,18 @@ public class TimeSlotListPresenterTest {
 
         mTimeSlotListPresenter.attachView(mTimeSlotListView);
 
+        // call Reposiotry
+        verify(mAppRepository).getAllTimeSlot();
+
+        InOrder inOrder = Mockito.inOrder(mTimeSlotListView);
         // Then progress indicator is shown
         verify(mTimeSlotListView).setLoadingIndicator(true);
         // Then progress indicator is hidden and all timeSlots are shown in UI
         verify(mTimeSlotListView).setLoadingIndicator(false);
-        verify(mTimeSlotListView).showTimeSlots(any(List.class));
+
+        ArgumentCaptor<List> showTimeSlotsArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(mTimeSlotListView).showTimeSlots(showTimeSlotsArgumentCaptor.capture());
+        assertTrue(showTimeSlotsArgumentCaptor.getValue().size() == 3);
     }
 
     @Test
@@ -106,7 +117,7 @@ public class TimeSlotListPresenterTest {
     }
 
     @Test
-    public void clickOnTimeSlot_ShowsAddEditUi() {
+    public void clickOnTimeSlot_ShowsEditTimeSlotUi() {
         when(mAppRepository.getAllTimeSlot()).thenReturn(Observable.just(TIMESLOTS));
         mTimeSlotListPresenter.attachView(mTimeSlotListView);
 

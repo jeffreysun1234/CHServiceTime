@@ -164,6 +164,11 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
         return mForceUpdate;
     }
 
+    /**
+     * make sure of get the latest data from the local data source.
+     *
+     * @param mForceUpdate
+     */
     public void setForceUpdate(boolean mForceUpdate) {
         this.mForceUpdate = mForceUpdate;
     }

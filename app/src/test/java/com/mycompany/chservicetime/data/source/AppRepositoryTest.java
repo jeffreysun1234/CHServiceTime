@@ -113,7 +113,7 @@ public class AppRepositoryTest {
     }
 
     @Test
-    public void activateTimeSlotId_activatesTimeSlotToServiceAPIUpdatesCache() {
+    public void updateActivationFlag_activatesTimeSlotToServiceAPIUpdatesCache() {
         // Given a stub timeslot with not activated in the repository
         TimeSlot newTimeSlot = TimeSlot1.toBuilder().activation_flag(false).build();
         mAppRepository.saveTimeSlot(newTimeSlot);
@@ -225,21 +225,6 @@ public class AppRepositoryTest {
         mTimeSlotListTestSubscriber.assertNoValues();
         // Verify that error is returned
         mTimeSlotListTestSubscriber.assertError(NoSuchElementException.class);
-    }
-
-    @Test
-    public void getTimeSlotWithLocalDataSourcesUnavailable_firesOnError() {
-        // Given a timeslot id
-        final String timeslotId = "123";
-        // And the local data source has no data available
-        setTimeSlotNotAvailable(mTimeSlotLocalDataSource, timeslotId);
-
-        // When calling getTimeSlot in the repository
-        TestSubscriber<TimeSlot> testSubscriber = new TestSubscriber<>();
-        mAppRepository.getTimeSlot(timeslotId).subscribe(testSubscriber);
-
-        // Verify that error is returned
-        testSubscriber.assertError(NoSuchElementException.class);
     }
 
     @Test
