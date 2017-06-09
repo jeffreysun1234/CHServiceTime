@@ -16,7 +16,7 @@ apply plugin: 'jacoco'
 // Android Gradle Plugin out of the box supports only code coverage for instrumentation tests.
 
 // Create coverage task of merge UnitTest and AndroidTest
-task jacocoAllTestReport(type: JacocoReport, dependsOn: ['connectedAndroidTest', 'testMockDebugUnitTest']) {
+task jacocoAllReport(type: JacocoReport, dependsOn: ['connectedAndroidTest', 'testMockDebugUnitTest']) {
     group = 'Reporting'
     description = "Generate Jacoco coverage reports."
 

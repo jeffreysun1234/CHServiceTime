@@ -1,6 +1,7 @@
 package com.mycompany.chservicetime.presentation.addedittimeslot;
 
 import android.content.Intent;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -10,7 +11,6 @@ import com.mycompany.chservicetime.R;
 import com.mycompany.chservicetime.data.source.FakeAppDataSource;
 import com.mycompany.chservicetime.model.TimeSlot;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,27 +52,26 @@ public class AddEditTimeSlotScreenTest {
     public IntentsTestRule<AddEditTimeSlotActivity> mAddTaskIntentsTestRule =
             new IntentsTestRule<AddEditTimeSlotActivity>(AddEditTimeSlotActivity.class,
                     true /* Initial touch mode  */,
-                    false /* Lazily launch activity */);
-
-    @Before
-    public void setUp() throws Exception {
-        // TODO: IdlingResource usage
-        /**
-         * we register an IdlingResources with Espresso.
-         * IdlingResource resource is a great way to tell Espresso when your app is in an idle state.
-         * This helps Espresso to synchronize your test actions, which makes tests significantly more reliable.
-         */
-//        Espresso.registerIdlingResources(
-//                mAddTaskIntentsTestRule.getActivity().getCountingIdlingResource());
-    }
+                    false /* Lazily launch activity */) {
+                @Override
+                protected void afterActivityLaunched() {
+                    super.afterActivityLaunched();
+                    /**
+                     * we register an IdlingResources with Espresso.
+                     * IdlingResource resource is a great way to tell Espresso when your app is in an idle state.
+                     * This helps Espresso to synchronize your test actions, which makes tests significantly more reliable.
+                     */
+                    Espresso.registerIdlingResources(getActivity().getCountingIdlingResource());
+                }
+            };
 
     /**
      * Unregister your Idling Resource so it can be garbage collected and does not leak any memory.
      */
     //@After
     public void tearDown() {
-//        Espresso.unregisterIdlingResources(
-//                mAddTaskIntentsTestRule.getActivity().getCountingIdlingResource());
+        Espresso.unregisterIdlingResources(
+                mAddTaskIntentsTestRule.getActivity().getCountingIdlingResource());
     }
 
     /**

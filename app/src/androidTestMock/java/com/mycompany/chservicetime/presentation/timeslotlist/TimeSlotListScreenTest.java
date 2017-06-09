@@ -154,17 +154,16 @@ public class TimeSlotListScreenTest {
         FakeAppDataSource.getInstance().deleteAllTimeSlot();
     }
 
-    // TODO: can not found addTimeSlots() method
-//    private void createTimeSlots(TimeSlot... timeSlots) {
-//        if (timeSlots != null) {
-//            FakeAppDataSource.getInstance().addTimeSlots(timeSlots);
-//        }
-//    }
-
     private void createTimeSlots(TimeSlot... timeSlots) {
-        if (timeSlots != null && timeSlots.length > 0) {
-            for (TimeSlot ts : timeSlots)
-                FakeAppDataSource.getInstance().saveTimeSlot(ts);
+        if (timeSlots != null) {
+            FakeAppDataSource.getInstance().addTimeSlots(timeSlots);
         }
     }
+
+//    private void createTimeSlots(TimeSlot... timeSlots) {
+//        if (timeSlots != null && timeSlots.length > 0) {
+//            for (TimeSlot ts : timeSlots)
+//                FakeAppDataSource.getInstance().saveTimeSlot(ts);
+//        }
+//    }
 }

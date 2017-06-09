@@ -8,7 +8,6 @@ https://jabknowsnothing.wordpress.com/2015/11/05/activitytestrule-espressos-test
 3. Multiple Flovors (mock and prod): multiple AndroidManifest.xml, multiple Injection.java, FakeTimeSlotDataSource, MockCursorProvider
 4. TimeSlots UI: TimeSlotsPresenterTest (Mockito, Test)
 5. TimeSlots UI: TimeSlotsScreenTest (AndroidTest) , Because we use Content Provider to loader TimeSlots, we need to test the case in a real Sqlite envirement. 
-   TODO: multiple flavor for defination of content provider in AndroidManifest.
 6. Rewrite TimeSlotRule, fix a bug that begin time can not be bigger than end time.
    Rewrite TimeSlotRuleTest, parameterized, mock static methods
 7. Add the getRequiredTimeSlots(boolean activationFlag) method in TimeSlotRepository and test it with a fake data source.
