@@ -4,6 +4,7 @@ import com.mycompany.chservicetime.data.firebase.testUtil.RecordingSubscriber;
 import com.mycompany.chservicetime.data.firebase.testUtil.RxJavaPluginsResetRule;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -40,6 +41,7 @@ public class RestRepositoryTest {
     }
 
     @Test
+    @Ignore
     public void bodySuccess200() {
         server.enqueue(new MockResponse().setBody("{\"name\": \"Hi\"}"));
 

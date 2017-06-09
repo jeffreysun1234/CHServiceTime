@@ -5,6 +5,7 @@ import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -39,26 +40,31 @@ public class FirebaseDAOTest {
     }
 
     @Test
+    @Ignore
     public void addTimeSlotList() throws Exception {
         FirebaseDAO.create().addTimeSlotList(uid);
     }
 
     @Test
+    @Ignore
     public void deleteTimeSlotItems() throws Exception {
 
     }
 
     @Test
+    @Ignore
     public void addTimeSlotItemList() throws Exception {
 
     }
 
     @Test
+    @Ignore
     public void getTimeSlotItemList() throws Exception {
 
     }
 
     @Test
+    @Ignore
     public void addTimeSlotItemList1() throws Exception {
 
     }

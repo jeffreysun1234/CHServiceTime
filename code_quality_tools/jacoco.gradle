@@ -1,0 +1,71 @@
+// Merge of
+// https://github.com/mgouline/android-samples/blob/master/jacoco/app/build.gradle
+// and https://github.com/pushtorefresh/storio/blob/master/gradle/jacoco-android.gradle
+
+// https://github.com/artem-zinnatullin/qualitymatters
+// https://github.com/rafaeltoledo/unified-code-coverage-android
+
+// NOTE:
+// 1. All unit tests base on the Mock flavor.
+// 2. Android Tests include both Proc and Mock flavors.
+
+// Requires Jacoco plugin in build classpath.
+apply plugin: 'jacoco'
+
+// Enables code coverage for JVM tests.
+// Android Gradle Plugin out of the box supports only code coverage for instrumentation tests.
+
+// Create coverage task of merge UnitTest and AndroidTest
+task jacocoAllTestReport(type: JacocoReport, dependsOn: ['connectedAndroidTest', 'testMockDebugUnitTest']) {
+    group = 'Reporting'
+    description = "Generate Jacoco coverage reports."
+
+    classDirectories = fileTree(
+            dir: "${project.buildDir}/intermediates/classes/mock/debug",
+            excludes: [
+                    'android/**/*.*',
+                    '**/*Test*.*',
+                    '**/AutoValue_*.*',
+                    '**/*JavascriptBridge.class',
+                    '**/R.class',
+                    '**/R$*.class',
+                    '**/*$ViewInjector*.*',
+                    '**/*$ViewBinder*.*',
+                    '**/BuildConfig.*',
+                    '**/Manifest*.*',
+                    '**/*$Lambda$*.*', // Jacoco can not handle several "$" in class name.
+                    '**/Lambda.class',
+                    '**/*Lambda.class',
+                    '**/*Lambda*.class',
+                    '**/*$inlined$*.*', // Kotlin specific, Jacoco can not handle several "$" in class name.
+                    '**/*_MembersInjector.class', //Dagger2 generated code
+                    '*/*_MembersInjector*.*', //Dagger2 generated code
+                    '**/*_*Factory*.*', //Dagger2 generated code
+                    '*/*Component*.*', //Dagger2 generated code
+                    '**/*Module.*', // Modules for Dagger.
+                    '**/*Dagger*.*', // Dagger auto-generated code.
+                    '**/*$InjectAdapter.class',
+                    '**/*$ModuleAdapter.class',
+                    '**/*$ViewInjector*.class',
+                    '**/*_Provide*Factory*.*'] // Dagger auto-generated code.
+    )
+
+    def coverageSourceDirs = [
+            'src/main/java',
+            "src/mock/java",
+            "src/prod/java"
+    ]
+
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    classDirectories = files([classDirectories])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/*UnitTest.exec', 'outputs/code-coverage/connected/**/*coverage.ec'
+    ])
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+

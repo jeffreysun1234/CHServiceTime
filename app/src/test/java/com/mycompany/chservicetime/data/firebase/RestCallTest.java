@@ -6,6 +6,7 @@ import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -125,6 +126,7 @@ public class RestCallTest {
     }
 
     @Test
+    @Ignore
     public void http200Sync() throws IOException {
         Response<String> response = mService.getTestString().execute();
         assertThat(response.isSuccessful(), is(true));
@@ -132,6 +134,7 @@ public class RestCallTest {
     }
 
     @Test
+    @Ignore
     public void testAddTimeSlotList() throws Exception {
         TimeSlotList response = mFirebaseRestDAO.addTimeSlotList(encodedUserEmail, authToken);
 
@@ -139,6 +142,7 @@ public class RestCallTest {
     }
 
     @Test
+    @Ignore
     public void testRestoreTimeSlotItemList() throws Exception {
         Collection<TimeSlotItem> response = mFirebaseRestDAO.restoreTimeSlotItemList(encodedUserEmail, authToken);
 
@@ -147,6 +151,7 @@ public class RestCallTest {
     }
 
     @Test
+    @Ignore
     public void testBackupTimeSlotItemList() throws Exception {
         ArrayList<TimeSlot> tsItems = new ArrayList<TimeSlot>();
         tsItems.add(
@@ -158,6 +163,7 @@ public class RestCallTest {
     }
 
     @Test
+    @Ignore
     public void testDeleteTimeSlotItems() throws IOException, InterruptedException {
         Call<Object> message = mService
                 .deleteTimeSlotItems(FirebaseConstants.timeSlotItemListRestURL(encodedUserEmail), authToken);

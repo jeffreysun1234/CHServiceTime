@@ -5,6 +5,7 @@ import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.model.TimeSlot;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class FirebaseRestDAOTest {
     }
 
     @Test
+    @Ignore
     public void testAddTimeSlotList() throws Exception {
         TimeSlotList response = mFirebaseRestDAO.addTimeSlotList(encodedUserEmail, authToken);
 
@@ -45,6 +47,7 @@ public class FirebaseRestDAOTest {
     }
 
     @Test
+    @Ignore
     public void testRestoreTimeSlotItemList() throws Exception {
         ArrayList<TimeSlot> tsItems = new ArrayList<TimeSlot>();
         tsItems.add(
@@ -62,6 +65,7 @@ public class FirebaseRestDAOTest {
     }
 
     @Test
+    @Ignore
     public void testBackupTimeSlotItemList() throws Exception {
         ArrayList<TimeSlot> tsItems = new ArrayList<TimeSlot>();
         tsItems.add(
