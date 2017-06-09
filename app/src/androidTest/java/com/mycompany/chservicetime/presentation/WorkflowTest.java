@@ -95,17 +95,6 @@ public class WorkflowTest {
                     ((CHApplication) InstrumentationRegistry.getTargetContext()
                             .getApplicationContext()).getAppRepositoryComponent()
                             .getAppRepository().deleteAllTimeSlot();
-
-//                    AppLocalDataSource.destroyInstance();
-//                    mSchedulerProvider = new ImmediateSchedulerProvider();
-
-//                    //Whenever we run Instrumented unit tests, we can't change production environment Database.
-//                    //Because App might have stored an important data on Production environment Database.
-//                    //For such a reason, we use RenamingDelegatingContext, and create SQLite test file.
-//                    Context context = new RenamingDelegatingContext
-//                            (InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
-//                    mLocalDataSource = AppLocalDataSource.getInstance(context, mSchedulerProvider);
-//                    mLocalDataSource.deleteAllTimeSlot();
                 }
             };
 

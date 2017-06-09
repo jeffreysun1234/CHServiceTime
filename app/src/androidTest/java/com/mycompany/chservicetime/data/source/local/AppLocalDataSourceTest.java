@@ -16,10 +16,8 @@
 
 package com.mycompany.chservicetime.data.source.local;
 
-import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.RenamingDelegatingContext;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.mycompany.chservicetime.data.source.AppDataSource;
@@ -36,10 +34,10 @@ import java.util.List;
 
 import rx.observers.TestSubscriber;
 
+import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -58,13 +56,8 @@ public class AppLocalDataSourceTest {
         AppLocalDataSource.destroyInstance();
         mSchedulerProvider = new ImmediateSchedulerProvider();
 
-        //Whenever we run Instrumented unit tests, we can't change production environment Database.
-        //Because App might have stored an important data on Production environment Database.
-        //For such a reason, we use RenamingDelegatingContext, and create SQLite test file.
-        Context context = new RenamingDelegatingContext
-                (InstrumentationRegistry.getInstrumentation().getTargetContext(), "test_");
-
-        mLocalDataSource = AppLocalDataSource.getInstance(context, mSchedulerProvider);
+        mLocalDataSource = AppLocalDataSource.getInstance(
+                InstrumentationRegistry.getTargetContext(), mSchedulerProvider);
     }
 
     @After

@@ -59,5 +59,5 @@ Those tests are for individual classes and make use of Mocks.
 | :---: | :--- |
 |Unit Test|Presenters, Repository, Algorithms, Business Logics and as such|
 |Android Mock Test|Single Screens|
-|Android Proc Test|Base UI flow|
+|Android Proc Test|Base UI flow, SQLite data source|
 

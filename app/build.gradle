@@ -54,11 +54,11 @@ android {
         debug {
             applicationIdSuffix '.debug'
             debuggable true
-            minifyEnabled true
+            minifyEnabled false
             useProguard false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+//            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
         release {
             minifyEnabled true
@@ -118,9 +118,9 @@ android {
         //androidTestCompile.exclude group: 'com.google.code.findbugs', module: 'jsr305'
         testCompile.exclude group: 'com.android.support'
 
-        // conflict Firebase-Admin
-        compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
-        compile.exclude group: "org.json", module: "json"
+//        // conflict Firebase-Admin
+//        compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
+//        compile.exclude group: "org.json", module: "json"
     }
 }
 
