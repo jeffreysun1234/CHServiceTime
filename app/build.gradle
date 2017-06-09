@@ -59,6 +59,8 @@ android {
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+
+            testCoverageEnabled = true
         }
         release {
             minifyEnabled true
@@ -88,7 +90,10 @@ android {
         unitTests {
             all {
                 testLogging {
+                    outputs.upToDateWhen { false }
                     events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+                    showCauses true
+                    showExceptions true
                 }
             }
             // avoid "Method ... not mocked." error. See http://g.co/androidstudio/not-mocked for details
