@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="Begin"
+                android:text="@string/add_edit_time_begin"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="End"
+                android:text="@string/add_edit_time_end"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
@@ -89,8 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Su"
-                android:textOn="Su" />
+                android:textOff="@string/add_edit_day_su"
+                android:textOn="@string/add_edit_day_su" />
 
             <ToggleButton
                 android:id="@+id/day1InWeekToggleButton"
@@ -98,8 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Mo"
-                android:textOn="Mo" />
+                android:textOff="@string/add_edit_day_mo"
+                android:textOn="@string/add_edit_day_mo" />
 
             <ToggleButton
                 android:id="@+id/day2InWeekToggleButton"
@@ -107,8 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Tu"
-                android:textOn="Tu" />
+                android:textOff="@string/add_edit_day_tu"
+                android:textOn="@string/add_edit_day_tu" />
 
             <ToggleButton
                 android:id="@+id/day3InWeekToggleButton"
@@ -116,8 +116,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="We"
-                android:textOn="We" />
+                android:textOff="@string/add_edit_day_we"
+                android:textOn="@string/add_edit_day_we" />
 
             <ToggleButton
                 android:id="@+id/day4InWeekToggleButton"
@@ -125,8 +125,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Th"
-                android:textOn="Th" />
+                android:textOff="@string/add_edit_day_th"
+                android:textOn="@string/add_edit_day_th" />
 
             <ToggleButton
                 android:id="@+id/day5InWeekToggleButton"
@@ -134,8 +134,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Fr"
-                android:textOn="Fr" />
+                android:textOff="@string/add_edit_day_fr"
+                android:textOn="@string/add_edit_day_fr" />
 
             <ToggleButton
                 android:id="@+id/day6InWeekToggleButton"
@@ -143,8 +143,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@drawable/toggle_button_color"
-                android:textOff="Sa"
-                android:textOn="Sa" />
+                android:textOff="@string/add_edit_day_sa"
+                android:textOn="@string/add_edit_day_sa" />
         </LinearLayout>
 
         <LinearLayout
@@ -180,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:enabled="false"
-                android:text="Repeat weekly" />
+                android:text="@string/add_edit_repeat_weekly" />
         </LinearLayout>
 
     </LinearLayout>

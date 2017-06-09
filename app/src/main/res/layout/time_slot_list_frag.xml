@@ -85,6 +85,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/no_timeslots_all"
                 android:src="@drawable/ic_assignment_turned_in_24dp" />
 
             <TextView

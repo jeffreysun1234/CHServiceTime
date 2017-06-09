@@ -83,4 +83,16 @@
     <string name="back_from_system_setting">Back from Setting</string>
     <string name="button_allow">Allow</string>
     <string name="button_deny">Deny</string>
+
+    <!-- UI Screen String -->
+    <string name="add_edit_time_begin">Begin</string>
+    <string name="add_edit_time_end">End</string>
+    <string name="add_edit_day_su">Su</string>
+    <string name="add_edit_day_mo">Mo</string>
+    <string name="add_edit_day_tu">Tu</string>
+    <string name="add_edit_day_we">We</string>
+    <string name="add_edit_day_th">Th</string>
+    <string name="add_edit_day_fr">Fr</string>
+    <string name="add_edit_day_sa">Sa</string>
+    <string name="add_edit_repeat_weekly">Repeat weekly</string>
 </resources>
