@@ -13,7 +13,7 @@ import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-import static com.mycompany.chservicetime.data.firebase.RestCallTest.MOCK_SERVER_BASE_URL_PATH;
+import static com.mycompany.chservicetime.data.firebase.FirebaseRestDAOTest.MOCK_SERVER_BASE_URL_PATH;
 
 /**
  * Created by szhx on 1/23/2017.

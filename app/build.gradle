@@ -55,10 +55,10 @@ android {
         debug {
             applicationIdSuffix '.debug'
             debuggable true
-            minifyEnabled false
-            useProguard false
+//            minifyEnabled false
+//            useProguard false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
 
             testCoverageEnabled = true
@@ -226,6 +226,7 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-library:$rootProject.ext.hamcrestVersion"
     testCompile "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockitoVersion"
     testCompile "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockitoVersion"
+    testCompile group: 'org.json', name: 'json', version: '20140107'
     // Mock Web Server
     testCompile "com.squareup.okhttp3:mockwebserver:$rootProject.ext.okhttpVersion"
     // Android Testing Support Library's runner and rules
