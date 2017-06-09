@@ -173,7 +173,7 @@ public abstract class BaseTiActivity extends TiActivity<TimeSlotListPresenter, T
             // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
             case RC_SIGN_IN: {
                 handleSignInResponse(resultCode, data);
-                return;
+                break;
             }
         }
     }

@@ -197,7 +197,7 @@ public class TimeSlotRule {
                     return new int[]{vBeginTime, vEndTime};
                 });
 
-        timeSectors1.subscribe((int[] vTimeSector) -> System.out.println(vTimeSector));
+        timeSectors1.subscribe((int[] vTimeSector) -> System.out.println(Arrays.toString(vTimeSector)));
 
         // Get overnight TimeSlots and filter by activationFlag
         Observable<int[]> timeSectors2 = originalTimeSlots
@@ -219,7 +219,7 @@ public class TimeSlotRule {
                 });
 
         timeSectors2.subscribe((int[] vTimeSector) ->
-                System.out.println("Sector1 : " + vTimeSector.toString()));
+                System.out.println("Sector1 : " + Arrays.toString(vTimeSector)));
 
         Observable.concat(timeSectors1, timeSectors2)
                 .filter(vTimeSector -> vTimeSector != null)

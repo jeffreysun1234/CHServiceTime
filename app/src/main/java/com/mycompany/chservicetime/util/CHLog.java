@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 /**
  * Logging class used for all logging of this application.
  */
@@ -192,7 +194,7 @@ public class CHLog {
      */
     public static void array(final String tag, Object[] source) {
         if (logger != null) {
-            log(tag, source.toString());
+            log(tag, Arrays.toString(source));
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class BaseTiPresenter<V extends TiView> extends TiPresenter<V> {
 
-    public static interface ViewAction<T> {
+    public interface ViewAction<T> {
         void call(T t);
     }
 

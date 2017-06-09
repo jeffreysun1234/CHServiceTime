@@ -175,7 +175,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
     public void backupTimeSlotList() {
         if (FirebaseAuthAdapter.isSignIn()) {
-            new AsyncTask() {
+            new AsyncTask<Object, Void, Void>() {
 
                 @Override
                 protected void onPreExecute() {
@@ -183,7 +183,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 }
 
                 @Override
-                protected Object doInBackground(Object[] params) {
+                protected Void doInBackground(Object[] params) {
                     try {
                         String userId = FirebaseAuthAdapter.getUserEmail();
                         String authToken = FirebaseAuthAdapter.getAuthToken();
@@ -202,7 +202,8 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 }
 
                 @Override
-                protected void onPostExecute(Object o) {
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
                     getView().setLoadingIndicator(false);
                     getView().showFeedbackMessage(R.string.backup_done);
                 }
@@ -214,7 +215,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
 
     public void restoreTimeSlotList() {
         if (FirebaseAuthAdapter.isSignIn()) {
-            new AsyncTask() {
+            new AsyncTask<Object, Void, Void>() {
 
                 @Override
                 protected void onPreExecute() {
@@ -222,7 +223,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 }
 
                 @Override
-                protected Object doInBackground(Object[] params) {
+                protected Void doInBackground(Object[] params) {
                     try {
                         String userId = FirebaseAuthAdapter.getUserEmail();
                         String authToken = FirebaseAuthAdapter.getAuthToken();
@@ -243,7 +244,7 @@ public class TimeSlotListPresenter extends BaseTiPresenter<TimeSlotListView> {
                 }
 
                 @Override
-                protected void onPostExecute(Object o) {
+                protected void onPostExecute(Void aVoid) {
                     getView().setLoadingIndicator(false);
                     getView().showFeedbackMessage(R.string.restore_done);
                     // refresh view

@@ -166,11 +166,8 @@ public class TimeSlotListFragment extends Fragment implements TimeSlotListView,
         CHLog.d("requestCode=" + requestCode + ", resultCode=" + resultCode);
 
         // If a timeSlot was successfully added, show snackbar.
-        if (AddEditTimeSlotActivity.REQUEST_ADD_TIME_SLOT == requestCode && Activity.RESULT_OK == resultCode) {
-            isSuccessfullySavedMessage = true;
-        } else {
-            isSuccessfullySavedMessage = false;
-        }
+        isSuccessfullySavedMessage = AddEditTimeSlotActivity.REQUEST_ADD_TIME_SLOT == requestCode
+                && Activity.RESULT_OK == resultCode;
     }
 
     @Nullable
