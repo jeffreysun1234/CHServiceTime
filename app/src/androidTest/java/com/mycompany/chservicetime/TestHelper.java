@@ -30,6 +30,11 @@ import android.support.v7.widget.Toolbar;
 import java.util.Collection;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.runner.lifecycle.Stage.RESUMED;
 
 /**
@@ -106,5 +111,21 @@ public class TestHelper {
         AudioManager audioManager =
                 (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         return audioManager.getRingerMode();
+    }
+
+    public static boolean viewIsDisplayed(int viewId) {
+        final boolean[] isDisplayed = {true};
+        onView(withId(viewId))
+                .withFailureHandler((error, viewMatcher) -> isDisplayed[0] = false)
+                .check(matches(isDisplayed()));
+        return isDisplayed[0];
+    }
+
+    public static boolean textIsDisplayed(Context context, int stringResId) {
+        final boolean[] isDisplayed = {true};
+        onView(withText(context.getString(stringResId)))
+                .withFailureHandler((error, viewMatcher) -> isDisplayed[0] = false)
+                .check(matches(isDisplayed()));
+        return isDisplayed[0];
     }
 }

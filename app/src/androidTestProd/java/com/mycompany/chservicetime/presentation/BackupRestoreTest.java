@@ -2,24 +2,26 @@ package com.mycompany.chservicetime.presentation;
 
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.media.AudioManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.Espresso;
-import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.uiautomator.By;
 import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.UiObject2;
+import android.support.test.uiautomator.Until;
 import android.view.WindowManager;
 
 import com.mycompany.chservicetime.CHApplication;
 import com.mycompany.chservicetime.R;
-import com.mycompany.chservicetime.TestDataHelper;
+import com.mycompany.chservicetime.TestHelper;
 import com.mycompany.chservicetime.TimeSlotListUIHelper;
 import com.mycompany.chservicetime.data.source.AppDataSource;
+import com.mycompany.chservicetime.data.source.AppRepository;
 import com.mycompany.chservicetime.data.source.local.AppLocalDataSource;
 import com.mycompany.chservicetime.model.TimeSlot;
 import com.mycompany.chservicetime.presentation.timeslotlist.TimeSlotListActivity;
@@ -32,12 +34,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static com.mycompany.chservicetime.CustomItemMatcher.matchToolbarTitle;
-import static com.mycompany.chservicetime.TestHelper.getCurrentRingMode;
-import static org.junit.Assert.assertEquals;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.uiautomator.Until.findObject;
+import static com.mycompany.chservicetime.CustomItemMatcher.DATA_VIEW_TYPE;
+import static com.mycompany.chservicetime.CustomItemMatcher.withItemText;
 
 /**
  * Created by szhx on 8/31/2016.
@@ -45,9 +51,13 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
 @LargeTest
-public class WorkflowTest {
+public class BackupRestoreTest {
 
-    private static final long UI_TEST_TIMEOUT = 5 * 1000; //5 seconds
+    private static final long UI_TEST_TIMEOUT = 5 * 1000; // 5 seconds
+    private static final long UI_OPERATE_TIMEOUT = 500; // 500 millonseconds
+
+    // change the name of the package if needed.
+    private static final String BASIC_PACKAGE = "com.mycompany.servicetime.debug";
 
     private BaseSchedulerProvider mSchedulerProvider;
 
@@ -58,6 +68,12 @@ public class WorkflowTest {
     private int rvLayoutId;
 
     private UiDevice mDevice;
+
+    private Context mTargetContext;
+    private TimeSlotListUIHelper mTimeSlotListUIHelper;
+
+    final static TimeSlot TimeSlot1 = TimeSlot.createTimeSlot("111", "Work", "work time",
+            9, 0, 17, 0, "0111110", true, false, TimeSlot.ServiceOption.NORMAL);
 
     /**
      * {@link IntentsTestRule} is an {@link ActivityTestRule} which inits and releases Espresso
@@ -79,9 +95,11 @@ public class WorkflowTest {
                     super.beforeActivityLaunched();
 
                     // Doing this in @Before generates a race condition.
-                    ((CHApplication) InstrumentationRegistry.getTargetContext()
+                    AppRepository appRepository = ((CHApplication) InstrumentationRegistry.getTargetContext()
                             .getApplicationContext()).getAppRepositoryComponent()
-                            .getAppRepository().deleteAllTimeSlot();
+                            .getAppRepository();
+                    appRepository.deleteAllTimeSlot();
+                    appRepository.saveTimeSlot(TimeSlot1);
                 }
             };
 
@@ -95,6 +113,8 @@ public class WorkflowTest {
     @Before
     public void setUp() throws Exception {
         mActivity = mActivityRule.getActivity();
+
+        //rvLayoutId = R.id.timeSlotListRecyclerView;
 
         // Keep the screen on.
         try {
@@ -136,55 +156,67 @@ public class WorkflowTest {
 
     @Test
     public void normalWorkflow() {
-        TimeSlot testTimeSlot = TestDataHelper.getTimeSlotWithCurrentTime(TimeSlot.ServiceOption.VIBRATION);
+        mTargetContext = InstrumentationRegistry.getTargetContext();
 
-        Context targetContext = InstrumentationRegistry.getTargetContext();
+        mTimeSlotListUIHelper = new TimeSlotListUIHelper(mTargetContext);
 
-        TimeSlotListUIHelper timeSlotListUIHelper = new TimeSlotListUIHelper(targetContext);
+        // open the overflow menu.
+        openActionBarOverflowOrOptionsMenu(mTargetContext);
+        // check if the user has login
+        if (TestHelper.textIsDisplayed(mTargetContext, R.string.action_logout)) {
+            pressBack();
+        } else {
+            loginFirebase(mTargetContext, mDevice);
+        }
 
-        // There is no data at begin.
-        timeSlotListUIHelper.emptyTimeSlotList();
+        backup();
 
-        // open AddTimeSlot UI.
-        timeSlotListUIHelper.clickAddTimeSlotIcon_opensAddTimeSlotUi();
-
-        // add a TimeSlot
-        timeSlotListUIHelper.createTimeSlot(testTimeSlot);
-
-        // locate to the position 0.
-        onView(withId(R.id.timeslot_list)).perform(RecyclerViewActions.scrollToPosition(0));
-
-        // click activation checkbox
-        onView(withId(R.id.activeSwitch)).perform(click());
-
-        // verify the vibrate status
-        int currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
-        assertEquals(AudioManager.RINGER_MODE_VIBRATE, currentRingMode);
-
-//        // TODO: verify Edit icon is hidden
-//        //onView(withId(R.id.edit_item_button)).check(matches((isCompletelyDisplayed())));
-
-        // click Edit menu
-        timeSlotListUIHelper.clickSwipeMenuByViewId(R.id.nameTextView,
-                targetContext.getString(R.string.img_edit));
-
-        // Check if the add TimeSlot screen is displayed
-        matchToolbarTitle(mActivity.getResources().getString(R.string.edit_timeSlot));
-
-        // change the name of TimeSlot and save.
-        String newTimeSlotName = "Change Name";
-        timeSlotListUIHelper.changeItemName(testTimeSlot.name(), newTimeSlotName);
-
-        // swipe again and click Delete icon
-        timeSlotListUIHelper.clickSwipeMenuByViewId(R.id.nameTextView,
-                targetContext.getString(R.string.img_delete));
+        // delete a timeslot
+        mTimeSlotListUIHelper.clickSwipeMenuByViewId(R.id.nameTextView,
+                mTargetContext.getString(R.string.img_delete));
 
         // verify the item to be deleted.
-        timeSlotListUIHelper.emptyTimeSlotList();
+        mTimeSlotListUIHelper.emptyTimeSlotList();
 
-        // verify the vibrate status
-        currentRingMode = getCurrentRingMode(mActivity.getApplicationContext());
-        assertEquals(AudioManager.RINGER_MODE_NORMAL, currentRingMode);
+        restore();
+
+        // the deleted timeslot display again
+        onView(withItemText(TimeSlot1.name(), DATA_VIEW_TYPE.RECYCLERVIEW))
+                .check(matches(isDisplayed()));
+    }
+
+    private void backup() {
+        mTimeSlotListUIHelper.clickOverFlowMenuByText(R.string.menu_backup);
+
+        // check backup finish
+        onView(withText(mTargetContext.getString(R.string.backup_done)))
+                .check(matches(isDisplayed()));
+    }
+
+    private void restore() {
+        // restore
+        mTimeSlotListUIHelper.clickOverFlowMenuByText(R.string.menu_restore);
+        // check restore finish
+        onView(withText(mTargetContext.getString(R.string.restore_done)))
+                .check(matches(isDisplayed()));
+
+    }
+
+    private void loginFirebase(Context targetContext, UiDevice uiDevice) {
+        onView(withText(targetContext.getString(R.string.action_login)))
+                .perform(click());
+
+        uiDevice.findObject(By.res(BASIC_PACKAGE, "email")).setText("b@b.com");
+        uiDevice.findObject(By.res(BASIC_PACKAGE, "button_next")).click();
+
+        UiObject2 passwordEditText = uiDevice.wait(
+                findObject(By.res(BASIC_PACKAGE, "password")), UI_TEST_TIMEOUT);
+        passwordEditText.setText("b");
+
+        uiDevice.findObject(By.res(BASIC_PACKAGE, "button_done")).click();
+
+        // wait until return to the main app
+        uiDevice.wait(Until.findObject(By.res(BASIC_PACKAGE, "add_time_slot")), UI_TEST_TIMEOUT);
     }
 }
 

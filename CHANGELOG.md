@@ -1,10 +1,16 @@
 # Change Log
 
-## 0.4.0 (2017-06-20)
+## 0.4.0 (2017-06-20, ongoing)
 
 ### Added:
 
 - Monitor the ringer mode change to notify the user
+- Add test cases for Presenters, Screens, and base operation flows.
+- Add Jacoco support
+
+### Changed
+
+- Refactor some codes by Inspect Code of Android Studio
 
 ## 0.3.0 (2017-04-20)
 
