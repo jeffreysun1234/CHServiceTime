@@ -19,6 +19,7 @@ package com.mycompany.chservicetime;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
 import com.mycompany.chservicetime.di.component.AppRepositoryComponent;
 import com.mycompany.chservicetime.di.component.ApplicationComponent;
 import com.mycompany.chservicetime.di.component.DaggerAppRepositoryComponent;
@@ -26,6 +27,7 @@ import com.mycompany.chservicetime.di.component.DaggerApplicationComponent;
 import com.mycompany.chservicetime.di.module.AppRepositoryModule;
 import com.mycompany.chservicetime.di.module.ApplicationModule;
 import com.mycompany.chservicetime.util.CHLog;
+import com.squareup.leakcanary.LeakCanary;
 
 import static com.mycompany.chservicetime.util.CHLog.makeLogTag;
 
@@ -62,6 +64,13 @@ public class CHApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
+
         INSTANCE = this;
 
         setDaggerGraph();
@@ -69,6 +78,9 @@ public class CHApplication extends Application {
         if (BuildConfig.DEBUG) {
             // log output with System.out.println
             CHLog.setLogger(CHLog.TESTOUT);
+
+            // Stetho Initial
+            Stetho.initializeWithDefaults(this);
         } else {
             // disable log
             CHLog.setLogger(null);

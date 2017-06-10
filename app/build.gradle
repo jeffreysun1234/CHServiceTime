@@ -54,12 +54,11 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
-            debuggable true
-//            minifyEnabled false
-//            useProguard false
+            minifyEnabled true
+            useProguard false
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
 
             testCoverageEnabled = true
         }
@@ -220,6 +219,15 @@ dependencies {
     // PermissionsDispatcher
     compile "com.github.hotchemi:permissionsdispatcher:$rootProject.PermissionsDispatcherVersion"
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.PermissionsDispatcherVersion"
+
+    // LeakCanary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:' + rootProject.leakCanaryVersion
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:' + rootProject.leakCanaryVersion
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:' + rootProject.leakCanaryVersion
+    // Stetho
+    compile 'com.facebook.stetho:stetho:' + rootProject.stethoVersion
+    compile 'com.facebook.stetho:stetho-okhttp3:' + rootProject.stethoVersion
+
     // Dependencies for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     testCompile "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"

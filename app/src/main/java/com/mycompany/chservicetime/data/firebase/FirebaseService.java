@@ -5,10 +5,7 @@ import com.mycompany.chservicetime.data.firebase.model.HttpResult;
 import retrofit2.http.GET;
 import rx.Observable;
 
-/**
- * Created by szhx on 1/22/2017.
- */
-
+// TODO: RxJava interface
 public interface FirebaseService {
 
     /**

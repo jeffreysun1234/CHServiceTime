@@ -1,5 +1,6 @@
 package com.mycompany.chservicetime.data.firebase;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotItem;
 import com.mycompany.chservicetime.data.firebase.model.TimeSlotList;
 import com.mycompany.chservicetime.model.ModelConverter;
@@ -43,6 +44,9 @@ public class FirebaseRestDAO {
 
                 OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
                 httpClient.addInterceptor(logging);
+
+                // Enable network inspection for Stetho
+                httpClient.addNetworkInterceptor(new StethoInterceptor());
 
                 retrofitBuilder.client(httpClient.build());
             }

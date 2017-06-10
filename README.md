@@ -14,7 +14,7 @@ The application demonstrates a couple of technologies:
 
 --------------------
 
-## Development Tools
+## Development Environment
 
 - Android Studio v2.3.3
 - gradle-plugin v2.3.3
@@ -22,14 +22,15 @@ The application demonstrates a couple of technologies:
 - MinSdkVersion 16
 - CompileSDKVersion 25
 - Retrolambda v3.6.0
+- Git 2.13.0
 
 --------------------
 
 ## Code Quality Tools
 
-- Jacoco
-- Android Hint
+Jacoco, Android Hint, LeakCanary, Stetho
 
+---------------------
 
 ## Flavors
 
@@ -73,3 +74,7 @@ Those tests are for individual classes and make use of Mocks.
 1. All unit tests run on the Mock flavor.
 2. Android Tests include both Proc and Mock flavors.
 3. Create a custom gradle task for Jacoco to make a merging coverage report of both UnitTest and AndroidTest.
+
+Run all tests and create the coverage report
+> gradlew clean jacocoAllReport
+
