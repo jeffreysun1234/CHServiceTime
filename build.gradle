@@ -65,7 +65,7 @@ ext {
     mockitoVersion = '1.10.19'
     mockwebserverVersion = '3.8.0'
     okhttpVersion = '3.6.0'
-    PermissionsDispatcherVersion = '2.3.2'
+    PermissionsDispatcherVersion = '2.4.0'
     powerMockitoVersion = '1.6.5'
     retrofit2Version = '2.2.0'
     rulesVersion = '0.5'

@@ -177,7 +177,6 @@ dependencies {
     // adds the @Generated annotation lacking on Android
 
     // provided 'javax.annotation:jsr250-api:1.0'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
     // Retrofit & Gson
     compile "com.google.code.gson:gson:$rootProject.gsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
@@ -217,7 +216,10 @@ dependencies {
     // Swipe RecyclerView
     compile "com.yanzhenjie:recyclerview-swipe:$rootProject.swipeRecyclerViewVersion"
     // PermissionsDispatcher
-    compile "com.github.hotchemi:permissionsdispatcher:$rootProject.PermissionsDispatcherVersion"
+    compile('com.github.hotchemi:permissionsdispatcher:' + rootProject.PermissionsDispatcherVersion) {
+        // if you don't use android.app.Fragment you can exclude support for them
+        exclude module: "support-v13"
+    }
     annotationProcessor "com.github.hotchemi:permissionsdispatcher-processor:$rootProject.PermissionsDispatcherVersion"
 
     // LeakCanary
@@ -252,6 +254,8 @@ dependencies {
     androidTestCompile "com.google.dexmaker:dexmaker:$rootProject.ext.dexmakerVersion"
     androidTestCompile "com.google.dexmaker:dexmaker-mockito:$rootProject.ext.dexmakerVersion"
     androidTestCompile "org.hamcrest:hamcrest-library:$rootProject.ext.hamcrestVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }
 
 // Firebase

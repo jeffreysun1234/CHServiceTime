@@ -73,16 +73,21 @@
     <string name="unknown_error">An unknown error occurred</string>
     <string name="need_permission_dialog_message">"Please give the following permissions to use the App. \n %1$s"</string>
     <string name="permission_phone_state_yes">PHONE_STATE permission has been granted.</string>
-    <string name="permission_phone_state_no">Phone_State permission was denied. Please consider granting it in order to use the app.</string>
-    <string name="permission_phone_state_rationale">Phone_State permission is needed to configurate the sound mode.</string>
-    <string name="permission_phone_state_never_ask">Phone_State was denied with never ask again. You can revoke the permissions at any time at the Settings of your device.</string>
+    <string name="permission_phone_state_denied">Phone_State permission was denied. Please consider granting it in order to use the app.</string>
+    <string name="permission_phone_state_rationale">Phone_State permission is needed to configure the sound mode. \n\n Please consider granting it in order to use the app.</string>
+    <string name="permission_phone_state_never_ask">Phone_State permission was denied with never ask again. You can revoke the permissions at any time at the Permissions section inside the application Settings.</string>
+    <string name="permission_storage_yes">Storage permission has been granted.</string>
+    <string name="permission_storage_denied">Storage permission was denied. Please consider granting it in order to use the app.</string>
+    <string name="permission_storage_rationale">Storage permission is needed to save the app data. \n\n Please consider granting it in order to use the app.</string>
+    <string name="permission_storage_never_ask">Storage permission was denied with never ask again. You can revoke the permissions at any time at the Permissions section inside the application Settings.</string>
     <string name="permission_write_settings_yes">WRITE_SETTINGS permission granted</string>
-    <string name="permission_write_settings_no">WRITE_SETTINGS permission was denied. Please consider granting it in order to use the app.</string>
+    <string name="permission_write_settings_denied">WRITE_SETTINGS permission was denied. Please consider granting it in order to use the app.</string>
     <string name="permission_write_settings_rationale">WRITE_SETTINGS permission is needed to configurate the sound mode.</string>
     <string name="permission_write_settings_never_ask">WRITE_SETTINGS was denied with never ask again. You can revoke the permissions at any time at the Settings of your device.</string>
     <string name="back_from_system_setting">Back from Setting</string>
-    <string name="button_allow">Allow</string>
-    <string name="button_deny">Deny</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">CANCEL</string>
+    <string name="button_go_settings">Go to Settings</string>
 
     <!-- UI Screen String -->
     <string name="add_edit_time_begin">Begin</string>

@@ -47,7 +47,9 @@ task jacocoAllReport(type: JacocoReport, dependsOn: ['connectedAndroidTest', 'te
                     '**/*$InjectAdapter.class',
                     '**/*$ModuleAdapter.class',
                     '**/*$ViewInjector*.class',
-                    '**/*_Provide*Factory*.*'] // Dagger auto-generated code.
+                    '**/*_Provide*Factory*.*', // Dagger auto-generated code.
+                    '**/*PermissionsDispatcher.*' // PermissionDispatcher
+            ]
     )
 
     def coverageSourceDirs = [

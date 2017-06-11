@@ -7,10 +7,12 @@
 - Monitor the ringer mode change to notify the user
 - Add test cases for Presenters, Screens, and base operation flows.
 - Add Jacoco support
+- Integrate LeakCanary and Stetho
 
 ### Changed
 
 - Refactor some codes by Inspect Code of Android Studio
+- Refactor the configuration of the Runtime permissions
 
 ## 0.3.0 (2017-04-20)
 
