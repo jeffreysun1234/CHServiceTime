@@ -4,27 +4,27 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'spoon'
 apply from: rootProject.file("code_quality_tools/jacoco.gradle")
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+//def keystorePropertiesFile = rootProject.file("keystore.properties")
+//def keystoreProperties = new Properties()
+//keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    signingConfigs {
-        config {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//            storeFile file(keystoreProperties['storeFile'])
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
     compileSdkVersion 25
     buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "com.mycompany.servicetime"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.3.0"
+        versionCode 6
+        versionName "1.3.5"
 
 //        multiDexEnabled true
 
@@ -64,9 +64,10 @@ android {
         }
         release {
             minifyEnabled true
+            useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
     // If you need to add more flavors, consider using flavor dimensions.
@@ -126,9 +127,6 @@ android {
         //androidTestCompile.exclude group: 'com.google.code.findbugs', module: 'jsr305'
         testCompile.exclude group: 'com.android.support'
 
-//        // conflict Firebase-Admin
-//        compile.exclude group: "org.apache.httpcomponents", module: "httpclient"
-//        compile.exclude group: "org.json", module: "json"
     }
 }
 
